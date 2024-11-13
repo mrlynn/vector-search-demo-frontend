@@ -1,15 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { 
-  Search, 
-  Image, 
-  FileText, 
-  MessagesSquare, 
-  Database, 
-  Radar, 
+import {
+  Search,
+  Image,
+  FileText,
+  MessagesSquare,
+  Database,
+  Radar,
   Brain,
   TableProperties,
   Code,
-  X 
+  X
 } from 'lucide-react';
 
 function App() {
@@ -45,8 +45,8 @@ function App() {
   };
 
   const handleSearch = async () => {
-    if ((!searchTerm.trim() && searchType !== 'image') || 
-        (searchType === 'image' && !selectedImage)) return;
+    if ((!searchTerm.trim() && searchType !== 'image') ||
+      (searchType === 'image' && !selectedImage)) return;
 
     setIsSearching(true);
     setError(null);
@@ -54,12 +54,12 @@ function App() {
 
     try {
       let response;
-      
+
       if (searchType === 'image') {
         const formData = new FormData();
         formData.append('image', selectedImage);
         formData.append('type', 'image');
-        
+
         response = await fetch(`${API_URL}/search`, {
           method: 'POST',
           body: formData,
@@ -85,7 +85,7 @@ function App() {
       const data = await response.json();
       setResults(data.results || []);
       setSearchTime(data.searchTime);
-      
+
       // Show the command used
       setCurrentCommand(getSearchCommand(searchType, searchTerm));
       setShowCommand(true);
@@ -234,22 +234,24 @@ db.products.aggregate([
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-4">
+    <div className="max-w-7xl mx-auto p-4 bg-[#FFFFFF]"> {/* Pure White background */}
       {/* Mode Toggle */}
       <div className="flex justify-end mb-4 space-x-2">
         <button
-          className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
-            viewMode === 'search' ? 'bg-blue-500 text-white' : 'bg-gray-100'
-          }`}
+          className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${viewMode === 'search'
+              ? 'bg-[#001E2B] text-white' // Slate Blue
+              : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]' // Mist with hover
+            }`}
           onClick={() => setViewMode('search')}
         >
           <Search size={20} />
           <span>Search Interface</span>
         </button>
         <button
-          className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
-            viewMode === 'data' ? 'bg-blue-500 text-white' : 'bg-gray-100'
-          }`}
+          className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${viewMode === 'data'
+              ? 'bg-[#001E2B] text-white' // Slate Blue
+              : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]' // Mist with hover
+            }`}
           onClick={() => setViewMode('data')}
         >
           <TableProperties size={20} />
@@ -260,10 +262,10 @@ db.products.aggregate([
       {viewMode === 'search' ? (
         <div className="bg-white rounded-lg shadow-lg">
           <div className="p-6">
-            <h1 className="text-3xl font-bold text-center mb-2">
+            <h1 className="text-3xl font-bold text-center mb-2 text-[#001E2B]">
               MongoDB Search Evolution Demo
             </h1>
-            <p className="text-center text-gray-600 mb-6">
+            <p className="text-center text-[#1C2D38] mb-6">
               From Basic Queries to Intelligent Vector Search
             </p>
 
@@ -271,45 +273,50 @@ db.products.aggregate([
             <div className="space-y-4">
               <div className="flex flex-wrap gap-2 justify-center">
                 <button
-                  className={`flex items-center space-x-2 p-3 rounded-lg transition-colors ${
-                    searchType === 'basic' ? 'bg-blue-500 text-white' : 'bg-gray-100 hover:bg-gray-200'
-                  }`}
+                  className={`flex items-center space-x-2 p-3 rounded-lg transition-colors ${searchType === 'basic'
+                      ? 'bg-[#001E2B] text-white'
+                      : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
+                    }`}
                   onClick={() => setSearchType('basic')}
                 >
                   <Database size={20} />
                   <span>Basic Find</span>
                 </button>
                 <button
-                  className={`flex items-center space-x-2 p-3 rounded-lg transition-colors ${
-                    searchType === 'atlas' ? 'bg-blue-500 text-white' : 'bg-gray-100 hover:bg-gray-200'
-                  }`}
+                  className={`flex items-center space-x-2 p-3 rounded-lg transition-colors ${searchType === 'atlas'
+                      ? 'bg-[#001E2B] text-white'
+                      : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
+                    }`}
                   onClick={() => setSearchType('atlas')}
                 >
                   <Search size={20} />
                   <span>Atlas Search</span>
                 </button>
                 <button
-                  className={`flex items-center space-x-2 p-3 rounded-lg transition-colors ${
-                    searchType === 'vector' ? 'bg-blue-500 text-white' : 'bg-gray-100 hover:bg-gray-200'
-                  }`}
+                  className={`flex items-center space-x-2 p-3 rounded-lg transition-colors ${searchType === 'vector'
+                      ? 'bg-[#001E2B] text-white'
+                      : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
+                    }`}
                   onClick={() => setSearchType('vector')}
                 >
                   <Radar size={20} />
                   <span>Vector Search</span>
                 </button>
                 <button
-                  className={`flex items-center space-x-2 p-3 rounded-lg transition-colors ${
-                    searchType === 'semantic' ? 'bg-blue-500 text-white' : 'bg-gray-100 hover:bg-gray-200'
-                  }`}
+                  className={`flex items-center space-x-2 p-3 rounded-lg transition-colors ${searchType === 'semantic'
+                      ? 'bg-[#001E2B] text-white'
+                      : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
+                    }`}
                   onClick={() => setSearchType('semantic')}
                 >
                   <Brain size={20} />
                   <span>Semantic Search</span>
                 </button>
                 <button
-                  className={`flex items-center space-x-2 p-3 rounded-lg transition-colors ${
-                    searchType === 'image' ? 'bg-blue-500 text-white' : 'bg-gray-100 hover:bg-gray-200'
-                  }`}
+                  className={`flex items-center space-x-2 p-3 rounded-lg transition-colors ${searchType === 'image'
+                      ? 'bg-[#001E2B] text-white'
+                      : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
+                    }`}
                   onClick={triggerImageUpload}
                 >
                   <Image size={20} />
@@ -317,7 +324,7 @@ db.products.aggregate([
                 </button>
               </div>
 
-              <div className="text-center text-sm text-gray-600">
+              <div className="text-center text-sm text-[#1C2D38]">
                 {getSearchDescription()}
               </div>
 
@@ -336,19 +343,19 @@ db.products.aggregate([
                   <input
                     type="text"
                     placeholder={
-                      searchType === 'semantic' 
-                        ? "Enter natural language description..." 
+                      searchType === 'semantic'
+                        ? "Enter natural language description..."
                         : searchType === 'basic'
-                        ? "Enter exact text to match..."
-                        : "Enter your search query..."
+                          ? "Enter exact text to match..."
+                          : "Enter your search query..."
                     }
-                    className="flex-1 p-3 border rounded-lg"
+                    className="flex-1 p-3 border rounded-lg focus:ring-2 focus:ring-[#00ED64] focus:border-transparent"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                   />
                   <button
-                    className="bg-blue-500 text-white px-6 py-3 rounded-lg flex items-center space-x-2 hover:bg-blue-600 transition-colors"
+                    className="bg-[#001E2B] text-white px-6 py-3 rounded-lg flex items-center space-x-2 hover:bg-[#023047] transition-colors"
                     onClick={handleSearch}
                     disabled={isSearching}
                   >
@@ -381,14 +388,14 @@ db.products.aggregate([
             {!isSearching && results.length > 0 && (
               <div className="mt-8 space-y-4">
                 <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-semibold">Results ({results.length})</h3>
-                  <span className="text-sm text-gray-500">Search time: {searchTime}ms</span>
+                  <h3 className="text-lg font-semibold text-[#001E2B]">Results ({results.length})</h3>
+                  <span className="text-sm text-[#1C2D38]">Search time: {searchTime}ms</span>
                 </div>
                 <div className="grid gap-4">
                   {results.map((result, index) => (
                     <div
                       key={index}
-                      className="flex items-center space-x-4 p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+                      className="flex items-center space-x-4 p-4 border rounded-lg hover:bg-[#E3FCF7] transition-colors"
                     >
                       <img
                         src={result.image}
@@ -396,16 +403,16 @@ db.products.aggregate([
                         className="w-16 h-16 object-cover rounded-lg"
                       />
                       <div className="flex-1">
-                        <h4 className="font-semibold">{result.title}</h4>
-                        <p className="text-sm text-gray-600">{result.description}</p>
+                        <h4 className="font-semibold text-[#001E2B]">{result.title}</h4>
+                        <p className="text-sm text-[#1C2D38]">{result.description}</p>
                         <div className="flex items-center space-x-4 mt-1">
-                          <span className="text-sm text-gray-500">{result.category}</span>
-                          <span className="text-sm font-semibold">${result.price}</span>
+                          <span className="text-sm text-[#1C2D38]">{result.category}</span>
+                          <span className="text-sm font-semibold text-[#001E2B]">${result.price}</span>
                         </div>
                       </div>
                       {result.score !== undefined && (
                         <div className="text-right">
-                          <div className="text-sm font-semibold text-blue-500">
+                          <div className="text-sm font-semibold text-[#00ED64]">
                             {(result.score * 100).toFixed(1)}% match
                           </div>
                         </div>
@@ -418,7 +425,7 @@ db.products.aggregate([
 
             {/* Loading State */}
             {isSearching && (
-              <div className="mt-6 text-center text-gray-600">
+              <div className="mt-6 text-center text-[#1C2D38]">
                 <div className="animate-pulse">Processing search...</div>
               </div>
             )}
@@ -427,21 +434,21 @@ db.products.aggregate([
       ) : (
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           <div className="p-6">
-            <h2 className="text-2xl font-bold mb-4">Product Database</h2>
+            <h2 className="text-2xl font-bold mb-4 text-[#001E2B]">Product Database</h2>
             <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-[#E3FCF7]">
+                <thead className="bg-[#E3FCF7]">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-[#001E2B] uppercase tracking-wider">Image</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-[#001E2B] uppercase tracking-wider">Title</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-[#001E2B] uppercase tracking-wider">Description</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-[#001E2B] uppercase tracking-wider">Category</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-[#001E2B] uppercase tracking-wider">Price</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white divide-y divide-[#E3FCF7]">
                   {allData.map((item, index) => (
-                    <tr key={index} className="hover:bg-gray-50">
+                    <tr key={index} className="hover:bg-[#E3FCF7]">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <img
                           src={item.image}
@@ -450,16 +457,16 @@ db.products.aggregate([
                         />
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-sm font-medium text-gray-900">{item.title}</div>
+                        <div className="text-sm font-medium text-[#001E2B]">{item.title}</div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-sm text-gray-500 max-w-md">{item.description}</div>
+                        <div className="text-sm text-[#1C2D38] max-w-md">{item.description}</div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-sm text-gray-900">{item.category}</div>
+                        <div className="text-sm text-[#1C2D38]">{item.category}</div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-sm text-gray-900">${item.price}</div>
+                        <div className="text-sm font-semibold text-[#001E2B]">${item.price}</div>
                       </td>
                     </tr>
                   ))}
@@ -470,21 +477,21 @@ db.products.aggregate([
         </div>
       )}
 
-      {/* Command Display Modal */}
+      {/* Command Modal */}
       {showCommand && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-[#001E2B] bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg max-w-3xl w-full max-h-[80vh] overflow-y-auto">
             <div className="p-4 border-b flex justify-between items-center">
-              <h3 className="text-lg font-semibold">MongoDB Command</h3>
+              <h3 className="text-lg font-semibold text-[#001E2B]">MongoDB Command</h3>
               <button
                 onClick={() => setShowCommand(false)}
-                className="p-2 hover:bg-gray-100 rounded-full"
+                className="p-2 hover:bg-[#E3FCF7] rounded-full"
               >
                 <X size={20} />
               </button>
             </div>
             <div className="p-4">
-              <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto">
+              <pre className="bg-[#001E2B] text-white p-4 rounded-lg overflow-x-auto">
                 <code>{currentCommand}</code>
               </pre>
             </div>
