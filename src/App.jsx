@@ -11,9 +11,12 @@ import {
   Code,
   X
 } from 'lucide-react';
+import config from './config';
 
 function App() {
   // State management
+  const API_URL = config.apiUrl;
+
   const [searchTerm, setSearchTerm] = useState('');
   const [searchType, setSearchType] = useState('basic');
   const [isSearching, setIsSearching] = useState(false);
@@ -27,7 +30,7 @@ function App() {
   const [currentCommand, setCurrentCommand] = useState('');
   const fileInputRef = useRef(null);
 
-  const API_URL = 'http://localhost:3003/api';
+  // const API_URL = 'http://localhost:3003/api';
 
   // Fetch all data on component mount
   useEffect(() => {
