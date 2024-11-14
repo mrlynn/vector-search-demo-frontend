@@ -14,6 +14,7 @@ import {
 import config from './config';
 import SearchComparison from './SearchComparison';
 import HighlightedText from './HighlightedText';
+import SearchMatchIndicator from './SearchMatchIndicator';
 const headers = {
   'Content-Type': 'application/json',
   'X-API-Key': config.apiKey
@@ -33,7 +34,7 @@ function App() {
   const [allData, setAllData] = useState([]);
   const [showCommand, setShowCommand] = useState(false);
   const [currentCommand, setCurrentCommand] = useState('');
-  const fileInputRef = useRef(null);
+  const fileInputRef = useRef();
 
   const [searchOptions, setSearchOptions] = useState({
     fuzzyMatching: true,
@@ -68,71 +69,117 @@ function App() {
     }
   };
   const handleSearch = async () => {
-    if ((!searchTerm.trim() && searchType !== 'image') ||
-      (searchType === 'image' && !selectedImage)) return;
-
+    // Input validation
+    const isValidSearch = searchType === 'image' ? selectedImage : searchTerm.trim();
+    if (!isValidSearch) {
+      console.debug('Search validation failed:', { searchType, hasImage: !!selectedImage });
+      return;
+    }
+  
     setIsSearching(true);
     setError(null);
-
+  
     try {
-      let response;
-
+      // Prepare request configuration
+      const config = {
+        method: 'POST',
+        credentials: 'include',
+        headers: {},
+        body: null
+      };
+  
       if (searchType === 'image') {
         const formData = new FormData();
         formData.append('image', selectedImage);
         formData.append('type', 'image');
-
-        response = await fetch(`${API_URL}/search`, {
-          method: 'POST',
-          credentials: 'include',
-          body: formData
-        });
+        config.body = formData;
+        console.debug('Preparing image search:', { imageSize: selectedImage.size });
       } else {
-        response = await fetch(`${API_URL}/search`, {
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            query: searchTerm,
-            type: searchType,
-            options: searchType === 'atlas' ? searchOptions : undefined
-          }),
+        config.headers['Content-Type'] = 'application/json';
+        config.body = JSON.stringify({
+          query: searchTerm,
+          type: searchType,
+          options: searchType === 'atlas' ? searchOptions : undefined
         });
       }
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || `Server error: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setResults(data.results || []);
-      setSearchTime(data.searchTime);
-      setShowCommand(true);
-      setCurrentCommand(getSearchCommand(searchType, searchTerm));
-    } catch (err) {
-      console.error('Search error:', err);
-      setError(err.message || 'Failed to perform search. Please try again.');
-      setResults([]);
+  
+      // Execute search
+      const response = await fetch(`${API_URL}/search`, config);
+      const data = await handleResponse(response);
+  
+      // Update UI state
+      updateSearchResults(data);
+    } catch (error) {
+      handleSearchError(error);
     } finally {
       setIsSearching(false);
     }
   };
 
+  const handleResponse = async (response) => {
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || `Server error: ${response.status}`);
+    }
+    return response.json();
+  };
+  
+
+  const handleSearchError = (error) => {
+    console.error('Search failed:', error);
+    setError(error.message || 'Failed to perform search. Please try again.');
+    setResults([]);
+  };
+
+  const updateSearchResults = (data) => {
+    setResults(data.results || []);
+    setSearchTime(data.searchTime);
+    setShowCommand(true);
+    setCurrentCommand(getSearchCommand(searchType, searchTerm));
+  };
+
   const handleImageSelect = async (event) => {
     const file = event.target.files[0];
-    if (file) {
+    if (!file) return;
+  
+    try {
+      // Create object URL first to avoid race conditions
+      const imageUrl = URL.createObjectURL(file);
+      
+      // Update states synchronously
       setSelectedImage(file);
       setSearchType('image');
-      setTimeout(() => {
-        handleSearch();
-      }, 0);
+      
+      // Trigger search with a slight delay to ensure state updates
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // Perform search with validation
+      const config = {
+        method: 'POST',
+        credentials: 'include',
+        body: (() => {
+          const formData = new FormData();
+          formData.append('image', file);
+          formData.append('type', 'image');
+          return formData;
+        })()
+      };
+  
+      setIsSearching(true);
+      setError(null);
+  
+      const response = await fetch(`${API_URL}/search`, config);
+      const data = await handleResponse(response);
+      updateSearchResults(data);
+    } catch (error) {
+      handleSearchError(error);
+    } finally {
+      setIsSearching(false);
     }
   };
 
   const triggerImageUpload = () => {
+    console.log('Triggering image upload'); // Log to verify trigger
     fileInputRef.current?.click();
   };
 
@@ -187,7 +234,7 @@ function App() {
               tokenOrder: "sequential"
             }`);
         }
-      
+
         return `db.products.aggregate([
         {
           $search: {
@@ -406,8 +453,8 @@ db.products.aggregate([
     <div className="flex flex-wrap gap-2 justify-center">
       <button
         className={`flex items-center space-x-2 p-3 rounded-lg transition-colors ${searchType === 'basic'
-            ? 'bg-[#001E2B] text-white'
-            : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
+          ? 'bg-[#001E2B] text-white'
+          : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
           }`}
         onClick={() => setSearchType('basic')}
       >
@@ -416,8 +463,8 @@ db.products.aggregate([
       </button>
       <button
         className={`flex items-center space-x-2 p-3 rounded-lg transition-colors ${searchType === 'atlas'
-            ? 'bg-[#001E2B] text-white'
-            : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
+          ? 'bg-[#001E2B] text-white'
+          : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
           }`}
         onClick={() => setSearchType('atlas')}
       >
@@ -426,8 +473,8 @@ db.products.aggregate([
       </button>
       <button
         className={`flex items-center space-x-2 p-3 rounded-lg transition-colors ${searchType === 'vector'
-            ? 'bg-[#001E2B] text-white'
-            : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
+          ? 'bg-[#001E2B] text-white'
+          : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
           }`}
         onClick={() => setSearchType('vector')}
       >
@@ -436,8 +483,8 @@ db.products.aggregate([
       </button>
       <button
         className={`flex items-center space-x-2 p-3 rounded-lg transition-colors ${searchType === 'semantic'
-            ? 'bg-[#001E2B] text-white'
-            : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
+          ? 'bg-[#001E2B] text-white'
+          : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
           }`}
         onClick={() => setSearchType('semantic')}
       >
@@ -446,8 +493,8 @@ db.products.aggregate([
       </button>
       <button
         className={`flex items-center space-x-2 p-3 rounded-lg transition-colors ${searchType === 'image'
-            ? 'bg-[#001E2B] text-white'
-            : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
+          ? 'bg-[#001E2B] text-white'
+          : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
           }`}
         onClick={triggerImageUpload}
       >
@@ -611,18 +658,21 @@ db.products.aggregate([
                     highlights={result.highlights?.filter(h => h.path === 'description')}
                   />
                 </p>
-                <div className="flex items-center space-x-4 mt-1">
-                  <span className="text-sm text-[#1C2D38]">{result.category}</span>
-                  <span className="text-sm font-semibold text-[#001E2B]">${result.price}</span>
+                <div className="flex items-center justify-between mt-1">
+                  <div>
+                    <span className="text-sm text-[#1C2D38]">{result.category}</span>
+                    <span className="text-sm font-semibold text-[#001E2B] ml-4">${result.price}</span>
+                    <SearchMatchIndicator result={result} searchType={searchType} options={searchOptions} />
+                  </div>
+                  {result.score !== undefined && (
+                    <div className="text-right">
+                      <div className="text-sm font-semibold text-[#00ED64]">
+                        {(result.score * 100).toFixed(1)}% match
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
-              {result.score !== undefined && (
-                <div className="text-right">
-                  <div className="text-sm font-semibold text-[#00ED64]">
-                    {(result.score * 100).toFixed(1)}% match
-                  </div>
-                </div>
-              )}
             </div>
           ))}
         </div>
