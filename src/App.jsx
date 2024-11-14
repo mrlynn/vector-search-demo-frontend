@@ -12,6 +12,8 @@ import {
   X
 } from 'lucide-react';
 import config from './config';
+import SearchComparison from './SearchComparison';
+import HighlightedText from './HighlightedText';
 const headers = {
   'Content-Type': 'application/json',
   'X-API-Key': config.apiKey
@@ -50,11 +52,11 @@ function App() {
           'Content-Type': 'application/json'
         }
       });
-  
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const data = await response.json();
       setAllData(data);
     } catch (error) {
@@ -63,20 +65,20 @@ function App() {
     }
   };
   const handleSearch = async () => {
-    if ((!searchTerm.trim() && searchType !== 'image') || 
-        (searchType === 'image' && !selectedImage)) return;
-  
+    if ((!searchTerm.trim() && searchType !== 'image') ||
+      (searchType === 'image' && !selectedImage)) return;
+
     setIsSearching(true);
     setError(null);
-  
+
     try {
       let response;
-      
+
       if (searchType === 'image') {
         const formData = new FormData();
         formData.append('image', selectedImage);
         formData.append('type', 'image');
-        
+
         response = await fetch(`${API_URL}/search`, {
           method: 'POST',
           credentials: 'include',
@@ -95,12 +97,12 @@ function App() {
           }),
         });
       }
-  
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.error || `Server error: ${response.status}`);
       }
-  
+
       const data = await response.json();
       setResults(data.results || []);
       setSearchTime(data.searchTime);
@@ -160,14 +162,38 @@ function App() {
       case 'atlas':
         return `db.products.aggregate([
   {
-    $search: {
-      text: {
-        query: "${query}",
-        path: ["title", "description", "category"],
-        fuzzy: { maxEdits: 1, prefixLength: 3 }
+      $search: {
+        index: 'default', // make sure this matches your Atlas Search index name
+        text: {
+          query: req.body.query,
+          path: ["title", "description", "category"]
+        },
+        highlight: {
+          path: ["title", "description"]
+        }
       }
+    },
+    {
+      $addFields: {
+        score: { $meta: "searchScore" },
+        highlights: { $meta: "searchHighlights" }
+      }
+    },
+    {
+      $project: {
+        _id: 0,
+        title: 1,
+        description: 1,
+        category: 1,
+        price: 1,
+        image: 1,
+        score: 1,
+        highlights: 1
+      }
+    },
+    { 
+      $limit: 10 
     }
-  }
 ])`;
       case 'vector':
         return `// 1. Generate embedding using OpenAI
@@ -250,251 +276,306 @@ db.products.aggregate([
     }
   };
 
-  return (
-    <div className="max-w-7xl mx-auto p-4 bg-[#FFFFFF]"> {/* Pure White background */}
-      {/* Mode Toggle */}
-      <div className="flex justify-end mb-4 space-x-2">
-        <button
-          className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${viewMode === 'search'
-              ? 'bg-[#001E2B] text-white' // Slate Blue
-              : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]' // Mist with hover
-            }`}
-          onClick={() => setViewMode('search')}
-        >
-          <Search size={20} />
-          <span>Search Interface</span>
-        </button>
-        <button
-          className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${viewMode === 'data'
-              ? 'bg-[#001E2B] text-white' // Slate Blue
-              : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]' // Mist with hover
-            }`}
-          onClick={() => setViewMode('data')}
-        >
-          <TableProperties size={20} />
-          <span>View Data</span>
-        </button>
-      </div>
-
-      {viewMode === 'search' ? (
-        <div className="bg-white rounded-lg shadow-lg">
-          <div className="p-6">
-            <h1 className="text-3xl font-bold text-center mb-2 text-[#001E2B]">
-              MongoDB Search Evolution Demo
-            </h1>
-            <p className="text-center text-[#1C2D38] mb-6">
-              From Basic Queries to Intelligent Vector Search
-            </p>
-
-            {/* Search Controls */}
-            <div className="space-y-4">
-              <div className="flex flex-wrap gap-2 justify-center">
-                <button
-                  className={`flex items-center space-x-2 p-3 rounded-lg transition-colors ${searchType === 'basic'
-                      ? 'bg-[#001E2B] text-white'
-                      : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
-                    }`}
-                  onClick={() => setSearchType('basic')}
-                >
-                  <Database size={20} />
-                  <span>Basic Find</span>
-                </button>
-                <button
-                  className={`flex items-center space-x-2 p-3 rounded-lg transition-colors ${searchType === 'atlas'
-                      ? 'bg-[#001E2B] text-white'
-                      : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
-                    }`}
-                  onClick={() => setSearchType('atlas')}
-                >
-                  <Search size={20} />
-                  <span>Atlas Search</span>
-                </button>
-                <button
-                  className={`flex items-center space-x-2 p-3 rounded-lg transition-colors ${searchType === 'vector'
-                      ? 'bg-[#001E2B] text-white'
-                      : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
-                    }`}
-                  onClick={() => setSearchType('vector')}
-                >
-                  <Radar size={20} />
-                  <span>Vector Search</span>
-                </button>
-                <button
-                  className={`flex items-center space-x-2 p-3 rounded-lg transition-colors ${searchType === 'semantic'
-                      ? 'bg-[#001E2B] text-white'
-                      : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
-                    }`}
-                  onClick={() => setSearchType('semantic')}
-                >
-                  <Brain size={20} />
-                  <span>Semantic Search</span>
-                </button>
-                <button
-                  className={`flex items-center space-x-2 p-3 rounded-lg transition-colors ${searchType === 'image'
-                      ? 'bg-[#001E2B] text-white'
-                      : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
-                    }`}
-                  onClick={triggerImageUpload}
-                >
-                  <Image size={20} />
-                  <span>Image Search</span>
-                </button>
-              </div>
-
-              <div className="text-center text-sm text-[#1C2D38]">
-                {getSearchDescription()}
-              </div>
-
-              {/* Hidden file input */}
-              <input
-                type="file"
-                ref={fileInputRef}
-                className="hidden"
-                accept="image/*"
-                onChange={handleImageSelect}
-              />
-
-              {/* Search input */}
-              {searchType !== 'image' && (
-                <div className="flex space-x-2 max-w-2xl mx-auto">
-                  <input
-                    type="text"
-                    placeholder={
-                      searchType === 'semantic'
-                        ? "Enter natural language description..."
-                        : searchType === 'basic'
-                          ? "Enter exact text to match..."
-                          : "Enter your search query..."
-                    }
-                    className="flex-1 p-3 border rounded-lg focus:ring-2 focus:ring-[#00ED64] focus:border-transparent"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                  />
-                  <button
-                    className="bg-[#001E2B] text-white px-6 py-3 rounded-lg flex items-center space-x-2 hover:bg-[#023047] transition-colors"
-                    onClick={handleSearch}
-                    disabled={isSearching}
-                  >
-                    <Search size={20} />
-                    <span>{isSearching ? 'Searching...' : 'Search'}</span>
-                  </button>
-                </div>
-              )}
-
-              {/* Image preview */}
-              {searchType === 'image' && selectedImage && (
-                <div className="mt-4 flex justify-center">
-                  <img
-                    src={URL.createObjectURL(selectedImage)}
-                    alt="Selected"
-                    className="max-h-40 rounded-lg"
-                  />
-                </div>
-              )}
-
-              {/* Error Display */}
-              {error && (
-                <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600 max-w-2xl mx-auto">
-                  {error}
-                </div>
-              )}
-            </div>
-
-            {/* Results Section */}
-            {!isSearching && results.length > 0 && (
-              <div className="mt-8 space-y-4">
-                <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-semibold text-[#001E2B]">Results ({results.length})</h3>
-                  <span className="text-sm text-[#1C2D38]">Search time: {searchTime}ms</span>
-                </div>
-                <div className="grid gap-4">
-                  {results.map((result, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center space-x-4 p-4 border rounded-lg hover:bg-[#E3FCF7] transition-colors"
-                    >
-                      <img
-                        src={result.image}
-                        alt={result.title}
-                        className="w-16 h-16 object-cover rounded-lg"
-                      />
-                      <div className="flex-1">
-                        <h4 className="font-semibold text-[#001E2B]">{result.title}</h4>
-                        <p className="text-sm text-[#1C2D38]">{result.description}</p>
-                        <div className="flex items-center space-x-4 mt-1">
-                          <span className="text-sm text-[#1C2D38]">{result.category}</span>
-                          <span className="text-sm font-semibold text-[#001E2B]">${result.price}</span>
-                        </div>
-                      </div>
-                      {result.score !== undefined && (
-                        <div className="text-right">
-                          <div className="text-sm font-semibold text-[#00ED64]">
-                            {(result.score * 100).toFixed(1)}% match
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Loading State */}
-            {isSearching && (
-              <div className="mt-6 text-center text-[#1C2D38]">
-                <div className="animate-pulse">Processing search...</div>
-              </div>
-            )}
-          </div>
+  const renderSearchInterface = () => (
+    <div className="bg-white rounded-lg shadow-lg">
+      <div className="p-6">
+        <h1 className="text-3xl font-bold text-center mb-2 text-[#001E2B]">
+          MongoDB Search Evolution Demo
+        </h1>
+        <p className="text-center text-[#1C2D38] mb-6">
+          From Basic Queries to Intelligent Vector Search
+        </p>
+        <div className="space-y-4">
+          {renderSearchButtons()}
+          {renderSearchDescription()}
+          {renderSearchInput()}
+          {renderImagePreview()}
+          {renderError()}
+          {renderResults()}
+          {renderLoadingState()}
         </div>
-      ) : (
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-          <div className="p-6">
-            <h2 className="text-2xl font-bold mb-4 text-[#001E2B]">Product Database</h2>
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-[#E3FCF7]">
-                <thead className="bg-[#E3FCF7]">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-[#001E2B] uppercase tracking-wider">Image</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-[#001E2B] uppercase tracking-wider">Title</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-[#001E2B] uppercase tracking-wider">Description</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-[#001E2B] uppercase tracking-wider">Category</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-[#001E2B] uppercase tracking-wider">Price</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-[#E3FCF7]">
-                  {allData.map((item, index) => (
-                    <tr key={index} className="hover:bg-[#E3FCF7]">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <img
-                          src={item.image}
-                          alt={item.title}
-                          className="h-12 w-12 object-cover rounded"
-                        />
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm font-medium text-[#001E2B]">{item.title}</div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm text-[#1C2D38] max-w-md">{item.description}</div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm text-[#1C2D38]">{item.category}</div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm font-semibold text-[#001E2B]">${item.price}</div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+      </div>
+    </div>
+  );
+  
+  const renderDataTable = () => (
+    <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+      <div className="p-6">
+        <h2 className="text-2xl font-bold mb-4 text-[#001E2B]">Product Database</h2>
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-[#E3FCF7]">
+            <thead className="bg-[#E3FCF7]">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-[#001E2B] uppercase tracking-wider">Image</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-[#001E2B] uppercase tracking-wider">Title</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-[#001E2B] uppercase tracking-wider">Description</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-[#001E2B] uppercase tracking-wider">Category</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-[#001E2B] uppercase tracking-wider">Price</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-[#E3FCF7]">
+              {allData.map((item, index) => (
+                <tr key={index} className="hover:bg-[#E3FCF7]">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="h-12 w-12 object-cover rounded"
+                    />
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="text-sm font-medium text-[#001E2B]">{item.title}</div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="text-sm text-[#1C2D38] max-w-md">{item.description}</div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="text-sm text-[#1C2D38]">{item.category}</div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="text-sm font-semibold text-[#001E2B]">${item.price}</div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+  
+  const renderModeToggle = () => (
+    <div className="flex justify-end mb-4 space-x-2">
+      <button
+        className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+          viewMode === 'search' ? 'bg-[#001E2B] text-white' : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
+        }`}
+        onClick={() => setViewMode('search')}
+      >
+        <Search size={20} />
+        <span>Search Interface</span>
+      </button>
+      <button
+        className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+          viewMode === 'compare' ? 'bg-[#001E2B] text-white' : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
+        }`}
+        onClick={() => setViewMode('compare')}
+      >
+        <Brain size={20} />
+        <span>Compare Search Types</span>
+      </button>
+      <button
+        className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+          viewMode === 'data' ? 'bg-[#001E2B] text-white' : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
+        }`}
+        onClick={() => setViewMode('data')}
+      >
+        <TableProperties size={20} />
+        <span>View Data</span>
+      </button>
+    </div>
+  );
+  
+  const renderMainContent = () => {
+    switch(viewMode) {
+      case 'compare':
+        return <SearchComparison />;
+      case 'search':
+        return renderSearchInterface();
+      case 'data':
+        return renderDataTable();
+      default:
+        return null;
+    }
+  };
+
+  const renderSearchButtons = () => (
+    <div className="flex flex-wrap gap-2 justify-center">
+      <button
+        className={`flex items-center space-x-2 p-3 rounded-lg transition-colors ${
+          searchType === 'basic'
+            ? 'bg-[#001E2B] text-white'
+            : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
+        }`}
+        onClick={() => setSearchType('basic')}
+      >
+        <Database size={20} />
+        <span>Basic Find</span>
+      </button>
+      <button
+        className={`flex items-center space-x-2 p-3 rounded-lg transition-colors ${
+          searchType === 'atlas'
+            ? 'bg-[#001E2B] text-white'
+            : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
+        }`}
+        onClick={() => setSearchType('atlas')}
+      >
+        <Search size={20} />
+        <span>Atlas Search</span>
+      </button>
+      <button
+        className={`flex items-center space-x-2 p-3 rounded-lg transition-colors ${
+          searchType === 'vector'
+            ? 'bg-[#001E2B] text-white'
+            : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
+        }`}
+        onClick={() => setSearchType('vector')}
+      >
+        <Radar size={20} />
+        <span>Vector Search</span>
+      </button>
+      <button
+        className={`flex items-center space-x-2 p-3 rounded-lg transition-colors ${
+          searchType === 'semantic'
+            ? 'bg-[#001E2B] text-white'
+            : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
+        }`}
+        onClick={() => setSearchType('semantic')}
+      >
+        <Brain size={20} />
+        <span>Semantic Search</span>
+      </button>
+      <button
+        className={`flex items-center space-x-2 p-3 rounded-lg transition-colors ${
+          searchType === 'image'
+            ? 'bg-[#001E2B] text-white'
+            : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
+        }`}
+        onClick={triggerImageUpload}
+      >
+        <Image size={20} />
+        <span>Image Search</span>
+      </button>
+    </div>
+  );
+  
+  const renderSearchDescription = () => (
+    <div className="text-center text-sm text-[#1C2D38]">
+      {getSearchDescription()}
+    </div>
+  );
+  
+  const renderSearchInput = () => (
+    <>
+      <input
+        type="file"
+        ref={fileInputRef}
+        className="hidden"
+        accept="image/*"
+        onChange={handleImageSelect}
+      />
+      
+      {searchType !== 'image' && (
+        <div className="flex space-x-2 max-w-2xl mx-auto">
+          <input
+            type="text"
+            placeholder={
+              searchType === 'semantic'
+                ? "Enter natural language description..."
+                : searchType === 'basic'
+                  ? "Enter exact text to match..."
+                  : "Enter your search query..."
+            }
+            className="flex-1 p-3 border rounded-lg focus:ring-2 focus:ring-[#00ED64] focus:border-transparent"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+          />
+          <button
+            className="bg-[#001E2B] text-white px-6 py-3 rounded-lg flex items-center space-x-2 hover:bg-[#023047] transition-colors"
+            onClick={handleSearch}
+            disabled={isSearching}
+          >
+            <Search size={20} />
+            <span>{isSearching ? 'Searching...' : 'Search'}</span>
+          </button>
         </div>
       )}
-
-      {/* Command Modal */}
+    </>
+  );
+  
+  const renderImagePreview = () => (
+    searchType === 'image' && selectedImage && (
+      <div className="mt-4 flex justify-center">
+        <img
+          src={URL.createObjectURL(selectedImage)}
+          alt="Selected"
+          className="max-h-40 rounded-lg"
+        />
+      </div>
+    )
+  );
+  
+  const renderError = () => (
+    error && (
+      <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600 max-w-2xl mx-auto">
+        {error}
+      </div>
+    )
+  );
+  
+  const renderResults = () => (
+    !isSearching && results.length > 0 && (
+      <div className="mt-8 space-y-4">
+        <div className="flex justify-between items-center">
+          <h3 className="text-lg font-semibold text-[#001E2B]">Results ({results.length})</h3>
+          <span className="text-sm text-[#1C2D38]">Search time: {searchTime}ms</span>
+        </div>
+        <div className="grid gap-4">
+          {results.map((result, index) => (
+            <div
+              key={index}
+              className="flex items-center space-x-4 p-4 border rounded-lg hover:bg-[#E3FCF7] transition-colors"
+            >
+              <img
+                src={result.image}
+                alt={result.title}
+                className="w-16 h-16 object-cover rounded-lg"
+              />
+              <div className="flex-1">
+                <h4 className="font-semibold text-[#001E2B]">
+                  <HighlightedText 
+                    text={result.title}
+                    highlights={result.highlights?.filter(h => h.path === 'title')}
+                  />
+                </h4>
+                <p className="text-sm text-[#1C2D38]">
+                  <HighlightedText 
+                    text={result.description}
+                    highlights={result.highlights?.filter(h => h.path === 'description')}
+                  />
+                </p>
+                <div className="flex items-center space-x-4 mt-1">
+                  <span className="text-sm text-[#1C2D38]">{result.category}</span>
+                  <span className="text-sm font-semibold text-[#001E2B]">${result.price}</span>
+                </div>
+              </div>
+              {result.score !== undefined && (
+                <div className="text-right">
+                  <div className="text-sm font-semibold text-[#00ED64]">
+                    {(result.score * 100).toFixed(1)}% match
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  );
+  
+  const renderLoadingState = () => (
+    isSearching && (
+      <div className="mt-6 text-center text-[#1C2D38]">
+        <div className="animate-pulse">Processing search...</div>
+      </div>
+    )
+  );
+  
+  return (
+    <div className="max-w-7xl mx-auto p-4 bg-[#FFFFFF]">
+      {renderModeToggle()}
+      {renderMainContent()}
       {showCommand && (
         <div className="fixed inset-0 bg-[#001E2B] bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg max-w-3xl w-full max-h-[80vh] overflow-y-auto">
