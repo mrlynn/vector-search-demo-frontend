@@ -12,7 +12,10 @@ import {
   X
 } from 'lucide-react';
 import config from './config';
-
+const headers = {
+  'Content-Type': 'application/json',
+  'X-API-Key': config.apiKey
+};
 function App() {
   // State management
   const API_URL = config.apiUrl;
@@ -39,37 +42,50 @@ function App() {
 
   const fetchAllData = async () => {
     try {
-      const response = await fetch(`${API_URL}/data`);
+      const response = await fetch(`${API_URL}/data`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const data = await response.json();
       setAllData(data);
     } catch (error) {
       console.error('Error fetching data:', error);
+      setError('Failed to load data. Please try again later.');
     }
   };
-
   const handleSearch = async () => {
-    if ((!searchTerm.trim() && searchType !== 'image') ||
-      (searchType === 'image' && !selectedImage)) return;
-
+    if ((!searchTerm.trim() && searchType !== 'image') || 
+        (searchType === 'image' && !selectedImage)) return;
+  
     setIsSearching(true);
     setError(null);
-    const startTime = performance.now();
-
+  
     try {
       let response;
-
+      
       if (searchType === 'image') {
         const formData = new FormData();
         formData.append('image', selectedImage);
         formData.append('type', 'image');
-
+        
         response = await fetch(`${API_URL}/search`, {
           method: 'POST',
-          body: formData,
+          credentials: 'include',
+          body: formData
         });
       } else {
         response = await fetch(`${API_URL}/search`, {
           method: 'POST',
+          credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
           },
@@ -79,19 +95,17 @@ function App() {
           }),
         });
       }
-
+  
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.error || `Server error: ${response.status}`);
       }
-
+  
       const data = await response.json();
       setResults(data.results || []);
       setSearchTime(data.searchTime);
-
-      // Show the command used
-      setCurrentCommand(getSearchCommand(searchType, searchTerm));
       setShowCommand(true);
+      setCurrentCommand(getSearchCommand(searchType, searchTerm));
     } catch (err) {
       console.error('Search error:', err);
       setError(err.message || 'Failed to perform search. Please try again.');
