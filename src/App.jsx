@@ -15,6 +15,7 @@ import config from './config';
 import SearchComparison from './SearchComparison';
 import HighlightedText from './HighlightedText';
 import SearchMatchIndicator from './SearchMatchIndicator';
+import SearchFlowDiagram from './SearchFlowDiagram';
 const headers = {
   'Content-Type': 'application/json',
   'X-API-Key': config.apiKey
@@ -22,6 +23,7 @@ const headers = {
 function App() {
   // State management
   const API_URL = config.apiUrl;
+  const [imageDescription, setImageDescription] = useState(null);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [searchType, setSearchType] = useState('basic');
@@ -131,12 +133,16 @@ function App() {
     setResults([]);
   };
 
-  const updateSearchResults = (data) => {
-    setResults(data.results || []);
-    setSearchTime(data.searchTime);
-    setShowCommand(true);
-    setCurrentCommand(getSearchCommand(searchType, searchTerm));
-  };
+  // Update updateSearchResults
+const updateSearchResults = (data) => {
+  setResults(data.results || []);
+  setSearchTime(data.searchTime);
+  setShowCommand(true);
+  setCurrentCommand(getSearchCommand(searchType, searchTerm));
+  if (data.imageDescription) {
+    setImageDescription(data.imageDescription);
+  }
+};
 
   const handleImageSelect = async (event) => {
     const file = event.target.files[0];
@@ -338,28 +344,30 @@ db.products.aggregate([
     }
   };
 
-  const renderSearchInterface = () => (
-    <div className="bg-white rounded-lg shadow-lg">
-      <div className="p-6">
-        <h1 className="text-3xl font-bold text-center mb-2 text-[#001E2B]">
-          MongoDB Search Evolution Demo
-        </h1>
-        <p className="text-center text-[#1C2D38] mb-6">
-          From Basic Queries to Intelligent Vector Search
-        </p>
-        <div className="space-y-4">
-          {renderSearchButtons()}
-          {renderSearchDescription()}
-          {renderSearchOptions()}
-          {renderSearchInput()}
-          {renderImagePreview()}
-          {renderError()}
-          {renderResults()}
-          {renderLoadingState()}
-        </div>
+  // In your renderSearchInterface function, add the diagram after the search buttons
+const renderSearchInterface = () => (
+  <div className="bg-white rounded-lg shadow-lg">
+    <div className="p-6">
+      <h1 className="text-3xl font-bold text-center mb-2 text-[#001E2B]">
+        MongoDB Search Evolution Demo
+      </h1>
+      <p className="text-center text-[#1C2D38] mb-6">
+        From Basic Queries to Intelligent Vector Search
+      </p>
+      <div className="space-y-6">
+        {renderSearchButtons()}
+        <SearchFlowDiagram searchType={searchType} />
+        {renderSearchDescription()}
+        {renderSearchOptions()}
+        {renderSearchInput()}
+        {renderImagePreview()}
+        {renderError()}
+        {renderResults()}
+        {renderLoadingState()}
       </div>
     </div>
-  );
+  </div>
+);
 
   const renderDataTable = () => (
     <div className="bg-white rounded-lg shadow-lg overflow-hidden">
@@ -607,14 +615,52 @@ db.products.aggregate([
     </>
   );
 
+  const formatImageDescription = (description) => {
+    // Remove markdown-style elements and clean up the text
+    const cleanDescription = description
+      .replace(/###/g, '')
+      .replace(/\*\*/g, '')
+      .replace(/ - /g, '\n•')
+      .trim();
+  
+    // Split into sections
+    const sections = cleanDescription.split('\n');
+    
+    // Get main description (first section)
+    const mainDescription = sections[0];
+    
+    // Get bullet points (remaining sections)
+    const bulletPoints = sections.slice(1).filter(point => point.startsWith('•'));
+  
+    return { mainDescription, bulletPoints };
+  };
+
   const renderImagePreview = () => (
     searchType === 'image' && selectedImage && (
-      <div className="mt-4 flex justify-center">
-        <img
-          src={URL.createObjectURL(selectedImage)}
-          alt="Selected"
-          className="max-h-40 rounded-lg"
-        />
+      <div className="mt-4 space-y-4">
+        <div className="flex justify-center">
+          <img
+            src={URL.createObjectURL(selectedImage)}
+            alt="Selected"
+            className="max-h-40 rounded-lg"
+          />
+        </div>
+        {imageDescription && (
+          <div className="max-w-2xl mx-auto p-6 bg-[#E3FCF7] rounded-lg space-y-4">
+            <div className="text-lg font-semibold text-[#001E2B]">AI Analysis</div>
+            <div className="text-sm text-[#1C2D38]">
+              {formatImageDescription(imageDescription).mainDescription}
+            </div>
+            <div className="space-y-2">
+              {formatImageDescription(imageDescription).bulletPoints.map((point, index) => (
+                <div key={index} className="text-sm text-[#1C2D38] flex items-start">
+                  <span className="text-[#00ED64] mr-2">•</span>
+                  <span>{point.replace('•', '').trim()}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     )
   );
