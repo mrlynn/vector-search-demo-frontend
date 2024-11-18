@@ -3,6 +3,7 @@ import React from 'react';
 import Mermaid from './components/ui/mermaid'; // Assuming you have a Mermaid component
 
 const SearchFlowDiagram = ({ searchType }) => {
+
   const diagrams = {
     basic: `flowchart LR
       Query[/"User Query"/]
@@ -140,6 +141,7 @@ const SearchFlowDiagram = ({ searchType }) => {
 
   return (
     <div className="w-full bg-white p-6 rounded-lg shadow-sm">
+      
       <h3 className="text-lg font-semibold text-[#001E2B] mb-4">
         {searchType.charAt(0).toUpperCase() + searchType.slice(1)} Flow Diagram
       </h3>
