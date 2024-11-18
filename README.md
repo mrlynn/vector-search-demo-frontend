@@ -1,28 +1,32 @@
 
-# MongoDB Search Evolution Frontend
+# MongoDB Search Evolution Backend
 
-This is the **frontend** for the **MongoDB Search Evolution Demo** application. It is designed to showcase various search methodologies supported by MongoDB, including **Basic Find**, **Atlas Search**, **Vector Search**, **Semantic Search**, and **Image Search**, through a user-friendly interface. The frontend allows users to explore and compare these search methods with visual explanations and interactive components.
+This is the **backend** service for the **MongoDB Search Evolution Demo** application. It serves as the core API layer, enabling multiple search methodologies such as **Basic Find**, **Atlas Search**, **Vector Search**, **Semantic Search**, and **Image Search**. It leverages MongoDB, OpenAI's API, and advanced search capabilities to process and return results.
 
 ---
 
 ## Features
 
-1. **Search Modes**:
-   - **Basic Find**: Simple regex-based queries.
-   - **Atlas Search**: Advanced full-text search with fuzzy matching, autocomplete, and phrase matching.
-   - **Vector Search**: Semantic search using vector similarity with OpenAI embeddings.
-   - **Semantic Search**: Enhanced vector search with GPT-generated descriptions.
-   - **Image Search**: Search by images with embedded metadata.
+1. **API Endpoints**:
+   - `/api/search`: Handles different search types and processes queries.
+   - `/api/data`: Fetches all product data.
+   - `/health`: Provides server health and MongoDB status.
 
-2. **Flow Diagrams**:
-   - Each search mode features an interactive flow diagram to visually explain the data flow and methodology.
-   - Diagrams are accessible via modals to optimize screen space.
+2. **Search Methodologies**:
+   - **Basic Find**: Regex-based search with MongoDB's native `.find()` method.
+   - **Atlas Search**: Full-text search using MongoDB Atlas with fuzzy matching, autocomplete, and phrase matching.
+   - **Vector Search**: Semantic search using vector similarity.
+   - **Semantic Search**: Advanced vector search enhanced by OpenAI embeddings.
+   - **Image Search**: Image-based search using OpenAI for image descriptions and vector embeddings.
 
-3. **Search Comparison**:
-   - Compare results across different search types side-by-side for better understanding.
+3. **Data Management**:
+   - Automatic indexing for different search methodologies (e.g., Atlas Search, Vector Search).
+   - Seeding of sample product data on initialization.
 
-4. **Highlighted Results**:
-   - Relevant search terms are highlighted in the results for better clarity.
+4. **Middleware**:
+   - CORS configuration for secure cross-origin requests.
+   - Multer for image file uploads.
+   - Winston for structured logging.
 
 ---
 
@@ -31,7 +35,8 @@ This is the **frontend** for the **MongoDB Search Evolution Demo** application. 
 ### Prerequisites
 
 - **Node.js**: Install [Node.js](https://nodejs.org/) (version 14 or later recommended).
-- **Backend Service**: Ensure the backend server for the MongoDB Search Evolution Demo is running. The frontend communicates with the backend through its API.
+- **MongoDB**: A running MongoDB instance (local or Atlas).
+- **OpenAI API Key**: Required for embedding generation and query enhancement.
 
 ---
 
@@ -40,7 +45,7 @@ This is the **frontend** for the **MongoDB Search Evolution Demo** application. 
 1. Clone the repository:
    ```bash
    git clone <repo-url>
-   cd frontend
+   cd backend
    ```
 
 2. Install dependencies:
@@ -48,53 +53,91 @@ This is the **frontend** for the **MongoDB Search Evolution Demo** application. 
    npm install
    ```
 
+3. Set up environment variables:
+   Create a `.env` file in the root directory with the following:
+   ```
+   MONGODB_URI=<your-mongodb-uri>
+   OPENAI_API_KEY=<your-openai-api-key>
+   ```
+
 ---
 
-### Running the Application
+### Running the Server
 
-1. Start the development server:
+1. Start the server:
    ```bash
-   npm run dev
+   npm start
    ```
 
-2. Open your browser and navigate to:
+2. The server will be available at:
    ```
-   http://localhost:5173
+   http://localhost:3003
+   ```
+
+3. Health check endpoint:
+   ```
+   http://localhost:3003/health
+   ```
+
+---
+
+### API Endpoints
+
+1. **Search Endpoint**:
+   ```
+   POST /api/search
+   ```
+   Request body example:
+   ```json
+   {
+       "type": "basic",
+       "query": "coffee"
+   }
+   ```
+
+2. **Data Fetch Endpoint**:
+   ```
+   GET /api/data
+   ```
+
+3. **Health Check Endpoint**:
+   ```
+   GET /health
    ```
 
 ---
 
 ### Project Structure
 
-- **App.jsx**: The main application file that defines the overall layout and routes.
-- **SearchFlowDiagram.jsx**: Component for displaying interactive flow diagrams in modals.
-- **SearchComparison.jsx**: Component to compare search results across different methodologies.
-- **SearchMatchIndicator.jsx**: Component to highlight matched terms in the search results.
-- **HighlightedText.jsx**: Utility for highlighting search terms within text.
+- **server.js**: The main entry point for the backend service.
+- **Middleware**:
+  - CORS for secure cross-origin requests.
+  - Winston for logging.
+- **Helper Functions**:
+  - `generateEmbedding`: Creates embeddings using OpenAI API.
+  - `enhanceQueryWithGPT`: Enhances search queries for semantic relevance.
+  - `processImage`: Processes image files for embedding generation.
 
 ---
 
-### Environment Variables
+### Logging and Debugging
 
-Create a `.env` file in the root directory and configure the following variables:
-
-```
-VITE_BACKEND_API_URL=http://localhost:3003
-```
-
-Replace `http://localhost:3003` with the actual backend URL if different.
+- **Winston Logger**:
+  - Logs are written to the console and `combined.log` file.
+  - Levels include `info`, `error`, and `debug`.
+- **Debugging Tips**:
+  - Inspect logs for search pipeline and MongoDB queries.
+  - Check `console.log` outputs for incoming requests and responses.
 
 ---
 
 ### Building for Production
 
-To create an optimized production build:
+To create an optimized build for deployment:
 
 ```bash
 npm run build
 ```
-
-The build files will be generated in the `dist` folder.
 
 ---
 

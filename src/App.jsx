@@ -4,8 +4,11 @@ import {
   Image,
   FileText,
   MessagesSquare,
+  Info,
   Database,
   Radar,
+  ChevronDown,
+  ChevronUp,
   Brain,
   TableProperties,
   Code,
@@ -16,6 +19,7 @@ import SearchComparison from './SearchComparison';
 import HighlightedText from './HighlightedText';
 import SearchMatchIndicator from './SearchMatchIndicator';
 import SearchFlowDiagram from './SearchFlowDiagram';
+
 const headers = {
   'Content-Type': 'application/json',
   'X-API-Key': config.apiKey
@@ -24,6 +28,7 @@ function App() {
   // State management
   const API_URL = config.apiUrl;
   const [imageDescription, setImageDescription] = useState(null);
+  const [showDiagram, setShowDiagram] = useState(false);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [searchType, setSearchType] = useState('basic');
@@ -52,6 +57,7 @@ function App() {
     try {
       const response = await fetch(`${API_URL}/data`, {
         method: 'GET',
+        mode: 'cors',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
@@ -349,29 +355,78 @@ db.products.aggregate([
   };
 
   // In your renderSearchInterface function, add the diagram after the search buttons
-const renderSearchInterface = () => (
-  <div className="bg-white rounded-lg shadow-lg">
-    <div className="p-6">
-      <h1 className="text-3xl font-bold text-center mb-2 text-[#001E2B]">
-        MongoDB Search Evolution Demo
-      </h1>
-      <p className="text-center text-[#1C2D38] mb-6">
-        From Basic Queries to Intelligent Vector Search
-      </p>
-      <div className="space-y-6">
-        {renderSearchButtons()}
-        <SearchFlowDiagram searchType={searchType} />
-        {renderSearchDescription()}
-        {renderSearchOptions()}
-        {renderSearchInput()}
-        {renderImagePreview()}
-        {renderError()}
-        {renderResults()}
-        {renderLoadingState()}
+  const renderSearchInterface = () => (
+    <div className="bg-white rounded-lg shadow-lg">
+      <div className="p-6">
+        <h1 className="text-3xl font-bold text-center mb-2 text-[#001E2B]">
+          MongoDB Search Evolution Demo
+        </h1>
+        <p className="text-center text-[#1C2D38] mb-6">
+          From Basic Queries to Intelligent Vector Search
+        </p>
+        <div className="space-y-6">
+          {/* Search Type Buttons */}
+          <div className="space-y-4">
+            {renderSearchButtons()}
+            
+            {/* Search Type Description with Diagram Toggle */}
+            <div className="flex items-center justify-between max-w-2xl mx-auto">
+              <div className="text-sm text-[#1C2D38]">
+                {getSearchDescription()}
+              </div>
+              {searchType !== 'image' && (
+                <button
+                  onClick={() => setShowDiagram(!showDiagram)}
+                  className="flex items-center space-x-2 text-sm text-[#00684A] hover:text-[#00ED64] transition-colors p-2 rounded-lg hover:bg-[#E3FCF7]"
+                >
+                  <Info size={16} />
+                  <span>How it works</span>
+                  {showDiagram ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                </button>
+              )}
+            </div>
+  
+            {/* Collapsible Diagram Section */}
+            <div
+              className={`transform transition-all duration-300 ease-in-out overflow-hidden ${
+                showDiagram ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
+              }`}
+            >
+              <div className="bg-white rounded-lg shadow-sm p-6">
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-[#001E2B]">
+                    How {searchType.charAt(0).toUpperCase() + searchType.slice(1)} Search Works
+                  </h3>
+                  <div className="overflow-x-auto">
+                    <SearchFlowDiagram searchType={searchType} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+          {/* Atlas Search Options */}
+          {renderSearchOptions()}
+  
+          {/* Search Input */}
+          {renderSearchInput()}
+  
+          {/* Image Preview */}
+          {renderImagePreview()}
+  
+          {/* Error Display */}
+          {renderError()}
+  
+          {/* Search Results */}
+          {renderResults()}
+  
+          {/* Loading State */}
+          {renderLoadingState()}
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+  
 
   const renderDataTable = () => (
     <div className="bg-white rounded-lg shadow-lg overflow-hidden">
