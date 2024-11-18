@@ -4,22 +4,23 @@ import {
   Image,
   FileText,
   MessagesSquare,
-  Info,
   Database,
   Radar,
-  ChevronDown,
-  ChevronUp,
   Brain,
   TableProperties,
   Code,
-  X
+  X,
+  Info,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import config from './config';
 import SearchComparison from './SearchComparison';
 import HighlightedText from './HighlightedText';
 import SearchMatchIndicator from './SearchMatchIndicator';
 import SearchFlowDiagram from './SearchFlowDiagram';
-
+import { productImageService } from './services/productImageService';
+import ProductImage from './components/ProductImage';
 const headers = {
   'Content-Type': 'application/json',
   'X-API-Key': config.apiKey
@@ -69,7 +70,21 @@ function App() {
       }
   
       const data = await response.json();
-      setAllData(data);
+      
+      // Enhance the data with product-specific images
+      const enhancedData = data.map(item => ({
+        ...item,
+        image: productImageService.findBestMatch(
+          item.title,
+          item.description,
+          item.category
+        )
+      }));
+  
+      setAllData(enhancedData);
+      
+      // Preload images for better performance
+      await productImageService.preloadImages();
     } catch (error) {
       console.error('Error fetching data:', error);
       setError(error.message);
@@ -91,8 +106,10 @@ function App() {
       // Prepare request configuration
       const config = {
         method: 'POST',
-        credentials: 'include',
-        headers: {},
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
         body: null
       };
   
@@ -101,6 +118,7 @@ function App() {
         formData.append('image', selectedImage);
         formData.append('type', 'image');
         config.body = formData;
+        delete config.headers['Content-Type']; // Let browser set correct content-type for FormData
         console.debug('Preparing image search:', { imageSize: selectedImage.size });
       } else {
         config.headers['Content-Type'] = 'application/json';
@@ -109,20 +127,30 @@ function App() {
           type: searchType,
           options: searchType === 'atlas' ? searchOptions : undefined
         });
-        console.debug('Search configuration:', config);
-
       }
-      console.debug('Search configuration:', config);
   
-      // Execute search
-      console.log(`${API_URL}/search`);
+      console.debug('Search configuration:', {
+        url: `${API_URL}/search`,
+        method: config.method,
+        headers: config.headers,
+        type: searchType
+      });
+  
       const response = await fetch(`${API_URL}/search`, config);
-      const data = await handleResponse(response);
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({
+          error: `Server error: ${response.status} ${response.statusText}`
+        }));
+        throw new Error(errorData.error || `Server error: ${response.status}`);
+      }
   
-      // Update UI state
+      const data = await response.json();
       updateSearchResults(data);
     } catch (error) {
-      handleSearchError(error);
+      console.error('Search request failed:', error);
+      setError(error.message || 'Failed to perform search. Please try again.');
+      setResults([]);
     } finally {
       setIsSearching(false);
     }
@@ -144,15 +172,22 @@ function App() {
   };
 
   // Update updateSearchResults
-const updateSearchResults = (data) => {
-  setResults(data.results || []);
-  setSearchTime(data.searchTime);
-  setShowCommand(true);
-  setCurrentCommand(getSearchCommand(searchType, searchTerm));
-  if (data.imageDescription) {
-    setImageDescription(data.imageDescription);
-  }
-};
+  const updateSearchResults = (data) => {
+    if (!data || !Array.isArray(data.results)) {
+      console.error('Invalid response data:', data);
+      setError('Invalid response from server');
+      setResults([]);
+      return;
+    }
+  
+    setResults(data.results);
+    setSearchTime(data.searchTime);
+    setShowCommand(true);
+    setCurrentCommand(getSearchCommand(searchType, searchTerm));
+    if (data.imageDescription) {
+      setImageDescription(data.imageDescription);
+    }
+  };
 
   const handleImageSelect = async (event) => {
     const file = event.target.files[0];
@@ -745,19 +780,20 @@ db.products.aggregate([
               key={index}
               className="flex items-center space-x-4 p-4 border rounded-lg hover:bg-[#E3FCF7] transition-colors"
             >
-              <img
+              <ProductImage
                 src={result.image}
                 alt={result.title}
-                className="w-16 h-16 object-cover rounded-lg"
+                category={result.category}
+                className="w-16 h-16 flex-shrink-0"
               />
-              <div className="flex-1">
-                <h4 className="font-semibold text-[#001E2B]">
+              <div className="flex-1 min-w-0">
+                <h4 className="font-semibold text-[#001E2B] truncate">
                   <HighlightedText
                     text={result.title}
                     highlights={result.highlights?.filter(h => h.path === 'title')}
                   />
                 </h4>
-                <p className="text-sm text-[#1C2D38]">
+                <p className="text-sm text-[#1C2D38] line-clamp-2">
                   <HighlightedText
                     text={result.description}
                     highlights={result.highlights?.filter(h => h.path === 'description')}
