@@ -41,7 +41,7 @@ const SearchFlowDiagram = ({ searchType }) => {
       Score --> DB
       DB --> Results
 
-      style Query fill:#E3FCF7,stroke:#001E2B
+      style Query fill:#E3FCF7,straoke:#001E2B
       style DB fill:#00ED64,stroke:#001E2B
       style Results fill:#E3FCF7,stroke:#001E2B
       style Score fill:#fff,stroke:#001E2B

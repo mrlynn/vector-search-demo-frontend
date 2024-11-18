@@ -52,25 +52,25 @@ function App() {
     try {
       const response = await fetch(`${API_URL}/data`, {
         method: 'GET',
-        credentials: 'include',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         }
       });
-
+  
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-
+  
       const data = await response.json();
       setAllData(data);
     } catch (error) {
       console.error('Error fetching data:', error);
-      setError('Failed to load data. Please try again later.');
+      setError(error.message);
     }
   };
   const handleSearch = async () => {
+    console.log(`Starting search process: ${searchType}`);
     // Input validation
     const isValidSearch = searchType === 'image' ? selectedImage : searchTerm.trim();
     if (!isValidSearch) {
@@ -103,9 +103,13 @@ function App() {
           type: searchType,
           options: searchType === 'atlas' ? searchOptions : undefined
         });
+        console.debug('Search configuration:', config);
+
       }
+      console.debug('Search configuration:', config);
   
       // Execute search
+      console.log(`${API_URL}/search`);
       const response = await fetch(`${API_URL}/search`, config);
       const data = await handleResponse(response);
   
