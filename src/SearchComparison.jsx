@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Brain, FileText, Radar } from 'lucide-react';
+import config from './config';
 
 const SearchComparison = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -18,7 +19,7 @@ const SearchComparison = () => {
       const searches = ['basic', 'vector', 'semantic'];
       const results = await Promise.all(
         searches.map(type => 
-          fetch('http://localhost:3003/api/search', {
+          fetch(`${config.apiUrl}/search`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
