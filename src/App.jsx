@@ -25,7 +25,8 @@ import SearchMatchIndicator from './SearchMatchIndicator';
 import SearchFlowDiagram from './SearchFlowDiagram';
 import { productImageService } from './services/productImageService';
 import ProductImage from './components/ProductImage';
-
+import MongoDBFlow from './MongoDBFlow';
+import MongoDBQueryPlanner from './MongoDBQueryPlanner';
 const headers = {
   'Content-Type': 'application/json',
   'X-API-Key': config.apiKey
@@ -460,6 +461,7 @@ db.products.aggregate([
                   </h3>
                   <div className="overflow-x-auto">
                     <SearchFlowDiagram searchType={searchType} />
+                    <MongoDBQueryPlanner />
                   </div>
                 </div>
               </div>
