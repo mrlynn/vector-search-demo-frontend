@@ -12,7 +12,11 @@ import {
   X,
   Info,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  MonitorPlay, // Changed from Presentation to MonitorPlay
+  ChevronLeft,
+  ChevronRight,
+  Maximize2
 } from 'lucide-react';
 import config from './config';
 import SearchComparison from './SearchComparison';
@@ -21,6 +25,7 @@ import SearchMatchIndicator from './SearchMatchIndicator';
 import SearchFlowDiagram from './SearchFlowDiagram';
 import { productImageService } from './services/productImageService';
 import ProductImage from './components/ProductImage';
+
 const headers = {
   'Content-Type': 'application/json',
   'X-API-Key': config.apiKey
@@ -30,7 +35,8 @@ function App() {
   const API_URL = config.apiUrl;
   const [imageDescription, setImageDescription] = useState(null);
   const [showDiagram, setShowDiagram] = useState(false);
-
+  const [viewMode, setViewMode] = useState('search'); // Update to include 'presentation'
+  const [currentSlide, setCurrentSlide] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchType, setSearchType] = useState('basic');
   const [isSearching, setIsSearching] = useState(false);
@@ -38,11 +44,31 @@ function App() {
   const [error, setError] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [searchTime, setSearchTime] = useState(null);
-  const [viewMode, setViewMode] = useState('search'); // 'search' or 'data'
   const [allData, setAllData] = useState([]);
   const [showCommand, setShowCommand] = useState(false);
   const [currentCommand, setCurrentCommand] = useState('');
   const fileInputRef = useRef();
+
+  const presentationSlides = [
+    {
+      title: "From Data to Intelligence",
+      subtitle: "MongoDB's Secret to AI-Powered Applications",
+      image: "/slide1.png",
+      notes: "Introduction to MongoDB's evolution in search capabilities"
+    },
+    {
+      title: "The Evolution from Data to Intelligence",
+      content: ["Data Explosion", "The Intelligence Era"],
+      image: "/slide2.png",
+      notes: "Discussing the transition from basic queries to intelligent search"
+    },
+    {
+      title: "Data vs. Intelligence",
+      content: ["Data Explosion", "The Intelligence Era"],
+      image: "/slide3.png",
+      notes: "Discussing the transition from basic queries to intelligent search"
+    },
+  ];
 
   const [searchOptions, setSearchOptions] = useState({
     fuzzyMatching: true,
@@ -512,45 +538,135 @@ db.products.aggregate([
   const renderModeToggle = () => (
     <div className="flex justify-end mb-4 space-x-2">
       <button
-        className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${viewMode === 'search' ? 'bg-[#001E2B] text-white' : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
-          }`}
+        className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+          viewMode === 'search' ? 'bg-[#001E2B] text-white' : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
+        }`}
         onClick={() => setViewMode('search')}
       >
-        <Search size={20} />
+        <Search className="w-5 h-5" />
         <span>Search Interface</span>
       </button>
       <button
-        className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${viewMode === 'compare' ? 'bg-[#001E2B] text-white' : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
-          }`}
+        className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+          viewMode === 'compare' ? 'bg-[#001E2B] text-white' : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
+        }`}
         onClick={() => setViewMode('compare')}
       >
-        <Brain size={20} />
+        <Brain className="w-5 h-5" />
         <span>Compare Search Types</span>
       </button>
       <button
-        className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${viewMode === 'data' ? 'bg-[#001E2B] text-white' : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
-          }`}
+        className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+          viewMode === 'data' ? 'bg-[#001E2B] text-white' : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
+        }`}
         onClick={() => setViewMode('data')}
       >
-        <TableProperties size={20} />
+        <TableProperties className="w-5 h-5" />
         <span>View Data</span>
+      </button>
+      <button
+        className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+          viewMode === 'presentation' ? 'bg-[#001E2B] text-white' : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
+        }`}
+        onClick={() => setViewMode('presentation')}
+      >
+        <MonitorPlay className="w-5 h-5" />
+        <span>Presentation Mode</span>
       </button>
     </div>
   );
 
-  const renderMainContent = () => {
-    switch (viewMode) {
-      case 'compare':
-        return <SearchComparison />;
-      case 'search':
-        return renderSearchInterface();
-      case 'data':
-        return renderDataTable();
-      default:
-        return null;
-    }
-  };
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (viewMode !== 'presentation') return;
+      
+      if (e.key === 'ArrowRight') {
+        setCurrentSlide(prev => Math.min(presentationSlides.length - 1, prev + 1));
+      } else if (e.key === 'ArrowLeft') {
+        setCurrentSlide(prev => Math.max(0, prev - 1));
+      }
+    };
 
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [viewMode, presentationSlides.length]);
+
+  const renderPresentationMode = () => (
+    <div className="bg-white rounded-lg shadow-lg">
+      <div className="relative aspect-video bg-gray-900 rounded-lg overflow-hidden">
+        <img 
+          src={presentationSlides[currentSlide].image} 
+          alt={`Slide ${currentSlide + 1}`}
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-4">
+          <h2 className="text-2xl font-bold">{presentationSlides[currentSlide].title}</h2>
+          {presentationSlides[currentSlide].subtitle && (
+            <p className="text-lg opacity-90">{presentationSlides[currentSlide].subtitle}</p>
+          )}
+        </div>
+        <button 
+          className="absolute top-4 right-4 p-2 rounded-lg bg-black/20 hover:bg-black/30"
+          onClick={() => {
+            const elem = document.documentElement;
+            if (!document.fullscreenElement) {
+              elem.requestFullscreen();
+            } else {
+              document.exitFullscreen();
+            }
+          }}
+        >
+          <Maximize2 className="h-4 w-4 text-white" />
+        </button>
+      </div>
+              
+      <div className="flex justify-between items-center p-4 border-t border-gray-200">
+        <button
+          className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+            currentSlide === 0 
+              ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+              : 'bg-[#E3FCF7] hover:bg-[#C6EDE7] text-[#001E2B]'
+          }`}
+          onClick={() => setCurrentSlide(prev => Math.max(0, prev - 1))}
+          disabled={currentSlide === 0}
+        >
+          <ChevronLeft className="w-4 h-4" />
+          <span>Previous</span>
+        </button>
+        <span className="text-sm text-[#1C2D38]">
+          Slide {currentSlide + 1} of {presentationSlides.length}
+        </span>
+        <button
+          className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+            currentSlide === presentationSlides.length - 1 
+              ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+              : 'bg-[#E3FCF7] hover:bg-[#C6EDE7] text-[#001E2B]'
+          }`}
+          onClick={() => setCurrentSlide(prev => Math.min(presentationSlides.length - 1, prev + 1))}
+          disabled={currentSlide === presentationSlides.length - 1}
+        >
+          <span>Next</span>
+          <ChevronRight className="w-4 h-4" />
+        </button>
+      </div>
+    </div>
+  );
+
+ // Update your renderMainContent function
+ const renderMainContent = () => {
+  switch (viewMode) {
+    case 'compare':
+      return <SearchComparison />;
+    case 'search':
+      return renderSearchInterface();
+    case 'data':
+      return renderDataTable();
+    case 'presentation':
+      return renderPresentationMode();
+    default:
+      return null;
+  }
+};
   const renderSearchButtons = () => (
     <div className="flex flex-wrap gap-2 justify-center">
       <button
