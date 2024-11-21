@@ -1,22 +1,23 @@
 import React, { useState, useRef, useEffect } from 'react';
-import {
-  Search,
-  Image,
-  FileText,
-  MessagesSquare,
-  Database,
-  Radar,
-  Brain,
-  TableProperties,
-  Code,
-  X,
-  Info,
-  ChevronDown,
-  ChevronUp,
-  MonitorPlay, // Changed from Presentation to MonitorPlay
-  ChevronLeft,
-  ChevronRight,
-  Maximize2
+import { 
+  Search, 
+  Image, 
+  FileText, 
+  MessagesSquare, 
+  Database, 
+  Radar, 
+  Brain, 
+  TableProperties, 
+  Code, 
+  X, 
+  Info, 
+  ChevronDown, 
+  ChevronUp, 
+  MonitorPlay, 
+  ChevronLeft, 
+  ChevronRight, 
+  Maximize2, 
+  Layout 
 } from 'lucide-react';
 import config from './config';
 import SearchComparison from './SearchComparison';
@@ -27,6 +28,7 @@ import { productImageService } from './services/productImageService';
 import ProductImage from './components/ProductImage';
 import MongoDBFlow from './MongoDBFlow';
 import MongoDBQueryPlanner from './MongoDBQueryPlanner';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./components/ui/card"
 const headers = {
   'Content-Type': 'application/json',
   'X-API-Key': config.apiKey
@@ -48,7 +50,55 @@ function App() {
   const [allData, setAllData] = useState([]);
   const [showCommand, setShowCommand] = useState(false);
   const [currentCommand, setCurrentCommand] = useState('');
-  const fileInputRef = useRef();
+  const fileInputRef = useRef(null);
+
+  const searchTypes = [
+    {
+      id: 'basic',
+      name: 'Basic Find',
+      icon: Database,
+      description: 'Traditional MongoDB find() - Exact text matching',
+      color: 'bg-slate-600',
+      placeholder: 'Enter exact text to match...',
+      tip: 'Uses standard MongoDB queries with regex matching'
+    },
+    {
+      id: 'atlas',
+      name: 'Atlas Search',
+      icon: Search,
+      description: 'Atlas Search - Full-text search with fuzzy matching',
+      color: 'bg-blue-600',
+      placeholder: 'Try searching with typos...',
+      tip: 'Supports fuzzy matching, autocomplete, and exact phrases'
+    },
+    {
+      id: 'vector',
+      name: 'Vector Search',
+      icon: Radar,
+      description: 'Vector Search - Semantic text similarity',
+      color: 'bg-green-600',
+      placeholder: 'Describe what you\'re looking for...',
+      tip: 'Converts text to vectors for similarity search'
+    },
+    {
+      id: 'semantic',
+      name: 'Semantic Search',
+      icon: Brain,
+      description: 'Semantic Search - Natural language understanding',
+      color: 'bg-purple-600',
+      placeholder: 'Ask in natural language...',
+      tip: 'Uses AI to understand search intent'
+    },
+    {
+      id: 'image',
+      name: 'Image Search',
+      icon: Image,
+      description: 'Image Search - Visual similarity using vectors',
+      color: 'bg-pink-600',
+      placeholder: 'Upload an image to search...',
+      tip: 'Converts images to vectors for similarity matching'
+    }
+  ];
 
   const presentationSlides = [
     {
@@ -210,7 +260,7 @@ function App() {
     setResults(data.results);
     setSearchTime(data.searchTime);
     setShowCommand(true);
-    setCurrentCommand(getSearchCommand(searchType, searchTerm));
+    setCurrentCommand(getCommandSyntax());
     if (data.imageDescription) {
       setImageDescription(data.imageDescription);
     }
@@ -257,7 +307,6 @@ function App() {
   };
 
   const triggerImageUpload = () => {
-    console.log('Triggering image upload'); // Log to verify trigger
     fileInputRef.current?.click();
   };
 
@@ -278,136 +327,70 @@ function App() {
     }
   };
 
-  const getSearchCommand = (type, query) => {
-    switch (type) {
+  const getCommandSyntax = () => {
+    switch (searchType) {
       case 'basic':
         return `db.products.find({
   $or: [
-    { title: { $regex: "${query}", $options: "i" } },
-    { description: { $regex: "${query}", $options: "i" } },
-    { category: { $regex: "${query}", $options: "i" } }
+    { name: { $regex: "${searchTerm}", $options: "i" } },
+    { description: { $regex: "${searchTerm}", $options: "i" } }
   ]
 })`;
-      // In your getSearchCommand function, update the 'atlas' case:
       case 'atlas':
-        const options = [];
-        if (searchOptions.phraseMatching) {
-          options.push(`      phrase: {
-              query: "${query}",
-              path: ["title", "description"],
-              slop: 0
-            }`);
-        }
-        if (searchOptions.fuzzyMatching) {
-          options.push(`      text: {
-              query: "${query}",
-              path: ["title", "description", "category"],
-              fuzzy: { maxEdits: 2, prefixLength: 3 }
-            }`);
-        }
-        if (searchOptions.autoComplete) {
-          options.push(`      autocomplete: {
-              query: "${query}",
-              path: "title",
-              tokenOrder: "sequential"
-            }`);
-        }
-
         return `db.products.aggregate([
-        {
-          $search: {
-            index: "advanced",
-            compound: {
-              should: [
-      ${options.join(',\n')}
-              ],
-              minimumShouldMatch: 1
-            },
-            highlight: {
-              path: ["title", "description"]
-            }
-          }
-        },
-        {
-          $addFields: {
-            score: { $meta: "searchScore" },
-            highlights: { $meta: "searchHighlights" }
-          }
-        }
-      ])`;
+  {
+    $search: {
+      index: "default",
+      text: {
+        query: "${searchTerm}",
+        path: ["name", "description"],
+        fuzzy: { maxEdits: 1 }
+      }
+    }
+  },
+  { $limit: 10 }
+])`;
       case 'vector':
-        return `// 1. Generate embedding using OpenAI
-const embedding = await openai.embeddings.create({
-  model: "text-embedding-3-small",
-  input: "${query}"
-});
-
-// 2. Perform vector search
-db.products.aggregate([
+        return `db.products.aggregate([
   {
     $vectorSearch: {
-      queryVector: embedding,
-      path: "description_embedding",
+      queryVector: generateEmbedding("${searchTerm}"), // [0.1, 0.2, ...]
+      path: "embedding",
       numCandidates: 100,
-      limit: 10
+      limit: 10,
+      index: "vector_index",
     }
   }
 ])`;
       case 'semantic':
-        return `// 1. Enhance query using GPT-4
-const enhancedQuery = await openai.chat.completions.create({
-  model: "gpt-4-1106-preview",
-  messages: [
-    {
-      role: "system",
-      content: "Convert the query into a detailed product description"
-    },
-    { role: "user", content: "${query}" }
-  ]
-});
+        return `// 1. Process query with LLM
+const enhancedQuery = await llm.enhance("${searchTerm}");
 
-// 2. Generate embedding & search
-const embedding = await openai.embeddings.create({
-  model: "text-embedding-3-small",
-  input: enhancedQuery
-});
-
+// 2. Vector search with enhanced query
 db.products.aggregate([
   {
     $vectorSearch: {
-      queryVector: embedding,
-      path: "description_embedding",
-      numCandidates: 100
+      queryVector: generateEmbedding(enhancedQuery),
+      path: "embedding",
+      numCandidates: 100,
+      limit: 10,
+      index: "vector_index",
     }
   }
 ])`;
       case 'image':
-        return `// 1. Process image with GPT-4 Vision
-const imageDescription = await openai.chat.completions.create({
-  model: "gpt-4-vision-preview-1106",
-  messages: [
-    {
-      role: "user",
-      content: [
-        { type: "text", text: "Describe this product image" },
-        { type: "image_url", image_url: { url: "..." } }
-      ]
-    }
-  ]
-});
+        return `// 1. Generate image embedding
+const imageEmbedding = await vision.generateEmbedding(uploadedImage);
 
-// 2. Generate embedding & search
-const embedding = await openai.embeddings.create({
-  model: "text-embedding-3-small",
-  input: imageDescription
-});
-
+// 2. Vector search with image embedding
 db.products.aggregate([
   {
     $vectorSearch: {
-      queryVector: embedding,
-      path: "description_embedding",
-      numCandidates: 100
+      queryVector: imageEmbedding, // [0.1, 0.2, ...]
+      path: "imageEmbedding",
+      numCandidates: 100,
+      limit: 10,
+      index: "image_vector_index",
     }
   }
 ])`;
@@ -416,78 +399,110 @@ db.products.aggregate([
     }
   };
 
-  // In your renderSearchInterface function, add the diagram after the search buttons
-  const renderSearchInterface = () => (
-    <div className="bg-white rounded-lg shadow-lg">
-      <div className="p-6">
-        <h1 className="text-3xl font-bold text-center mb-2 text-[#001E2B]">
-          MongoDB Search Evolution Demo
-        </h1>
-        <p className="text-center text-[#1C2D38] mb-6">
-          From Basic Queries to Intelligent Vector Search
-        </p>
-        <div className="space-y-6">
-          {/* Search Type Buttons */}
-          <div className="space-y-4">
-            {renderSearchButtons()}
-            
-            {/* Search Type Description with Diagram Toggle */}
-            <div className="flex items-center justify-between max-w-2xl mx-auto">
-              <div className="text-sm text-[#1C2D38]">
-                {getSearchDescription()}
-              </div>
-              {searchType !== 'image' && (
-                <button
-                  onClick={() => setShowDiagram(!showDiagram)}
-                  className="flex items-center space-x-2 text-sm text-[#00684A] hover:text-[#00ED64] transition-colors p-2 rounded-lg hover:bg-[#E3FCF7]"
-                >
-                  <Info size={16} />
-                  <span>How it works</span>
-                  {showDiagram ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                </button>
-              )}
-            </div>
-  
-            {/* Collapsible Diagram Section */}
-            <div
-              className={`transform transition-all duration-300 ease-in-out overflow-hidden ${
-                showDiagram ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
-              }`}
+  const renderEnhancedSearchInterface = () => (
+    <Card className="w-full">
+      <CardHeader className="space-y-2">
+        <div className="flex justify-between items-center">
+          <CardTitle className="text-2xl font-bold">MongoDB Search Evolution</CardTitle>
+          <div className="flex gap-2">
+            <button 
+              className="p-2 rounded-lg bg-slate-100 hover:bg-slate-200"
+              onClick={() => setShowDiagram(!showDiagram)}
             >
-              <div className="bg-white rounded-lg shadow-sm p-6">
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-[#001E2B]">
-                    How {searchType.charAt(0).toUpperCase() + searchType.slice(1)} Search Works
-                  </h3>
-                  <div className="overflow-x-auto">
-                    <SearchFlowDiagram searchType={searchType} />
-                    <MongoDBQueryPlanner />
-                  </div>
+              <Layout size={20} />
+            </button>
+            <button 
+              className="p-2 rounded-lg bg-slate-100 hover:bg-slate-200"
+              onClick={() => setViewMode('presentation')}
+            >
+              <MonitorPlay size={20} />
+            </button>
+          </div>
+        </div>
+        <p className="text-sm text-slate-600">From Basic Queries to Intelligent Vector Search</p>
+      </CardHeader>
+
+      <CardContent className="space-y-8">
+        {/* Search Type Selector */}
+        <div className="grid grid-cols-5 gap-4">
+          {searchTypes.map((type) => (
+            <div key={type.id} className="relative group">
+              <button
+                onClick={() => {
+                  setSearchType(type.id);
+                  if (type.id === 'image') {
+                    triggerImageUpload();
+                  }
+                }}
+                className={`w-full p-4 rounded-xl transition-all ${
+                  searchType === type.id 
+                    ? `${type.color} text-white shadow-lg scale-105` 
+                    : 'bg-slate-100 hover:bg-slate-200'
+                }`}
+              >
+                <div className="flex flex-col items-center gap-2">
+                  <type.icon size={24} />
+                  <span className="font-medium">{type.name}</span>
                 </div>
+              </button>
+              <div className="hidden group-hover:block absolute left-1/2 transform -translate-x-1/2 top-full mt-2 z-30 w-48 p-2 bg-slate-900 text-white text-xs rounded-lg shadow-lg">
+                {type.tip}
               </div>
             </div>
-          </div>
-  
-          {/* Atlas Search Options */}
-          {renderSearchOptions()}
-  
-          {/* Search Input */}
-          {renderSearchInput()}
-  
-          {/* Image Preview */}
-          {renderImagePreview()}
-  
-          {/* Error Display */}
-          {renderError()}
-  
-          {/* Search Results */}
-          {renderResults()}
-  
-          {/* Loading State */}
-          {renderLoadingState()}
+          ))}
         </div>
-      </div>
-    </div>
+
+        {/* Search Input Area with extra top margin */}
+        <div className="relative mt-8 space-y-4">
+          {searchType !== 'image' ? (
+            <div className="space-y-4">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder={searchTypes.find(t => t.id === searchType)?.placeholder}
+                  className="flex-1 p-3 border rounded-lg"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                />
+                <button
+                  className={`px-6 py-2 rounded-lg text-white ${
+                    isSearching ? 'bg-slate-400' : searchTypes.find(t => t.id === searchType)?.color
+                  }`}
+                  onClick={handleSearch}
+                  disabled={isSearching}
+                >
+                  <Search size={20} />
+                </button>
+                <button
+                  onClick={() => setShowCommand(true)}
+                  className="flex items-center gap-2 px-4 py-2 text-sm text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors border"
+                >
+                  <Code size={16} />
+                  View Query
+                </button>
+              </div>
+              {/* Atlas Search Options */}
+              {searchType === 'atlas' && renderSearchOptions()}
+            </div>
+          ) : (
+            renderImagePreview()
+          )}
+
+          {/* Results Area */}
+          {results.length > 0 && (
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-slate-600">
+                  Found {results.length} results in {searchTime}ms
+                </span>
+              </div>
+              {renderResults()}
+            </div>
+          )}
+        </div>
+      </CardContent>
+    </Card>
   );
   
 
@@ -660,7 +675,7 @@ db.products.aggregate([
     case 'compare':
       return <SearchComparison />;
     case 'search':
-      return renderSearchInterface();
+      return renderEnhancedSearchInterface();
     case 'data':
       return renderDataTable();
     case 'presentation':
@@ -716,7 +731,10 @@ db.products.aggregate([
           ? 'bg-[#001E2B] text-white'
           : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
           }`}
-        onClick={triggerImageUpload}
+        onClick={() => {
+          setSearchType('image');
+          triggerImageUpload();
+        }}
       >
         <Image size={20} />
         <span>Image Search</span>
@@ -847,35 +865,42 @@ db.products.aggregate([
     return { mainDescription, bulletPoints };
   };
 
-  const renderImagePreview = () => (
-    searchType === 'image' && selectedImage && (
-      <div className="mt-4 space-y-4">
-        <div className="flex justify-center">
-          <img
-            src={URL.createObjectURL(selectedImage)}
-            alt="Selected"
-            className="max-h-40 rounded-lg"
+  const renderImagePreview = () => {
+    if (!selectedImage) {
+      return (
+        <div 
+          onClick={triggerImageUpload}
+          className="flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-lg cursor-pointer hover:bg-slate-50"
+        >
+          <Image size={48} className="text-slate-400 mb-2" />
+          <p className="text-sm text-slate-600">Click to upload an image</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-4">
+        <div className="relative">
+          <img 
+            src={URL.createObjectURL(selectedImage)} 
+            alt="Selected" 
+            className="w-full max-h-64 object-contain rounded-lg"
           />
+          <button
+            onClick={() => setSelectedImage(null)}
+            className="absolute top-2 right-2 p-1 bg-white rounded-full shadow-lg hover:bg-slate-100"
+          >
+            <X size={20} />
+          </button>
         </div>
         {imageDescription && (
-          <div className="max-w-2xl mx-auto p-6 bg-[#E3FCF7] rounded-lg space-y-4">
-            <div className="text-lg font-semibold text-[#001E2B]">AI Analysis</div>
-            <div className="text-sm text-[#1C2D38]">
-              {formatImageDescription(imageDescription).mainDescription}
-            </div>
-            <div className="space-y-2">
-              {formatImageDescription(imageDescription).bulletPoints.map((point, index) => (
-                <div key={index} className="text-sm text-[#1C2D38] flex items-start">
-                  <span className="text-[#00ED64] mr-2">•</span>
-                  <span>{point.replace('•', '').trim()}</span>
-                </div>
-              ))}
-            </div>
+          <div className="p-4 bg-slate-50 rounded-lg">
+            <p className="text-sm text-slate-600">{imageDescription}</p>
           </div>
         )}
       </div>
-    )
-  );
+    );
+  };
 
   const renderError = () => (
     error && (
@@ -949,23 +974,32 @@ db.products.aggregate([
 
   return (
     <div className="max-w-7xl mx-auto p-4 bg-[#FFFFFF]">
+      <input
+        type="file"
+        ref={fileInputRef}
+        className="hidden"
+        accept="image/*"
+        onChange={handleImageSelect}
+      />
       {renderModeToggle()}
-      {renderMainContent()}
+      {viewMode === 'search' ? renderEnhancedSearchInterface() : renderMainContent()}
       {showCommand && (
         <div className="fixed inset-0 bg-[#001E2B] bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg max-w-3xl w-full max-h-[80vh] overflow-y-auto">
             <div className="p-4 border-b flex justify-between items-center">
-              <h3 className="text-lg font-semibold text-[#001E2B]">MongoDB Command</h3>
+              <h3 className="text-lg font-semibold text-[#001E2B]">
+                {searchType.charAt(0).toUpperCase() + searchType.slice(1)} Search Query
+              </h3>
               <button
                 onClick={() => setShowCommand(false)}
-                className="p-2 hover:bg-[#E3FCF7] rounded-full"
+                className="text-[#001E2B] hover:text-[#00ED64] transition-colors"
               >
                 <X size={20} />
               </button>
             </div>
             <div className="p-4">
-              <pre className="bg-[#001E2B] text-white p-4 rounded-lg overflow-x-auto">
-                <code>{currentCommand}</code>
+              <pre className="bg-[#001E2B] text-[#00ED64] p-4 rounded-lg overflow-x-auto">
+                <code>{getCommandSyntax()}</code>
               </pre>
             </div>
           </div>

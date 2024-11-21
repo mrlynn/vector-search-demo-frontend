@@ -40,7 +40,7 @@ const categorySynonyms = {
   'computers': ['laptops', 'desktops', 'computer', 'pc'],
   'cameras': ['photography', 'photo', 'dslr', 'digital cameras'],
   'kitchen': ['appliances', 'cooking', 'home'],
-  'wearables': ['smartwatch', 'fitness tracker', 'smart devices'],
+  'wearables': ['smartwatch', 'fitness tracker', 'smart devices', 'smart home'],
   'gaming': ['games', 'video games', 'console'],
   'fitness': ['exercise', 'workout', 'health', 'sports']
 };
