@@ -1,23 +1,23 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { 
-  Search, 
-  Image, 
-  FileText, 
-  MessagesSquare, 
-  Database, 
-  Radar, 
-  Brain, 
-  TableProperties, 
-  Code, 
-  X, 
-  Info, 
-  ChevronDown, 
-  ChevronUp, 
-  MonitorPlay, 
-  ChevronLeft, 
-  ChevronRight, 
-  Maximize2, 
-  Layout 
+import {
+  Search,
+  Image,
+  FileText,
+  MessagesSquare,
+  Database,
+  Radar,
+  Brain,
+  Hand,
+  Code,
+  X,
+  Info,
+  ChevronDown,
+  ChevronUp,
+  MonitorPlay,
+  ChevronLeft,
+  ChevronRight,
+  Maximize2,
+  Layout
 } from 'lucide-react';
 import config from './config';
 import SearchComparison from './SearchComparison';
@@ -29,6 +29,20 @@ import ProductImage from './components/ProductImage';
 import MongoDBFlow from './MongoDBFlow';
 import MongoDBQueryPlanner from './MongoDBQueryPlanner';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./components/ui/card"
+import DataExplorer from './components/slideComponents/DataExplorer';
+import SearchEvolution from './components/slideComponents/SearchEvolution';
+import SearchJourney from './components/slideComponents/SearchJourney';
+import AncientLibraryScroll from './components/slideComponents/AncientLibraryScroll';
+import AncientLibrarySearch from './components/slideComponents/AncientLibrarySearch';
+import AncientLibraryAutocomplete from './components/slideComponents/AncientLibraryAutocomplete';
+import VectorLibrarySearch from './components/slideComponents/VectorLibrarySearch';
+import AncientTextQA from './components/slideComponents/AncientTextQA';
+import AIAgentDashboard from './components/slideComponents/AIAgentDashboard';
+import MarkdownSlideContent from './components/MarkdownSlideContent';
+import DataFlowAnimationWrapper from './components/slideComponents/DataFlowAnimation';
+import MongoDBBasicSearchWrapper from './components/slideComponents/MongoDBBasicSearch';
+import SwimlaneFlowWrapper from './components/slideComponents/SwimLaneFlow';
+import AncientLibraryFlowWrapper from './components/slideComponents/AncientLibraryFlow';
 const headers = {
   'Content-Type': 'application/json',
   'X-API-Key': config.apiKey
@@ -101,24 +115,316 @@ function App() {
   ];
 
   const presentationSlides = [
+    // Opening Section
     {
-      title: "From Data to Intelligence",
-      subtitle: "MongoDB's Secret to AI-Powered Applications",
-      image: "/slide1.png",
-      notes: "Introduction to MongoDB's evolution in search capabilities"
+      id: 'welcome',
+      title: 'From Data to Intelligence',
+      content: `
+  ## The Journey Begins
+  
+  We stand at a remarkable intersection in the history of information processing:
+  
+  - Traditional data storage and retrieval
+  - Modern vector representations
+  - Artificial Intelligence and LLMs
+  
+  Join me on a journey from simple data storage to true machine intelligence.
+      `,
+      note: 'INTRODUCTION',
+      image: '/slide1.png'
     },
     {
-      title: "The Evolution from Data to Intelligence",
-      content: ["Data Explosion", "The Intelligence Era"],
-      image: "/slide2.png",
-      notes: "Discussing the transition from basic queries to intelligent search"
+      id: 'data-definition',
+      title: 'Understanding Data',
+      content: `
+  ## The Foundation of Intelligence
+  
+  Raw, unprocessed facts and figures that form the basis of understanding.
+  
+  ### Characteristics
+  - Building blocks of knowledge and intelligence
+  - Raw numbers, text, measurements, observations
+  - Context-free information
+  - Requires processing to be meaningful
+  
+  ### Challenge
+  - Vast amounts of unstructured data
+  - Limited utility without organization
+  - Needs context for value
+  
+  > "Data is the new oil - but like oil, it needs refining to be valuable"
+      `,
+      note: 'FOUNDATIONS',
+      image: '/data.webp'
     },
     {
-      title: "Data vs. Intelligence",
-      content: ["Data Explosion", "The Intelligence Era"],
-      image: "/slide3.png",
-      notes: "Discussing the transition from basic queries to intelligent search"
+      id: 'knowledge-evolution',
+      title: 'From Data to Knowledge',
+      content: `
+  ## Beyond Raw Data
+  
+  Information that has been processed, organized, and contextualized.
+  
+  ### The Transformation
+  - Data gains structure and meaning
+  - Patterns emerge from chaos
+  - Relationships become visible
+  - Context provides understanding
+  
+  ### Value Creation
+  - Supports decision making
+  - Enables pattern recognition
+  - Forms basis for automation
+  - Drives business insights
+  
+  > "Knowledge is not just processed data - it's data with purpose"
+      `,
+      note: 'THE EVOLUTION',
+      image: '/knowledge.webp'
     },
+    {
+      id: 'intelligence-emergence',
+      title: 'The Rise of Intelligence',
+      content: `
+  ## Machine Intelligence
+  
+  The ability to understand, learn, and apply knowledge to solve problems.
+  
+  ### Key Aspects
+  - Learning from patterns
+  - Understanding context
+  - Making connections
+  - Generating insights
+  
+  ### Applications
+  - Natural language understanding
+  - Pattern recognition
+  - Predictive analytics
+  - Automated reasoning
+  
+  > "True intelligence is not just about storing knowledge, but understanding it"
+      `,
+      note: 'THE GOAL',
+      image: '/intelligence.webp'
+    },
+    // Historical Context Section
+    {
+      id: 'alexandria',
+      title: 'The Great Library',
+      content: `
+  ## Lessons from Alexandria
+  
+  The world's first universal library holds valuable lessons for modern data systems.
+  
+  ### Historical Parallel
+  - 700,000+ scrolls and books
+  - Complex organization system
+  - Expert librarians and scholars
+  - Knowledge synthesis and creation
+  
+  ### Enduring Challenges
+  - Information discovery
+  - Context preservation
+  - Knowledge organization
+  - Wisdom transfer
+  
+  > "The past illuminates our path to the future"
+      `,
+      note: 'HISTORICAL CONTEXT',
+      image: '/library.png'
+    },
+    {
+      id: 'basic',
+      title: 'In the beginning...',
+      content: 'The search for knowledge begins with the simplest of tools... your eyes, hands, a ladder, perhaps a torch. You look around, see what you can find, and take what you need.',
+      note: 'Basic Search',
+      image: '/slide5.png',
+      component: AncientLibraryScroll
+    },
+    {
+      id: 'ancient-parallel',
+      type: 'text-full',
+      title: 'Ancient Wisdom, Modern Solutions',
+      note: 'PARALLEL SYSTEMS',
+      component: AncientLibraryFlowWrapper,
+      content: ''
+    },
+    // Modern Challenge Section
+    {
+      id: 'modern-challenge',
+      type: 'text-full',
+      title: 'The Modern Data Challenge',
+      content: `
+  ## Scale Beyond Imagination
+  
+  Today's digital library faces unprecedented challenges:
+  
+  - Data growing exponentially
+  - Complex, unstructured information
+  - Need for immediate insights
+  - Semantic understanding required
+  - Multiple data formats and sources
+  
+  We need a system that combines the wisdom of the ancient library with the power of modern technology.
+      `,
+      note: 'THE CHALLENGE',
+      component: DataExplorer
+    },
+    {
+      id: 'journey',
+      title: 'The Search Evolution',
+      content: 'From basic search to vector search to semantic search, unlocking intelligence with LLMs',
+      note: 'THE EVOLUTION',
+      component: SearchEvolution
+    },
+    {
+      id: 'mongodb-intro',
+      title: 'MongoDB: The Modern Library',
+      content: 'Every piece of data is a scroll in our digital Library of Alexandria',
+      note: 'THE PLATFORM',
+      component: SearchJourney
+    },
+    // Technical Evolution Section
+    {
+      id: 'basic-search',
+      type: 'text-full',
+      title: 'The Foundation: Basic Search',
+      note: 'BUILDING BLOCKS',
+      component: MongoDBBasicSearchWrapper,
+      content: ''
+    },
+    {
+      id: 'atlas-search',
+      type: 'text-full',
+      title: 'Enhanced Understanding with Atlas Search',
+      note: 'FIRST EVOLUTION',
+      content: `
+  ## Beyond Basic Text Search
+      
+  Atlas Search introduces sophisticated text analysis:
+      
+  \`\`\`javascript
+  {
+    "mappings": {
+      "dynamic": true,
+      "fields": {
+        "description": {
+          "type": "string",
+          "analyzer": "lucene.standard"
+        }
+      }
+    }
+  }
+  \`\`\`
+      
+  ## Key Capabilities
+  * *Fuzzy Matching*: Handles typos and variations
+  * *Synonyms*: Understands related terms
+  * *Relevance Scoring*: Intelligent ranking
+  * *Faceted Search*: Dynamic filtering
+  
+  > "Atlas Search bridges the gap between basic queries and semantic understanding"
+      `
+    },
+    {
+      id: 'vector-search',
+      type: 'text-full',
+      title: 'The Power of Vector Search',
+      note: 'SEMANTIC UNDERSTANDING',
+      component: DataFlowAnimationWrapper,
+      content: ''
+    },
+    {
+      id: 'system-architecture',
+      type: 'text-full',
+      title: 'Modern Knowledge Architecture',
+      note: 'SYSTEM OVERVIEW',
+      component: SwimlaneFlowWrapper,
+      content: ''
+    },
+    // Intelligence Layer Section
+    {
+      id: 'llm-integration',
+      title: 'The Intelligence Layer',
+      content: `
+  ## Combining Vector Search with LLMs
+  
+  Creating truly intelligent applications:
+  
+  - Natural language understanding
+  - Context-aware responses
+  - Multi-modal search capabilities
+  - Dynamic knowledge synthesis
+  
+  > "The whole is greater than the sum of its parts"
+      `,
+      note: 'AI INTEGRATION',
+      component: AncientTextQA
+    },
+    {
+      id: 'practical-applications',
+      type: 'text-full',
+      title: 'Real World Applications',
+      note: 'APPLICATIONS',
+      content: `
+  # Intelligent Applications
+  
+  ## 1. Enhanced Search & Discovery
+  - Natural language understanding
+  - Semantic search capabilities
+  - Multi-modal search
+  - Context-aware results
+  
+  ## 2. Customer Experience
+  - Intelligent support systems
+  - Personalized recommendations
+  - Contextual assistance
+  - Automated responses
+  
+  ## 3. Knowledge Management
+  - Automatic organization
+  - Semantic relationships
+  - Dynamic knowledge graphs
+  - Intelligent retrieval
+  
+  ## 4. Operational Intelligence
+  - Pattern recognition
+  - Anomaly detection
+  - Predictive insights
+  - Automated decision support
+  
+  > "From storing data to delivering insights"
+      `
+    },
+    {
+      id: 'future-direction',
+      type: 'text-full',
+      title: 'The Road Ahead',
+      note: 'LOOKING FORWARD',
+      content: `
+  # Future of Data Intelligence
+  
+  ## Emerging Capabilities
+  - Multi-modal intelligence
+  - Cross-domain understanding
+  - Autonomous learning
+  - Real-time adaptation
+  
+  ## Key Developments
+  - Advanced embedding techniques
+  - Improved context understanding
+  - Enhanced reasoning capabilities
+  - Deeper knowledge integration
+  
+  ## Next Steps
+  1. Explore vector search capabilities
+  2. Integrate with LLM technologies
+  3. Build intelligent applications
+  4. Transform your data journey
+  
+  > "The journey from data to intelligence is continuous - start today"
+      `
+    }
   ];
 
   const [searchOptions, setSearchOptions] = useState({
@@ -141,13 +447,13 @@ function App() {
           'Content-Type': 'application/json'
         }
       });
-  
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-  
+
       const data = await response.json();
-      
+
       // Enhance the data with product-specific images
       const enhancedData = data.map(item => ({
         ...item,
@@ -157,9 +463,9 @@ function App() {
           item.category
         )
       }));
-  
+
       setAllData(enhancedData);
-      
+
       // Preload images for better performance
       await productImageService.preloadImages();
     } catch (error) {
@@ -175,10 +481,10 @@ function App() {
       console.debug('Search validation failed:', { searchType, hasImage: !!selectedImage });
       return;
     }
-  
+
     setIsSearching(true);
     setError(null);
-  
+
     try {
       // Prepare request configuration
       const config = {
@@ -189,7 +495,7 @@ function App() {
         },
         body: null
       };
-  
+
       if (searchType === 'image') {
         const formData = new FormData();
         formData.append('image', selectedImage);
@@ -205,23 +511,23 @@ function App() {
           options: searchType === 'atlas' ? searchOptions : undefined
         });
       }
-  
+
       console.debug('Search configuration:', {
         url: `${API_URL}/search`,
         method: config.method,
         headers: config.headers,
         type: searchType
       });
-  
+
       const response = await fetch(`${API_URL}/search`, config);
-      
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({
           error: `Server error: ${response.status} ${response.statusText}`
         }));
         throw new Error(errorData.error || `Server error: ${response.status}`);
       }
-  
+
       const data = await response.json();
       updateSearchResults(data);
     } catch (error) {
@@ -240,7 +546,7 @@ function App() {
     }
     return response.json();
   };
-  
+
 
   const handleSearchError = (error) => {
     console.error('Search failed:', error);
@@ -256,7 +562,7 @@ function App() {
       setResults([]);
       return;
     }
-  
+
     setResults(data.results);
     setSearchTime(data.searchTime);
     setShowCommand(true);
@@ -269,18 +575,18 @@ function App() {
   const handleImageSelect = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
-  
+
     try {
       // Create object URL first to avoid race conditions
       const imageUrl = URL.createObjectURL(file);
-      
+
       // Update states synchronously
       setSelectedImage(file);
       setSearchType('image');
-      
+
       // Trigger search with a slight delay to ensure state updates
       await new Promise(resolve => setTimeout(resolve, 100));
-      
+
       // Perform search with validation
       const config = {
         method: 'POST',
@@ -292,10 +598,10 @@ function App() {
           return formData;
         })()
       };
-  
+
       setIsSearching(true);
       setError(null);
-  
+
       const response = await fetch(`${API_URL}/search`, config);
       const data = await handleResponse(response);
       updateSearchResults(data);
@@ -402,16 +708,19 @@ db.products.aggregate([
   const renderEnhancedSearchInterface = () => (
     <Card className="w-full">
       <CardHeader className="space-y-2">
-        <div className="flex justify-between items-center">
-          <CardTitle className="text-2xl font-bold">MongoDB Search Evolution</CardTitle>
-          <div className="flex gap-2">
-            <button 
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <CardTitle className="text-xl sm:text-2xl font-bold">MongoDB Search Evolution</CardTitle>
+            <p className="text-sm text-slate-600">From Basic Queries to Intelligent Vector Search</p>
+          </div>
+          <div className="flex gap-2 self-end sm:self-auto">
+            <button
               className="p-2 rounded-lg bg-slate-100 hover:bg-slate-200"
               onClick={() => setShowDiagram(!showDiagram)}
             >
               <Layout size={20} />
             </button>
-            <button 
+            <button
               className="p-2 rounded-lg bg-slate-100 hover:bg-slate-200"
               onClick={() => setViewMode('presentation')}
             >
@@ -419,12 +728,31 @@ db.products.aggregate([
             </button>
           </div>
         </div>
-        <p className="text-sm text-slate-600">From Basic Queries to Intelligent Vector Search</p>
       </CardHeader>
 
       <CardContent className="space-y-8">
-        {/* Search Type Selector */}
-        <div className="grid grid-cols-5 gap-4">
+        {/* Search Type Selector - Mobile Dropdown */}
+        <div className="block sm:hidden">
+          <select
+            value={searchType}
+            onChange={(e) => {
+              setSearchType(e.target.value);
+              if (e.target.value === 'image') {
+                triggerImageUpload();
+              }
+            }}
+            className="w-full p-3 border rounded-lg bg-white"
+          >
+            {searchTypes.map((type) => (
+              <option key={type.id} value={type.id}>
+                {type.name} - {type.description}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Search Type Selector - Desktop Grid */}
+        <div className="hidden sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {searchTypes.map((type) => (
             <div key={type.id} className="relative group">
               <button
@@ -434,11 +762,10 @@ db.products.aggregate([
                     triggerImageUpload();
                   }
                 }}
-                className={`w-full p-4 rounded-xl transition-all ${
-                  searchType === type.id 
-                    ? `${type.color} text-white shadow-lg scale-105` 
-                    : 'bg-slate-100 hover:bg-slate-200'
-                }`}
+                className={`w-full p-4 rounded-xl transition-all ${searchType === type.id
+                  ? `${type.color} text-white shadow-lg scale-105`
+                  : 'bg-slate-100 hover:bg-slate-200'
+                  }`}
               >
                 <div className="flex flex-col items-center gap-2">
                   <type.icon size={24} />
@@ -452,11 +779,11 @@ db.products.aggregate([
           ))}
         </div>
 
-        {/* Search Input Area with extra top margin */}
+        {/* Search Input Area */}
         <div className="relative mt-8 space-y-4">
           {searchType !== 'image' ? (
             <div className="space-y-4">
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <input
                   type="text"
                   placeholder={searchTypes.find(t => t.id === searchType)?.placeholder}
@@ -465,25 +792,31 @@ db.products.aggregate([
                   onChange={(e) => setSearchTerm(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                 />
-                <button
-                  className={`px-6 py-2 rounded-lg text-white ${
-                    isSearching ? 'bg-slate-400' : searchTypes.find(t => t.id === searchType)?.color
-                  }`}
-                  onClick={handleSearch}
-                  disabled={isSearching}
-                >
-                  <Search size={20} />
-                </button>
-                <button
-                  onClick={() => setShowCommand(true)}
-                  className="flex items-center gap-2 px-4 py-2 text-sm text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors border"
-                >
-                  <Code size={16} />
-                  View Query
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    className={`flex-1 sm:flex-none px-6 py-2 rounded-lg text-white ${isSearching ? 'bg-slate-400' : searchTypes.find(t => t.id === searchType)?.color
+                      }`}
+                    onClick={handleSearch}
+                    disabled={isSearching}
+                  >
+                    <Search size={20} />
+                  </button>
+                  <button
+                    onClick={() => setShowCommand(true)}
+                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 text-sm text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors border"
+                  >
+                    <Code size={16} />
+                    <span className="sm:hidden">Query</span>
+                    <span className="hidden sm:inline">View Query</span>
+                  </button>
+                </div>
               </div>
               {/* Atlas Search Options */}
-              {searchType === 'atlas' && renderSearchOptions()}
+              {searchType === 'atlas' && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                  {renderSearchOptions()}
+                </div>
+              )}
             </div>
           ) : (
             renderImagePreview()
@@ -492,19 +825,20 @@ db.products.aggregate([
           {/* Results Area */}
           {results.length > 0 && (
             <div className="space-y-4">
-              <div className="flex justify-between items-center">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                 <span className="text-sm text-slate-600">
                   Found {results.length} results in {searchTime}ms
                 </span>
               </div>
-              {renderResults()}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {renderResults()}
+              </div>
             </div>
           )}
         </div>
       </CardContent>
     </Card>
   );
-  
 
   const renderDataTable = () => (
     <div className="bg-white rounded-lg shadow-lg overflow-hidden">
@@ -553,54 +887,30 @@ db.products.aggregate([
   );
 
   const renderModeToggle = () => (
-    <div className="flex justify-end mb-4 space-x-2">
-      <button
-        className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
-          viewMode === 'search' ? 'bg-[#001E2B] text-white' : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
-        }`}
-        onClick={() => setViewMode('search')}
-      >
-        <Search className="w-5 h-5" />
-        <span>Search Interface</span>
-      </button>
-      <button
-        className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
-          viewMode === 'compare' ? 'bg-[#001E2B] text-white' : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
-        }`}
-        onClick={() => setViewMode('compare')}
-      >
-        <Brain className="w-5 h-5" />
-        <span>Compare Search Types</span>
-      </button>
-      <button
-        className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
-          viewMode === 'data' ? 'bg-[#001E2B] text-white' : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
-        }`}
-        onClick={() => setViewMode('data')}
-      >
-        <TableProperties className="w-5 h-5" />
-        <span>View Data</span>
-      </button>
-      <button
-        className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
-          viewMode === 'presentation' ? 'bg-[#001E2B] text-white' : 'bg-[#E3FCF7] hover:bg-[#C6EDE7]'
-        }`}
-        onClick={() => setViewMode('presentation')}
-      >
-        <MonitorPlay className="w-5 h-5" />
-        <span>Presentation Mode</span>
-      </button>
+    <div className="flex flex-wrap gap-2 mb-4">
+      {['search', 'data', 'compare', 'presentation'].map((mode) => (
+        <button
+          key={mode}
+          onClick={() => setViewMode(mode)}
+          className={`flex-1 sm:flex-none px-4 py-2 rounded-lg text-sm font-medium transition-colors ${viewMode === mode
+            ? 'bg-[#00ED64] text-white'
+            : 'bg-white text-[#001E2B] hover:bg-[#E3FCF7]'
+            }`}
+        >
+          {mode.charAt(0).toUpperCase() + mode.slice(1)}
+        </button>
+      ))}
     </div>
   );
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (viewMode !== 'presentation') return;
-      
-      if (e.key === 'ArrowRight') {
-        setCurrentSlide(prev => Math.min(presentationSlides.length - 1, prev + 1));
-      } else if (e.key === 'ArrowLeft') {
-        setCurrentSlide(prev => Math.max(0, prev - 1));
+      if (viewMode === 'presentation') {
+        if (e.key === 'ArrowRight' || e.key === 'Space') {
+          setCurrentSlide((prev) => (prev + 1) % presentationSlides.length);
+        } else if (e.key === 'ArrowLeft') {
+          setCurrentSlide((prev) => (prev - 1 + presentationSlides.length) % presentationSlides.length);
+        }
       }
     };
 
@@ -608,82 +918,102 @@ db.products.aggregate([
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [viewMode, presentationSlides.length]);
 
-  const renderPresentationMode = () => (
-    <div className="bg-white rounded-lg shadow-lg">
-      <div className="relative aspect-video bg-gray-900 rounded-lg overflow-hidden">
-        <img 
-          src={presentationSlides[currentSlide].image} 
-          alt={`Slide ${currentSlide + 1}`}
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-4">
-          <h2 className="text-2xl font-bold">{presentationSlides[currentSlide].title}</h2>
-          {presentationSlides[currentSlide].subtitle && (
-            <p className="text-lg opacity-90">{presentationSlides[currentSlide].subtitle}</p>
-          )}
+  const renderPresentationMode = () => {
+    const slide = presentationSlides[currentSlide];
+    const isTextOnlySlide = slide.type === 'text-full';
+    const Component = slide.component;
+  
+    return (
+      <div className="fixed inset-0 bg-black overflow-hidden">
+        {/* Fixed Navigation Controls */}
+        <div className="absolute top-4 right-4 flex gap-4 z-20">
+          <button 
+            onClick={() => setCurrentSlide((prev) => (prev - 1 + presentationSlides.length) % presentationSlides.length)}
+            className="text-white/50 hover:text-white"
+          >
+            <ChevronLeft size={24} />
+          </button>
+          <span className="text-white/50">
+            {currentSlide + 1} / {presentationSlides.length}
+          </span>
+          <button 
+            onClick={() => setCurrentSlide((prev) => (prev + 1) % presentationSlides.length)}
+            className="text-white/50 hover:text-white"
+          >
+            <ChevronRight size={24} />
+          </button>
         </div>
-        <button 
-          className="absolute top-4 right-4 p-2 rounded-lg bg-black/20 hover:bg-black/30"
-          onClick={() => {
-            const elem = document.documentElement;
-            if (!document.fullscreenElement) {
-              elem.requestFullscreen();
-            } else {
-              document.exitFullscreen();
-            }
-          }}
-        >
-          <Maximize2 className="h-4 w-4 text-white" />
-        </button>
+  
+        {/* Main Content Area with Conditional Layout */}
+        {isTextOnlySlide ? (
+          <div className="h-full flex flex-col pt-16">
+            {/* Fixed Header */}
+            <div className="px-24 py-8 bg-black">
+              <h2 className="text-[#00ED64] text-xl tracking-wide uppercase text-center">{slide.note}</h2>
+              <h1 className="text-5xl font-bold tracking-tight text-center text-white">{slide.title}</h1>
+            </div>
+            
+            {/* Conditional Content Rendering */}
+            {slide.component ? (
+              <div className="flex-1">
+                <Component />
+              </div>
+            ) : (
+              <div className="flex-1 overflow-y-auto px-24 pb-16">
+                <div className="w-full">
+                  <MarkdownSlideContent content={slide.content} />
+                </div>
+              </div>
+            )}
+          </div>
+        ) : (
+          // Standard split layout
+          <div className="absolute inset-0 flex items-center justify-center p-8 mt-16">
+            <div className="w-full max-w-[90%] h-full flex flex-col lg:flex-row items-center justify-between">
+              {/* Text Content */}
+              <div className="flex flex-col space-y-4 lg:space-y-8 lg:w-2/5 max-w-lg mx-auto text-white">
+                <div>
+                  <h2 className="text-[#00ED64] text-xl tracking-wide uppercase">{slide.note}</h2>
+                  <h1 className="text-5xl font-bold tracking-tight">{slide.title}</h1>
+                </div>
+                <MarkdownSlideContent content={slide.content} />
+              </div>
+  
+              {/* Image or Component */}
+              <div className="flex items-center justify-center lg:w-3/5 w-full h-full">
+                {slide.component ? (
+                  <Component />
+                ) : slide.image ? (
+                  <img
+                    src={slide.image}
+                    alt={slide.title}
+                    className="w-full h-auto max-h-[80vh] object-contain rounded-lg"
+                  />
+                ) : null}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-              
-      <div className="flex justify-between items-center p-4 border-t border-gray-200">
-        <button
-          className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
-            currentSlide === 0 
-              ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-              : 'bg-[#E3FCF7] hover:bg-[#C6EDE7] text-[#001E2B]'
-          }`}
-          onClick={() => setCurrentSlide(prev => Math.max(0, prev - 1))}
-          disabled={currentSlide === 0}
-        >
-          <ChevronLeft className="w-4 h-4" />
-          <span>Previous</span>
-        </button>
-        <span className="text-sm text-[#1C2D38]">
-          Slide {currentSlide + 1} of {presentationSlides.length}
-        </span>
-        <button
-          className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
-            currentSlide === presentationSlides.length - 1 
-              ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-              : 'bg-[#E3FCF7] hover:bg-[#C6EDE7] text-[#001E2B]'
-          }`}
-          onClick={() => setCurrentSlide(prev => Math.min(presentationSlides.length - 1, prev + 1))}
-          disabled={currentSlide === presentationSlides.length - 1}
-        >
-          <span>Next</span>
-          <ChevronRight className="w-4 h-4" />
-        </button>
-      </div>
-    </div>
-  );
+    );
+  };
 
- // Update your renderMainContent function
- const renderMainContent = () => {
-  switch (viewMode) {
-    case 'compare':
-      return <SearchComparison />;
-    case 'search':
-      return renderEnhancedSearchInterface();
-    case 'data':
-      return renderDataTable();
-    case 'presentation':
-      return renderPresentationMode();
-    default:
-      return null;
-  }
-};
+
+  const renderMainContent = () => {
+    switch (viewMode) {
+      case 'compare':
+        return <SearchComparison />;
+      case 'search':
+        return renderEnhancedSearchInterface();
+      case 'data':
+        return renderDataTable();
+      case 'presentation':
+        return renderPresentationMode();
+      default:
+        return null;
+    }
+  };
+
   const renderSearchButtons = () => (
     <div className="flex flex-wrap gap-2 justify-center">
       <button
@@ -852,23 +1182,23 @@ db.products.aggregate([
       .replace(/\*\*/g, '')
       .replace(/ - /g, '\n•')
       .trim();
-  
+
     // Split into sections
     const sections = cleanDescription.split('\n');
-    
+
     // Get main description (first section)
     const mainDescription = sections[0];
-    
+
     // Get bullet points (remaining sections)
     const bulletPoints = sections.slice(1).filter(point => point.startsWith('•'));
-  
+
     return { mainDescription, bulletPoints };
   };
 
   const renderImagePreview = () => {
     if (!selectedImage) {
       return (
-        <div 
+        <div
           onClick={triggerImageUpload}
           className="flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-lg cursor-pointer hover:bg-slate-50"
         >
@@ -881,9 +1211,9 @@ db.products.aggregate([
     return (
       <div className="space-y-4">
         <div className="relative">
-          <img 
-            src={URL.createObjectURL(selectedImage)} 
-            alt="Selected" 
+          <img
+            src={URL.createObjectURL(selectedImage)}
+            alt="Selected"
             className="w-full max-h-64 object-contain rounded-lg"
           />
           <button
@@ -921,41 +1251,37 @@ db.products.aggregate([
           {results.map((result, index) => (
             <div
               key={index}
-              className="flex items-center space-x-4 p-4 border rounded-lg hover:bg-[#E3FCF7] transition-colors"
+              className="flex flex-col space-y-2 p-4 border rounded-lg bg-white shadow-md overflow-hidden"
             >
-              <ProductImage
-                src={result.image}
-                alt={result.title}
-                category={result.category}
-                className="w-16 h-16 flex-shrink-0"
-              />
-              <div className="flex-1 min-w-0">
-                <h4 className="font-semibold text-[#001E2B] truncate">
-                  <HighlightedText
-                    text={result.title}
-                    highlights={result.highlights?.filter(h => h.path === 'title')}
-                  />
-                </h4>
-                <p className="text-sm text-[#1C2D38] line-clamp-2">
-                  <HighlightedText
-                    text={result.description}
-                    highlights={result.highlights?.filter(h => h.path === 'description')}
-                  />
-                </p>
-                <div className="flex items-center justify-between mt-1">
-                  <div>
-                    <span className="text-sm text-[#1C2D38]">{result.category}</span>
-                    <span className="text-sm font-semibold text-[#001E2B] ml-4">${result.price}</span>
-                    <SearchMatchIndicator result={result} searchType={searchType} options={searchOptions} />
-                  </div>
-                  {result.score !== undefined && (
-                    <div className="text-right">
-                      <div className="text-sm font-semibold text-[#00ED64]">
-                        {(result.score * 100).toFixed(1)}% match
-                      </div>
-                    </div>
-                  )}
-                </div>
+              {/* Title */}
+              <h4 className="font-semibold text-[#001E2B] truncate">
+                <HighlightedText
+                  text={result.title}
+                  highlights={result.highlights?.filter(h => h.path === 'title')}
+                />
+              </h4>
+
+              {/* Description */}
+              <p
+                className="text-sm text-[#1C2D38] line-clamp-3"
+                style={{
+                  display: "-webkit-box",
+                  WebkitLineClamp: 3, // Limit to 3 lines
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden",
+                }}
+              >
+                <HighlightedText
+                  text={result.description}
+                  highlights={result.highlights?.filter(h => h.path === 'description')}
+                />
+              </p>
+
+              {/* Footer Section */}
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-gray-500">{result.category}</span>
+                <span className="text-sm font-semibold text-[#001E2B]">${result.price}</span>
+                <SearchMatchIndicator result={result} searchType={searchType} options={searchOptions} />
               </div>
             </div>
           ))}
@@ -963,6 +1289,7 @@ db.products.aggregate([
       </div>
     )
   );
+
 
   const renderLoadingState = () => (
     isSearching && (
@@ -973,38 +1300,18 @@ db.products.aggregate([
   );
 
   return (
-    <div className="max-w-7xl mx-auto p-4 bg-[#FFFFFF]">
-      <input
-        type="file"
-        ref={fileInputRef}
-        className="hidden"
-        accept="image/*"
-        onChange={handleImageSelect}
-      />
-      {renderModeToggle()}
-      {viewMode === 'search' ? renderEnhancedSearchInterface() : renderMainContent()}
-      {showCommand && (
-        <div className="fixed inset-0 bg-[#001E2B] bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-3xl w-full max-h-[80vh] overflow-y-auto">
-            <div className="p-4 border-b flex justify-between items-center">
-              <h3 className="text-lg font-semibold text-[#001E2B]">
-                {searchType.charAt(0).toUpperCase() + searchType.slice(1)} Search Query
-              </h3>
-              <button
-                onClick={() => setShowCommand(false)}
-                className="text-[#001E2B] hover:text-[#00ED64] transition-colors"
-              >
-                <X size={20} />
-              </button>
-            </div>
-            <div className="p-4">
-              <pre className="bg-[#001E2B] text-[#00ED64] p-4 rounded-lg overflow-x-auto">
-                <code>{getCommandSyntax()}</code>
-              </pre>
-            </div>
-          </div>
+    <div className="min-h-screen bg-[#F3F3F3] p-4">
+      {/* Mode Toggle - Always Visible */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-black/80 to-transparent p-4">
+        <div className="max-w-7xl mx-auto">
+          {renderModeToggle()}
         </div>
-      )}
+      </div>
+
+      {/* Main Content Area */}
+      <div className="max-w-7xl mx-auto mt-16">
+        {renderMainContent()}
+      </div>
     </div>
   );
 }
