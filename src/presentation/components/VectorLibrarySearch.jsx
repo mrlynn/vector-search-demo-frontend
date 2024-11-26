@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { BookOpen, Search, Loader2, Info, Bug } from 'lucide-react';
-import config from '../../config';
+import config from '../../../config';
 
 const VectorLibrarySearch = () => {
     const [searchTerm, setSearchTerm] = useState('');

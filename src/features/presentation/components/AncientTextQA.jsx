@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Send, Book, User, X, ExternalLink, MapPin } from "lucide-react";
-import config from '../../config';
+import config from '../../../config';
 
 const AssistantAvatar = () => (
   <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-amber-50 border border-amber-200 overflow-hidden">

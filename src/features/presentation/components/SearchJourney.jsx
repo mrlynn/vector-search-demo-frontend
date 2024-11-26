@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Database, Search, Radar, Brain, ArrowRight, Loader2 } from 'lucide-react';
-import config from '../../config';
+import config from '../../../config';
 
 const SearchJourney = () => {
   const [activeStage, setActiveStage] = useState(0);

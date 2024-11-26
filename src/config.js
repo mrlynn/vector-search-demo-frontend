@@ -1,6 +1,15 @@
-const config = {
-  apiUrl: import.meta.env.VITE_API_URL || 'http://localhost:3003'
+// Frontend: src/config.js
+const configs = {
+  development: {
+    apiUrl: 'http://localhost:3003/api',
+  },
+  production: {
+    apiUrl: 'https://vector-search-demo-backend.vercel.app',
+  }
 };
+
+const environment = import.meta.env.MODE || 'development';
+const config = configs[environment];
 
 // Remove any trailing slashes
 config.apiUrl = config.apiUrl.replace(/\/+$/, '');
