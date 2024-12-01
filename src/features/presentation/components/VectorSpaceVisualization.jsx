@@ -109,7 +109,8 @@ const generatePoints = (dimensions) => {
 };
 
 const VectorSpaceVisualization = () => {
-  const [dimensions] = useState(12);
+  const [dimensions] = useState(12); // This is the number of dimension angles
+  const [viewportDimensions, setViewportDimensions] = useState({ width: 800, height: 800 });
   const [scale, setScale] = useState(300);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
@@ -120,6 +121,7 @@ const VectorSpaceVisualization = () => {
   const [points, setPoints] = useState(() => generatePoints(dimensions));
   const svgRef = useRef(null);
   const hoverTimeoutRef = useRef(null);
+  const containerRef = useRef(null);
 
   const handlePointHover = (point) => {
     if (hoverTimeoutRef.current) {
@@ -145,6 +147,22 @@ const VectorSpaceVisualization = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const updateDimensions = () => {
+      if (containerRef.current) {
+        setViewportDimensions({
+          width: containerRef.current.clientWidth,
+          height: containerRef.current.clientHeight
+        });
+      }
+    };
+
+    window.addEventListener('resize', updateDimensions);
+    updateDimensions();
+    return () => window.removeEventListener('resize', updateDimensions);
+  }, []);
+
+
   const handleWheel = (e) => {
     e.preventDefault();
     const zoomFactor = 1.05;
@@ -168,7 +186,7 @@ const VectorSpaceVisualization = () => {
 
   // Update the button handlers too
 const handleZoomIn = () => {
-  const zoomFactor = 1.1;
+  const zoomFactor = .8;
   const newScale = Math.min(scale * zoomFactor, 800);
   
   // Get center of the viewport
@@ -258,10 +276,13 @@ const handleZoomOut = () => {
   };
 
   const renderPoint = (point, i, j, center) => {
-    const x = center + 300 * point.x;
-    const y = center + 300 * point.y;
+    const x = point.x * 300;
+    const y = point.y * 300;
     const isHighlighted = hoveredPoint?.word === point.word;
     
+    // Calculate font size based on scale
+    const fontSize = (isHighlighted ? 0.9 : 0.7) * (300 / scale) * scale / 300; // Adjusted to scale with zoom
+
     return (
       <g 
         key={`point-${i}-${j}`}
@@ -284,9 +305,9 @@ const handleZoomOut = () => {
           x={x}
           y={y - 10 * (300 / scale)}
           textAnchor="middle"
-          fill={isHighlighted ? VECTOR_CLUSTERS[point.cluster].color : '#6b7280'}
+          fill={isHighlighted ? VECTOR_CLUSTERS[point.cluster].color : '#E6D5AC'}
           style={{
-            fontSize: `${(isHighlighted ? 0.9 : 0.7) * (300 / scale)}rem`,
+            fontSize: `${fontSize}rem`, // Updated to use the calculated font size
             fontWeight: isHighlighted ? 500 : 400,
             transition: 'all 0.2s ease',
             pointerEvents: 'none'
@@ -294,66 +315,17 @@ const handleZoomOut = () => {
         >
           {point.word}
         </text>
-
-        {isHighlighted && !isDragging && (
-          <g style={{ pointerEvents: 'none' }}>
-            <rect
-              x={x - 120}
-              y={y + 5}
-              width="240"
-              height="85"
-              rx="4"
-              fill="#ffffff"
-              fillOpacity="0.98"
-              stroke={VECTOR_CLUSTERS[point.cluster].color}
-              strokeWidth="1.5"
-            />
-            
-            <g transform={`translate(${x - 110}, ${y + 20})`}>
-              <text
-                className="text-sm font-medium"
-                fill={VECTOR_CLUSTERS[point.cluster].color}
-              >
-                {point.word}
-              </text>
-              
-              <text
-                y="25"
-                className="text-xs font-mono"
-                fill="#111827"
-              >
-                Vector: [{point.vector.join(', ')}]
-              </text>
-              
-              <text
-                y="45"
-                className="text-xs"
-                fill="#1f2937"
-              >
-                Connected to: {point.relationships.map(r => r.word).join(', ')}
-              </text>
-              
-              <text
-                y="65"
-                className="text-xs"
-                fill="#1f2937"
-              >
-                Cluster: {VECTOR_CLUSTERS[point.cluster].label}
-              </text>
-            </g>
-          </g>
-        )}
       </g>
     );
   };
 
   return (
-    <div className="absolute inset-0 flex items-center justify-center bg-[#1A0F0A]">
-      {/* Controls Panel */}
-      <div className="absolute left-8 z-10 bg-[#2A1810]/80 p-4 rounded-lg border border-[#E6D5AC]/10">
+    <div ref={containerRef} className="fixed inset-0 overflow-hidden bg-[#1A0F0A]">
+      {/* Controls Panel - Now with better positioning */}
+      <div className="absolute top-4 left-4 z-10 space-y-4">
         {/* Search Input */}
-        <div className="flex items-center gap-2">
-        <Search className="w-4 h-4 text-white absolute left-3 top-1/2 transform -translate-y-1/2" />
+        <div className="relative bg-[#2A1810]/80 p-4 rounded-lg border border-[#E6D5AC]/10">
+          <Search className="w-4 h-4 text-white absolute left-7 top-1/2 transform -translate-y-1/2" />
           <input
             type="text"
             value={searchTerm}
@@ -365,38 +337,38 @@ const handleZoomOut = () => {
         </div>
         
         {/* Zoom Controls */}
-        <div className="flex flex-col gap-2 bg-[#2A1810] p-2 rounded-lg border border-[#E6D5AC]/20">
-  <button
-    onClick={handleZoomIn}
-    className="p-2 text-white hover:bg-[#3C2A20] rounded"
-    title="Zoom In"
-  >
-    <ZoomIn className="w-4 h-4" />
-  </button>
-  <button
-    onClick={handleZoomOut}
-    className="p-2 text-white hover:bg-[#3C2A20] rounded"
-    title="Zoom Out"
-  >
-    <ZoomOut className="w-4 h-4" />
-  </button>
-  <button
-    onClick={resetView}
-    className="p-2 text-white hover:bg-[#3C2A20] rounded"
-    title="Reset View"
-  >
-    <Minimize2 className="w-4 h-4" />
-  </button>
-</div>
+        <div className="flex flex-col gap-2 bg-[#2A1810]/80 p-4 rounded-lg border border-[#E6D5AC]/10">
+          <button
+            onClick={handleZoomIn}
+            className="p-2 text-white hover:bg-[#3C2A20] rounded transition-colors"
+            title="Zoom In"
+          >
+            <ZoomIn className="w-4 h-4" />
+          </button>
+          <button
+            onClick={handleZoomOut}
+            className="p-2 text-white hover:bg-[#3C2A20] rounded transition-colors"
+            title="Zoom Out"
+          >
+            <ZoomOut className="w-4 h-4" />
+          </button>
+          <button
+            onClick={resetView}
+            className="p-2 text-white hover:bg-[#3C2A20] rounded transition-colors"
+            title="Reset View"
+          >
+            <Minimize2 className="w-4 h-4" />
+          </button>
+        </div>
 
         {/* Clusters Panel */}
-        <div className="bg-[#2A1810] p-3 rounded-lg border border-[#E6D5AC]/20">
-        <h3 className="text-sm text-[#E6D5AC] font-semibold mb-2">Clusters</h3>
-        {Object.entries(VECTOR_CLUSTERS).map(([key, info]) => (
+        <div className="bg-[#2A1810]/80 p-4 rounded-lg border border-[#E6D5AC]/10">
+          <h3 className="text-sm text-[#E6D5AC] font-semibold mb-2">Clusters</h3>
+          {Object.entries(VECTOR_CLUSTERS).map(([key, info]) => (
             <button
               key={key}
               onClick={() => setSelectedCluster(selectedCluster === key ? null : key)}
-              className={`flex items-center gap-2 p-1 rounded w-full text-left text-sm ${
+              className={`flex items-center gap-2 p-2 rounded w-full text-left text-sm mb-1 transition-colors ${
                 selectedCluster === key ? 'bg-[#3C2A20]' : 'hover:bg-[#3C2A20]'
               }`}
             >
@@ -410,121 +382,79 @@ const handleZoomOut = () => {
         </div>
       </div>
 
-      {/* Vector Space Visualization */}
-      <div className="w-[800px] h-[800px] flex items-center justify-center">
-
+      {/* Main Visualization - Now fullscreen */}
       <svg 
         ref={svgRef}
         width="100%" 
-        height="100%" 
-        viewBox="0 0 800 800"
-        className="max-w-full max-h-full cursor-grab select-none"
+        height="100%"
+        viewBox={`0 0 ${viewportDimensions.width} ${viewportDimensions.height}`}
+        className="touch-none select-none"
         style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
         onWheel={handleWheel}
       >
-        <g transform={`translate(${offset.x}, ${offset.y}) scale(${scale / 300})`}>
+        <g transform={`
+          translate(${viewportDimensions.width/2 + offset.x}, ${viewportDimensions.height/2 + offset.y})
+          scale(${scale / 300})
+        `}>
           {points.map((line, i) => (
             <g key={`group-${i}`}>
-              {line.map((point, j) => {
-                const x = 400 + 300 * point.x;
-                const y = 400 + 300 * point.y;
-                const isHighlighted = hoveredPoint?.word === point.word;
-                
-                return (
-                  <g 
-                    key={`point-${i}-${j}`}
-                    onMouseEnter={() => handlePointHover(point)}
-                    onMouseLeave={handlePointLeave}
-                    className="cursor-pointer"
-                    style={{ pointerEvents: isDragging ? 'none' : 'all' }}
-                  >
-                    {/* Connections */}
-                    {renderConnections(point, 400)}
-                    
-                    {/* Point */}
-                    <circle
-                      cx={x}
-                      cy={y}
-                      r={(isHighlighted ? 5 : 3) * (300 / scale)}
-                      fill={VECTOR_CLUSTERS[point.cluster].color}
-                      fillOpacity={isHighlighted ? 1 : 0.7}
-                    />
-                    
-                    {/* Label */}
-                    <text
-                      x={x}
-                      y={y - 10 * (300 / scale)}
-                      textAnchor="middle"
-                      fill={isHighlighted ? VECTOR_CLUSTERS[point.cluster].color : '#E6D5AC'}
-                      style={{
-                        fontSize: `${(isHighlighted ? 0.9 : 0.7) * (300 / scale)}rem`,
-                        fontWeight: isHighlighted ? 500 : 400,
-                        transition: 'all 0.2s ease',
-                        pointerEvents: 'none'
-                      }}
-                    >
-                      {point.word}
-                    </text>
-
-                    {/* Hover Info */}
-                    {isHighlighted && !isDragging && (
-                      <g style={{ pointerEvents: 'none' }}>
-                        <rect
-                          x={x - 120}
-                          y={y + 5}
-                          width="240"
-                          height="85"
-                          rx="4"
-                          fill="#2A1810"
-                          fillOpacity="0.98"
-                          stroke={VECTOR_CLUSTERS[point.cluster].color}
-                          strokeWidth="1.5"
-                        />
-                        
-                        <g transform={`translate(${x - 110}, ${y + 20})`}>
-                          <text
-                            className="text-sm font-medium"
-                            fill={VECTOR_CLUSTERS[point.cluster].color}
-                          >
-                            {point.word}
-                          </text>
-                          
-                          <text
-                            y="25"
-                            className="text-xs font-mono"
-                            fill="#E6D5AC"
-                          >
-                            Vector: [{point.vector.join(', ')}]
-                          </text>
-                          
-                          <text
-                            y="45"
-                            className="text-xs"
-                            fill="#E6D5AC"
-                          >
-                            Connected to: {point.relationships.map(r => r.word).join(', ')}
-                          </text>
-                          
-                          <text
-                            y="65"
-                            className="text-xs"
-                            fill="#E6D5AC"
-                          >
-                            Cluster: {VECTOR_CLUSTERS[point.cluster].label}
-                          </text>
-                        </g>
-                      </g>
-                    )}
-                  </g>
-                );
-              })}
+              {line.map((point, j) => renderPoint(point, i, j, 0))}
             </g>
           ))}
         </g>
       </svg>
+
+      {/* Fixed Position Hover Card */}
+      {hoveredPoint && (
+        <div className="fixed top-8 right-8 max-w-sm bg-[#2A1810]/95 rounded-lg border border-[#E6D5AC]/20 p-4 text-[#E6D5AC] shadow-lg">
+          <h3 className="font-medium text-[#E6D5AC] text-lg mb-2"
+              style={{ color: VECTOR_CLUSTERS[hoveredPoint.cluster].color }}>
+            {hoveredPoint.word}
+          </h3>
+          <div className="space-y-3">
+            <div>
+              <p className="text-sm">
+                <span className="text-[#E6D5AC]/70">Vector: </span>
+                <span className="font-mono">[{hoveredPoint.vector.join(', ')}]</span>
+              </p>
+              <p className="text-sm">
+                <span className="text-[#E6D5AC]/70">Cluster: </span>
+                <span>{VECTOR_CLUSTERS[hoveredPoint.cluster].label}</span>
+              </p>
+            </div>
+            
+            {hoveredPoint.relationships.length > 0 && (
+              <div>
+                <p className="text-sm text-[#E6D5AC]/70 mb-1">Connected to:</p>
+                <div className="flex flex-wrap gap-2">
+                  {hoveredPoint.relationships.map((related, idx) => (
+                    <span
+                      key={idx}
+                      className="text-xs px-2 py-1 rounded-full"
+                      style={{
+                        backgroundColor: `${VECTOR_CLUSTERS[related.cluster].color}30`,
+                        color: VECTOR_CLUSTERS[related.cluster].color
+                      }}
+                    >
+                      {related.word}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Instructions Overlay */}
+      <div className="absolute bottom-4 right-4 bg-[#2A1810]/80 p-3 rounded-lg border border-[#E6D5AC]/10">
+        <p className="text-sm text-[#E6D5AC]">
+          🖱️ Drag to pan • Scroll to zoom • Hover over points to see details
+        </p>
       </div>
     </div>
   );
