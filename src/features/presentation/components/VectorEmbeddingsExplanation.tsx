@@ -1,6 +1,6 @@
 // src/features/presentation/components/VectorEmbeddingsExplanation.tsx
 import React from 'react';
-import { Card, CardContent } from '../../../components/ui/Card';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 
 const VectorEmbeddingsExplanation = () => {
   const concepts = [

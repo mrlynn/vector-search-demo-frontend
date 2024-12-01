@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 
 // Core components
-import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/Card";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 
 import SearchComparison from './SearchComparison';
 import HighlightedText from './HighlightedText';
@@ -29,7 +29,7 @@ import { presentationMetadata } from './features/presentation/constants/metaData
 import { SearchInterface } from './features/search/components/SearchInterface';
 import { VIEW_MODES, searchTypes } from './features/search/constants/SearchTypes';
 
-function App() {
+export default function App() {
   // State management
   const [viewMode, setViewMode] = useState(VIEW_MODES.SEARCH);
   const [presentationState, setPresentationState] = useState({
@@ -219,9 +219,10 @@ function App() {
 
   // Keep all your existing UI components
   return (
-    <div className="min-h-screen bg-[#F3F3F3] p-4">
+    <div className="min-h-screen bg-black p-4">
       {/* Mode Toggle - Always Visible */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-black/80 to-transparent p-4">
+      {/* <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-black/80 to-transparent p-4"> */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-black">
         <div className="max-w-7xl mx-auto">
           {renderModeToggle({
             currentMode: viewMode,
@@ -237,5 +238,3 @@ function App() {
     </div>
   );
 }
-
-export default App;

@@ -3,16 +3,52 @@ import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Monitor } from 'lucide-react';
 import MarkdownSlideContent from './MarkdownSlideContent';
 import '../styles/presentation.css';
-export default function PresentationMode({ 
-  currentSlide, 
-  slides, 
-  onNavigate 
-}) {
+import PresentationWrapper from '../v2/components/PresentationWrapper';
+import { PRESENTATION_FLAGS } from '../v2/config/flags';
+
+export default function PresentationMode({ currentSlide, slides, onNavigate }) {
+
+  if (PRESENTATION_FLAGS.ENABLE_V2) {
+    const v2Component = (
+      <PresentationWrapper
+        currentSlide={currentSlide}
+        slides={slides}
+        onNavigate={onNavigate}
+      />
+    );
+    
+    // If V2 wrapper returned something, use it
+    if (v2Component) {
+      return v2Component;
+    }
+  }
+
   const slide = slides[currentSlide];
   const isTextOnlySlide = slide.type === 'text-full';
   const Component = slide.component;
   const [speakerWindow, setSpeakerWindow] = useState(null);
   const [startTime, setStartTime] = useState(null);
+
+  const getComponentWrapper = (children) => {
+    // Add specific style overrides based on component type
+    const componentSpecificStyles = {
+      'Vector3DForce': 'bg-white rounded-lg shadow-lg',
+      'CodeComparison': 'bg-white rounded-lg shadow-lg',
+      'SearchComparison': 'bg-white rounded-lg shadow-lg',
+      'VectorSearchDemo': 'bg-white rounded-lg shadow-lg',
+      'VectorSearchDemo2': 'bg-white rounded-lg shadow-lg',
+      'EmbeddingVisualizer': 'bg-white rounded-lg shadow-lg',
+    };
+
+    const componentName = Component?.name || Component?.displayName;
+    const specificStyles = componentSpecificStyles[componentName] || '';
+
+    return (
+      <div className={`component-wrapper ${specificStyles}`}>
+        {children}
+      </div>
+    );
+  };
 
   const openSpeakerNotes = () => {
     // First check if we already have a window open
@@ -155,96 +191,94 @@ export default function PresentationMode({
   };
   
   // src/features/presentation/components/PresentationMode.jsx
-return (
-  <div className="presentation-container">
-    <div className="slide-content">
-      {/* Navigation Controls */}
-      <div className="absolute top-4 right-4 flex gap-4 z-20">
-        <button 
-          onClick={handlePrevious}
-          className="text-white/50 hover:text-white"
-        >
-          <ChevronLeft size={24} />
-        </button>
-        <span className="text-white/50">
-          {currentSlide + 1} / {slides.length}
-        </span>
-        <button 
-          onClick={handleNext}
-          className="text-white/50 hover:text-white"
-        >
-          <ChevronRight size={24} />
-        </button>
-      </div>
+  return (
+    <div className="presentation-container min-h-screen bg-black">
+      <div className="slide-content h-screen flex flex-col">
+        {/* Navigation Controls */}
+        <div className="absolute top-4 right-4 flex gap-4 z-20">
+          <button 
+            onClick={handlePrevious}
+            className="text-white/50 hover:text-white"
+          >
+            <ChevronLeft size={24} />
+          </button>
+          <span className="text-white/50">
+            {currentSlide + 1} / {slides.length}
+          </span>
+          <button 
+            onClick={handleNext}
+            className="text-white/50 hover:text-white"
+          >
+            <ChevronRight size={24} />
+          </button>
+        </div>
 
-      {/* Main Content Area */}
-      <div className="split-layout">
-        {isTextOnlySlide ? (
-          <div className="flex flex-col">
-            {/* Fixed Header */}
-            <div className="mb-8">
-              <h2 className="text-[#00ED64] text-xl tracking-wide uppercase text-center">
-                {slide.note}
-              </h2>
-              <h1 className="text-5xl font-bold tracking-tight text-center text-white">
-                {slide.title}
-              </h1>
-            </div>
-            
-            {/* Conditional Content */}
-            {Component ? (
-              <div className="flex-1">
-                <Component />
-              </div>
-            ) : (
-              <div className="flex-1">
-                <div className="max-w-4xl mx-auto">
-                  <MarkdownSlideContent content={slide.content} />
-                </div>
-              </div>
-            )}
-          </div>
-        ) : (
-          // Split layout
-          <div className="grid grid-cols-2 gap-16 items-center">
-            {/* Text Content */}
-            <div className="space-y-8">
-              <div>
-                <h2 className="text-[#00ED64] text-xl tracking-wide uppercase">
+        {/* Main Content Area */}
+        <div className="flex-1 flex items-center justify-center p-8">
+          {isTextOnlySlide ? (
+            <div className="w-full h-full flex flex-col max-w-7xl mx-auto">
+              {/* Header */}
+              <div className="mb-8">
+                <h2 className="text-[#00ED64] text-xl tracking-wide uppercase text-center">
                   {slide.note}
                 </h2>
-                <h1 className="text-5xl font-bold tracking-tight text-white">
+                <h1 className="text-5xl font-bold tracking-tight text-center text-white">
                   {slide.title}
                 </h1>
               </div>
-              <MarkdownSlideContent content={slide.content} />
+              
+              {/* Component or Content */}
+              <div className="flex-1 flex items-center justify-center">
+                {Component ? (
+                  getComponentWrapper(<Component slide={slide} />)
+                ) : (
+                  <div className="w-full max-w-4xl mx-auto">
+                    <MarkdownSlideContent content={slide.content} />
+                  </div>
+                )}
+              </div>
             </div>
+          ) : (
+            // Split layout
+            <div className="w-full h-full max-w-7xl mx-auto grid grid-cols-2 gap-16 items-center">
+              {/* Text Content */}
+              <div className="space-y-8">
+                <div>
+                  <h2 className="text-[#00ED64] text-xl tracking-wide uppercase">
+                    {slide.note}
+                  </h2>
+                  <h1 className="text-5xl font-bold tracking-tight text-white">
+                    {slide.title}
+                  </h1>
+                </div>
+                <MarkdownSlideContent content={slide.content} />
+              </div>
 
-            {/* Visual Content */}
-            <div className="flex items-center justify-center">
-              {Component ? (
-                <Component />
-              ) : slide.image ? (
-                <img
-                  src={slide.image}
-                  alt={slide.title}
-                  className="w-full h-auto max-h-[70vh] object-contain rounded-lg"
-                />
-              ) : null}
+              {/* Visual Content */}
+              <div className="h-full flex items-center justify-center">
+                {Component ? (
+                  getComponentWrapper(<Component />)
+                ) : slide.image ? (
+                  <img
+                    src={slide.image}
+                    alt={slide.title}
+                    className="w-full h-full object-contain rounded-lg"
+                  />
+                ) : null}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-    </div>
 
-    {/* Speaker Notes Button */}
-    <button
-      onClick={openSpeakerNotes}
-      className="fixed bottom-4 right-4 bg-[#00ED64] hover:bg-[#00C050] text-black px-4 py-2 rounded-md flex items-center shadow-lg z-50"
-    >
-      <Monitor className="mr-2 h-5 w-5" />
-      Speaker Notes
-    </button>
-  </div>
-);
+      {/* Speaker Notes Button */}
+      <button
+        onClick={openSpeakerNotes}
+        className="fixed bottom-4 right-4 bg-[#00ED64] hover:bg-[#00C050] text-black px-4 py-2 rounded-md flex items-center shadow-lg z-50"
+      >
+        <Monitor className="mr-2 h-5 w-5" />
+        Speaker Notes
+      </button>
+    </div>
+  );
 }

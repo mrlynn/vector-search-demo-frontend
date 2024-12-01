@@ -17,19 +17,19 @@ const EmbeddingVisualizer = () => {
   const steps = [
     {
       title: "Input Text",
-      icon: <Type className="w-6 h-6" />,
+      icon: <Type className="w-6 h-6 text-blue-500" />,
       content: sampleText,
       description: "Natural language input"
     },
     {
       title: "Tokenization",
-      icon: <Binary className="w-6 h-6" />,
+      icon: <Binary className="w-6 h-6 text-blue-500" />,
       content: "['leather', 'jacket']",
       description: "Text broken into tokens"
     },
     {
       title: "Embedding",
-      icon: <ChartBar className="w-6 h-6" />,
+      icon: <ChartBar className="w-6 h-6 text-blue-500" />,
       content: vectorPreview,
       description: "1536-dimensional vector"
     }
@@ -64,15 +64,15 @@ const EmbeddingVisualizer = () => {
                 {step.icon}
               </div>
               <h3 className="font-semibold mb-2">{step.title}</h3>
-              <div className="text-sm text-center mb-2">{step.description}</div>
+              <div className="text-sm text-center mb-2 text-black">{step.description}</div>
               <div className={`p-3 rounded bg-gray-50 font-mono text-sm w-full text-center overflow-hidden ${
                 activeStep === index ? 'bg-blue-50' : ''
               }`}>
-                {step.content}
+                <span className="text-black">{step.content}</span>
               </div>
             </div>
             {index < steps.length - 1 && (
-              <ArrowRight className={`w-6 h-6 text-gray-400 ${
+              <ArrowRight className={`w-6 h-6 text-gray-700 ${
                 activeStep === index ? 'text-blue-500' : ''
               }`} />
             )}

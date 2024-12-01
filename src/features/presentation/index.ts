@@ -7,6 +7,8 @@ import { applicationSection } from "./slides/applicationSlides";
 import { futureDirectionSection } from "./slides/futureDirectionSlides";
 import { SlideSection } from "./types/slideTypes";
 
+export const ENABLE_NEW_PRESENTATION = false;
+
 export const presentationSections: SlideSection[] = [
   introductionSection,
   historicalContextSection,

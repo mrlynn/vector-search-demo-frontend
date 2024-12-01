@@ -14,17 +14,11 @@ import {
   ImplementationSteps,
   VectorSpaceVisualization,
   Vector3DVisualization,
-  VisualRelationshipVisualization
+  VisualRelationshipVisualization,
+  SwimLaneFlow,
+  Vector3DForce,
+  VectorSearchDemo2
 } from '../components';
-import { AncientLibraryFlow } from '../components';
-
-// Suggested new components to create:
-// import { 
-//   CodeComparison,        // Shows traditional vs vector search side by side
-//   VectorSearchDemo,      // Interactive vector search demo
-//   EmbeddingVisualizer,   // Shows how text gets converted to vectors
-//   ImplementationSteps    // Shows step-by-step implementation process
-// } from '../components';
 
 export const lightningTalkSection: SlideSection = {
   id: 'lightning-talk',
@@ -41,7 +35,7 @@ export const lightningTalkSection: SlideSection = {
       image: '/slide2.png', // Suggested: Create an image showing the journey from code to AI
       speakerNotes: [
         'Welcome developers!',
-        'Today we willll build intelligence into your applications',
+        'Today we will build intelligence into your applications',
         'Practical implementation of vector search in MongoDB'
       ],
       duration: 1,
@@ -84,28 +78,6 @@ db.products.aggregate([
       ]
     },
 
-    // The Challenge (3 minutes)
-    {
-      id: 'search-limitations',
-      type: 'text-full',
-      title: 'Traditional Search Limitations',
-      note: 'THE PROBLEM',
-      component: DataExplorer, // Existing component showing search limitations
-      content: `
-## Common Developer Challenges
-
-* Keyword matching misses semantic meaning
-* Complex boolean queries become unmanageable
-* Relevance ranking is difficult
-* Multilingual support is complex
-      `,
-      duration: 1.5,
-      speakerNotes: [
-        'Show real examples of search limitations',
-        'Demonstrate developer pain points',
-        'Set up the need for vector search'
-      ]
-    },
     {
       id: 'embedding-explanation',
       type: 'text-full',
@@ -141,6 +113,21 @@ db.products.aggregate([
       title: 'Vector Space Representation',
       note: 'SEMANTIC RELATIONSHIPS',
       component: Vector3DVisualization,
+      content: '',
+      duration: 2,
+      speakerNotes: [
+        'Points represent words in high-dimensional space',
+        'Colors indicate semantic clusters',
+        'Connected points show semantic relationships',
+        'Search and zoom to explore the space'
+      ]
+    },
+    {
+      id: 'vector-3d',
+      type: 'text-full',
+      title: 'Vector Space Representation',
+      note: 'SEMANTIC RELATIONSHIPS',
+      component: Vector3DForce,
       content: '',
       duration: 2,
       speakerNotes: [
@@ -264,6 +251,20 @@ const related = await findRelatedContent(
       title: 'Vector Search Demo',
       note: 'DEMO',
       component: VectorSearchDemo,
+      content: '',
+      duration: 2,
+      speakerNotes: [
+        'Show live search demo',
+        'Compare with traditional search',
+        'Demonstrate improved relevance'
+      ]
+    },
+    {
+      id: 'vector-search-demo',
+      type: 'text-full',
+      title: 'Vector Search Demo',
+      note: 'DEMO',
+      component: VectorSearchDemo2,
       content: '',
       duration: 2,
       speakerNotes: [

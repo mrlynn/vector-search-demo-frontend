@@ -1,15 +1,151 @@
+/* src/features/presentation/styles/presentation.css */
+
 .presentation-container {
-    @apply min-h-screen bg-black relative pt-16;  /* Added pt-16 for top padding */
-  }
+  @apply bg-black text-white overflow-hidden;
+}
+
+.slide-content {
+  @apply relative w-full h-full flex items-center justify-center;
+}
+
+/* Reset any potential conflicting styles */
+.slide-content > div {
+  @apply w-full flex items-center justify-center;
+}
+
+/* Component wrapper styles */
+.component-wrapper {
+  @apply w-full h-full flex items-center justify-center overflow-hidden;
+  min-height: 400px;
+}
+
+/* Title slide specific styles */
+.title-slide {
+  @apply w-full h-full flex items-center justify-center;
+}
+
+.title-slide h1 {
+  @apply w-full text-center;
+}
+
+/* Override any grid layouts for title slides */
+.slide-content[data-type="title-full"] {
+  @apply block;
+}
+
+.slide-content[data-type="title-full"] > div {
+  @apply block w-full;
+}
   
   .slide-content {
-    @apply relative h-[calc(100vh-4rem)] flex items-center justify-center;
+    @apply relative w-full h-full;
   }
   
-  .split-layout {
-    @apply w-full max-w-7xl mx-auto px-8;
+  /* Component wrapper styles */
+  .component-wrapper {
+    @apply w-full h-full flex items-center justify-center overflow-hidden;
+    min-height: 400px; /* Ensure minimum height for components */
   }
   
-  .speaker-notes-button {
-    @apply fixed bottom-4 right-4 bg-[#00ED64] hover:bg-[#00C050] text-black px-4 py-2 rounded-md flex items-center shadow-lg z-50;
+  /* Style overrides for specific components */
+  .component-wrapper.bg-white {
+    @apply p-6;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Ensure all slide components maintain their intended colors */
+  [class*="slide-component"] {
+    @apply w-full h-full;
+  }
+  
+  /* Override text colors for components with white backgrounds */
+  .component-wrapper.bg-white [class*="text-white"] {
+    @apply text-gray-900;
+  }
+  
+  /* Markdown content styles */
+  .markdown-content {
+    @apply text-white/90;
+  }
+  
+  /* Component-specific overrides */
+  .vector-force-component {
+    @apply bg-white rounded-lg;
+  }
+  
+  .search-comparison-component {
+    @apply bg-white rounded-lg;
+  }
+  
+  /* Custom scrollbar for overflow content */
+  .slide-content ::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .slide-content ::-webkit-scrollbar-track {
+    @apply bg-black/20;
+  }
+  
+  .slide-content ::-webkit-scrollbar-thumb {
+    @apply bg-white/20 rounded-full;
+  }
+  
+  /* Text contrast fixes for components */
+  .component-wrapper.bg-white h1,
+  .component-wrapper.bg-white h2,
+  .component-wrapper.bg-white h3,
+  .component-wrapper.bg-white p,
+  .component-wrapper.bg-white span {
+    @apply text-gray-900;
+  }
+  
+  /* Ensure buttons and interactive elements maintain proper contrast */
+  .component-wrapper.bg-white button {
+    @apply text-gray-900 bg-gray-100 hover:bg-gray-200;
+  }
+  
+  /* Fix for code blocks within components */
+  .component-wrapper pre {
+    @apply bg-gray-100 text-gray-900;
+  }
+
+  .vector-force-component {
+    @apply bg-white rounded-lg;
+  }
+  
+  .search-comparison-component {
+    @apply bg-white rounded-lg;
+  }
+  
+  /* Custom scrollbar for overflow content */
+  .slide-content ::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .slide-content ::-webkit-scrollbar-track {
+    @apply bg-black/20;
+  }
+  
+  .slide-content ::-webkit-scrollbar-thumb {
+    @apply bg-white/20 rounded-full;
+  }
+  
+  /* Text contrast fixes for components */
+  .component-wrapper.bg-white h1,
+  .component-wrapper.bg-white h2,
+  .component-wrapper.bg-white h3,
+  .component-wrapper.bg-white p,
+  .component-wrapper.bg-white span {
+    @apply text-gray-900;
+  }
+  
+  /* Ensure buttons and interactive elements maintain proper contrast */
+  .component-wrapper.bg-white button {
+    @apply text-gray-900 bg-gray-100 hover:bg-gray-200;
+  }
+  
+  /* Fix for code blocks within components */
+  .component-wrapper pre {
+    @apply bg-gray-100 text-gray-900;
   }

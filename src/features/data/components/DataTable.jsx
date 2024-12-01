@@ -1,6 +1,6 @@
 // src/features/data/components/DataTable.jsx
 import React, { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Search, RefreshCcw, AlertCircle, Settings } from 'lucide-react';
 import { fetchData } from '../../../services/api';
 

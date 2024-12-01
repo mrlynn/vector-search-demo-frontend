@@ -1,7 +1,8 @@
 // src/presentation/types/slideTypes.ts
 import { ReactNode, ComponentType } from 'react';
+import { SlideComponentKey } from '../components/slideComponentRegistry';
 
-export type SlideType = 'text-full' | 'split' | 'code' | 'diagram';
+export type SlideType = 'text-full' | 'split' | 'code' | 'diagram' | 'title-full' | 'image-full';
 
 export interface Slide {
   id: string;
@@ -10,10 +11,22 @@ export interface Slide {
   note: string;
   type?: SlideType;
   image?: string;
+  animation?: {
+    preset: string;
+    duration: number;
+    delay: number;
+  };
   component?: ComponentType;
   duration?: number; // in minutes
   speakerNotes?: string[];
+  textStyle?: {
+    tracking?: string;
+    fontSize?: string;
+    fontWeight?: string;
+    fontFamily?: string;
+  };
 }
+
 
 export interface SlideSection {
   id: string;
@@ -32,6 +45,7 @@ export interface CodeExample {
   description?: string;
   notes?: string[];
 }
+
 
 export interface ContentBlock {
   id: string;

@@ -6,6 +6,7 @@ const AncientLibraryScroll = () => {
   const [isLoading, setIsLoading] = useState(false);
   const loaderRef = useRef(null);
   const [page, setPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0); // Track total items for unique IDs
 
   // Ancient Egyptian inspired titles
   const titlePrefixes = [
@@ -62,6 +63,7 @@ const AncientLibraryScroll = () => {
     }
     return description.trim();
   };
+
   const generateTitle = () => {
     const prefix = titlePrefixes[Math.floor(Math.random() * titlePrefixes.length)];
     const suffix = titleSuffixes[Math.floor(Math.random() * titleSuffixes.length)];
@@ -77,10 +79,11 @@ const AncientLibraryScroll = () => {
   const generateItems = (pageNumber) => {
     const newItems = [];
     const itemsPerPage = 15;
+    const startIndex = totalItems; // Use the current total as the starting index
     
     for (let i = 0; i < itemsPerPage; i++) {
       newItems.push({
-        id: (pageNumber - 1) * itemsPerPage + i,
+        id: `${startIndex + i}-${Date.now()}`, // Create truly unique IDs
         title: generateTitle(),
         author: generateAuthor(),
         description: generateDescription(8),
@@ -88,6 +91,7 @@ const AncientLibraryScroll = () => {
       });
     }
     
+    setTotalItems(totalItems + itemsPerPage); // Update total items
     return newItems;
   };
 
@@ -177,7 +181,7 @@ const AncientLibraryScroll = () => {
             )}
         </div>
     </div>
-);
+  );
 };
 
 export default AncientLibraryScroll;

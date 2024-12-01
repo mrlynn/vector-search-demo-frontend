@@ -1,7 +1,7 @@
 // src/features/search/components/EnhancedSearchInterface.jsx
 import React from 'react';
 import { Search, Database, Radar, Brain, Image } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 
 const EnhancedSearchInterface = ({
     searchTerm,

@@ -1,0 +1,563 @@
+import { SlideSection } from '../types/slideTypes';
+import {
+  SearchEvolution,
+  VectorEmbeddingsExplanation,
+  DataFlowAnimation,
+  SearchJourney,
+  DataExplorer,
+  EmbeddingVisualizer,
+  CodeComparison,
+  VectorSearchDemo,
+  ImplementationSteps,
+  VectorSpaceVisualization,
+  Vector3DVisualization,
+  Vector3DForce,
+  VectorSearchDemo2,
+  SearchComparison,
+  AncientLibraryScroll,
+  EvolutionExplorer,
+  VectorLibrarySearch,
+  AncientLibraryFlowWrapper,
+  TitleSlide,
+  SwimLaneFlow,
+  InitialVectorAnimation,
+  FullImageSlide,
+  VectorSearchProcess,
+  AIExplanationSlide,
+  AIVectorSlide,
+  VectorExplanationSlide,
+  SemanticSearchExplained,
+  TextSearchDemo,
+  AncientTextQA,
+  NeuralPathwaySimulator,
+  AtlasVectorVisualizer,
+  Atlas3DVisualizer,
+  VectorSearchWizard,
+  AtlasClusterSetup
+} from '../components';
+
+export const vectorSearchPresentation: SlideSection = {
+  id: 'vector-search-presentation',
+  title: 'From Data to Intelligence',
+  description: 'Building AI-Powered Applications with MongoDB Vector Search',
+  duration: 15,
+  slides: [
+    // Slide 1
+    {
+      id: 'hand', // Slide 1
+      title: 'Welcome',
+      content: `Michael Lynn
+***Principal Developer Advocate, MongoDB***
+
+***My Passion:*** Helping developers leverage the power of MongoDB to build modern applications.
+
+***My Journey:*** 30 years as a developer, solutions architect, teacher, developer advocate and speaker.
+
+***My Experience:***
+- Traditional data storage and retrieval systems.
+Cutting-edge vector representations for advanced search.
+The transformative potential of Artificial Intelligence and LLMs.`,
+      note: 'Michael Lynn',
+      image: '',
+      speakerNotes: [
+        'Introduce yourself',
+        'Introduce the topic',
+        'Introduce the audience'
+      ],
+      duration: 2,
+      type: 'text-full'
+    },
+    // Slide 2
+    {
+      id: 'what-is-data',
+      type: 'text-full',
+      title: 'What is Data?',
+      note: 'INTRODUCTION TO DATA',
+      component: '',
+      content: `
+
+### Data is the foundation of all human knowledge. It comes in many forms:
+- Text
+- Images
+- Audio
+- Video
+      `
+    },
+    // Slide 3
+    {
+      id: 'data-evolution', // Slide 2
+      type: 'text-full',
+      title: '',
+      note: '',
+      component: EvolutionExplorer,
+      content: '',
+      duration: 2,
+      speakerNotes: [
+        'Walk through the evolution from data to intelligence',
+        'Click through each stage to show the progression',
+        'Highlight key differences between stages',
+        'Emphasize how each builds upon the previous'
+      ]
+    },
+    // Slide 4
+    {
+      id: 'alexandria-parallel', // Slide 3
+      type: 'split',
+      title: 'The Great Library',
+      note: 'HISTORICAL PARALLEL',
+      content: `
+## Lessons from Alexandria
+
+The world's first universal library:
+* 700,000+ scrolls and books
+* Complex organization system
+* Expert librarians and scholars
+* Knowledge synthesis and creation
+
+> "Ancient wisdom meets modern technology"
+      `,
+      image: '/library.png',
+      duration: 2,
+      speakerNotes: [
+        'Draw parallel between ancient and modern challenges',
+        'Set up the scrolling demonstration',
+        'Highlight the scale of information'
+      ]
+    },
+    // Slide 5
+    {
+      "id": "library-of-alexandria-slide",
+      "type": "split",
+      "title": "Knowledge Retrieval in the Library of Alexandria",
+      "note": "HISTORICAL CONTEXT",
+      "content": `
+## How Knowledge Was Found
+
+- **Classification**: Scrolls organized by subject
+- **Catalogs**: Callimachus' 'Pinakes' provided summaries and metadata
+- **Librarians**: Guided scholars to relevant resources
+- **Cross-references**: Interlinked texts enriched understanding
+
+> Imagine manually sifting through scrolls to discover connections.
+`,
+      "image": "/ancient-library-visualization.webp",
+      "duration": 2,
+      "speakerNotes": [
+        "Explain how knowledge was managed in the Library of Alexandria.",
+        "Draw parallels to modern search challenges.",
+        "Set up the transition to modern vector search solutions."
+      ]
+    },
+    // Slide 6
+    {
+      id: 'endless-scroll', // Slide 4
+      type: 'text-full',
+      title: 'Searching the Ancient Library',
+      note: 'THE CHALLENGE',
+      component: AncientLibraryScroll,
+      content: `
+## Manual Search Process
+
+Imagine searching through endless scrolls...
+      `,
+      duration: 2,
+      speakerNotes: [
+        'Show endless scrolling component',
+        'Emphasize the challenge of manual search',
+        'Set up need for better solution'
+      ]
+    },
+    // Slide 7
+    {
+      id: 'enter-sage',
+      type: 'split',
+      title: 'Enter the Sage',
+      note: 'THE SOLUTION',
+      content: `
+## The Ancient Librarian
+
+* Deep knowledge of all texts
+* Understanding of context
+* Ability to make connections
+* Instant access to wisdom
+      `,
+      image: '/sage.webp',
+      duration: 2,
+      speakerNotes: [
+        'Introduce the concept of the wise guide',
+        'Set up parallel with AI assistance',
+        'Transition to modern implementation'
+      ]
+    },
+    // Slide 8
+    {
+      id: 'ancient-parallel',
+      type: 'text-full',
+      title: 'Ancient Wisdom, Modern Solutions',
+      note: 'PARALLEL SYSTEMS',
+      component: AncientLibraryFlowWrapper,
+      content: ''
+    },
+    // Slide 9
+    {
+      "id": "modern-sage-intro",
+      "type": "image-full",
+      "title": "The Modern Sage: Vector Search & AI",
+      "note": "INTRODUCING MODERN INTELLIGENCE",
+      "content": '',
+      "component": FullImageSlide,
+      "image": "/modern-sage.webp",
+      "duration": 2,
+      "speakerNotes": [
+        "Introduce vector search and AI as the modern-day equivalent of an ancient sage.",
+        "Highlight how they navigate and understand complex datasets.",
+        "Explain the core attributes of these technologies speed, precision, and adaptability.",
+        "Set up a transition into how these tools transform knowledge discovery today."
+      ]
+    },
+    // Slide 10
+    {
+      id: 'swim-lane-flow',
+      type: 'text-full',
+      title: 'The Modern Sage',
+      note: 'THE SOLUTION',
+      component: SwimLaneFlow,
+      content: '',
+      duration: 2,
+    },
+    // Slide 11
+    {
+      id: 'ai-explanation',
+      type: 'text-full',
+      title: 'AI Explained',
+      note: 'AI EXPLANATION',
+      component: AIExplanationSlide,
+      content: '',
+      duration: 2,
+    },
+    // Slide 12
+    {
+      id: 'ai-vectors',
+      type: 'text-full',
+      title: '',
+      note: '',
+      component: AIVectorSlide,
+      content: '',
+      duration: 2,
+    },
+    // Slide 13
+    {
+      id: 'vectors',
+      type: 'text-full',
+      title: 'So then... what are vectors?',
+      note: '',
+      component: '',
+      content: '',
+      duration: 2,
+    },
+    // Slide 14
+    {
+      id: 'vector-explanation',
+      type: 'text-full',
+      title: '',
+      note: '',
+      component: VectorExplanationSlide,
+      content: '',
+      duration: 2,
+    },
+    // Slide 15
+    // {
+    //     id: 'vector-library-search', // Slide 5
+    //     type: 'text-full',
+    //     title: 'Vector Search in the Library',
+    //     note: 'THE SOLUTION',
+    //     component: VectorLibrarySearch,
+    //     content: '',
+    //     duration: 2
+    // },
+    // Slide 16
+    {
+      id: 'vector-space',
+      type: 'text-full',
+      title: '',
+      note: '',
+      component: VectorSpaceVisualization,
+      content: '',
+      duration: 2,
+      speakerNotes: [
+        'Opening Line: Lets step into the world of intelligence—starting with data. Here, I’m introducing you to the concept of vector space. Imagine a world where every concept, idea, or entity is represented as a point in a multi-dimensional space.',
+        'Explanation: What youre seeing here is a visualization of how an LLM (Large Language Model) organizes related concepts into a vector space. Each dot represents a concept, like Java, Nike, or Mint, while the proximity between them shows how closely related they are.',
+        'Engage Audience: Notice how the clusters naturally form based on context. For instance, \'Technology\' concepts like \'Python\' and Java group together, while Places & Geography, like Phoenix and China, form their own distinct neighborhood. This is the power of vectorization—it reveals hidden relationships in your data.',
+        'This is a 2D representation of a much higher-dimensional space'
+      ]
+    },
+    // Slide 17
+    {
+      id: 'vector-space-intro',
+      type: 'text-full',
+      title: '',
+      note: '',
+      component: Vector3DForce,
+      content: '',
+      duration: 1,
+      speakerNotes: [
+        'Welcome everyone! What you\re seeing here is the future of data intelligence.',
+        'Each point represents a concept in high-dimensional space',
+        'Watch how related concepts naturally cluster together',
+        'This is how modern AI systems understand relationships between ideas'
+      ]
+    },
+    {
+      id: 'atlas-vector-visualizer',
+      type: 'text-full',
+      title: '',
+      note: '',
+      component: AtlasVectorVisualizer,
+      content: '',
+      duration: 2,
+    },
+    // Slide 19
+    {
+      id: 'vector-search-process',
+      type: 'text-full',
+      title: '',
+      note: '',
+      component: VectorSearchProcess,
+      content: '',
+      duration: 1,
+    },
+    // Slide 20
+    {
+      id: 'vector-mechanics', // Slide 7
+      type: 'text-full',
+      title: '',
+      note: '',
+      component: EmbeddingVisualizer,
+      content: '',
+      duration: 1.5,
+      speakerNotes: [
+        'Let\'s demystify vector search',
+        'Text/images → vectors → semantic meaning',
+        'Show live transformation process',
+        'Explain why this matters for real applications'
+      ]
+    },
+    // Slide 21
+    {
+      id: 'text-search-demo',
+      type: 'text-full',
+      title: '',
+      note: '',
+      component: TextSearchDemo,
+      content: '',
+      duration: 1,
+    },
+    {
+      id: 'code-comparison', // Slide 8
+      type: 'text-full',
+      title: '',
+      note: '',
+      component: CodeComparison,
+      content: '',
+      duration: 1.5,
+      speakerNotes: [
+        'Direct comparison of approaches',
+        'Note the query complexity vs capabilities',
+        'Performance implications',
+        'When to use each approach'
+      ]
+    },
+
+    // Slide 22
+    {
+      id: 'vector-search-setup', // Slide 9
+      type: 'text-full',
+      title: 'Setting Up Vector Search',
+      note: 'IMPLEMENTATION',
+      component: DataFlowAnimation,
+      content: `
+## Vector Search Setup
+
+\`\`\`javascript
+// Create vector search index
+{
+  "mappings": {
+    "dynamic": true,
+    "fields": {
+      "description_vector": {
+        "dimensions": 1536,
+        "similarity": "cosine",
+        "type": "knnVector"
+      }
+    }
+  }
+}
+\`\`\`
+      `,
+      duration: 2,
+      speakerNotes: [
+        'Step-by-step implementation guide',
+        'Focus on key configuration options',
+        'Common pitfalls to avoid',
+        'Best practices for production'
+      ]
+    },
+    // Slide 23
+    {
+      id: 'live-demo', // Slide 10
+      type: 'text-full',
+      title: '',
+      note: '',
+      component: VectorSearchDemo2,
+      content: '',
+      duration: 2,
+      speakerNotes: [
+        'Live demo of vector search capabilities',
+        'Show real-time semantic matching',
+        'Demonstrate similarity thresholds',
+        'Interactive exploration of results'
+      ]
+    },
+    // Slide 24
+    {
+      id: 'semantic-search',
+      type: 'text-full',
+      title: 'Semantic Search Explained',
+      note: 'SEMANTIC SEARCH',
+      component: SemanticSearchExplained,
+      content: '',
+      duration: 2,
+    },
+    // Slide 25
+    {
+      id: 'search-comparison',
+      type: 'text-full',
+      title: 'Search Approaches Compared',
+      component: SearchComparison,
+      content: '',
+      duration: 2,
+      note: 'SEARCH COMPARISON',
+      speakerNotes: [
+        'Real-world comparison of search approaches',
+        'Performance metrics and trade-offs',
+        'When to use each type of search',
+        'Impact on user experience'
+      ]
+    },
+    // Slide 26
+    {
+      "id": "semantic-search-intro",
+      "type": "split",
+      "title": "What Is Semantic Search?",
+      "note": "INTRODUCTION TO SEMANTIC SEARCH",
+      "content": `
+## Semantic Search Explained
+
+- **Definition**: A search method that understands the intent and contextual meaning of queries, not just keywords.
+- **How It Works**: Leverages AI and natural language understanding to match queries with relevant content, even if exact terms differ.
+- **Difference from Vector Search**:
+  - **Vector Search**: Matches based on proximity in vector space (numerical similarity).
+  - **Semantic Search**: Adds an additional layer of meaning, intent, and contextual relevance.
+- **Use Case**: Asking "What are the health benefits of apples?" retrieves articles about nutrition, not random mentions of "apples."
+
+> Semantic search = Vector search + Contextual understanding.
+    `,
+      "image": "/semantic-search.png",
+      "duration": 2,
+      "speakerNotes": [
+        "Introduce semantic search as an evolution of traditional search techniques.",
+        "Explain how it combines the power of vectors with deeper language understanding.",
+        "Use a practical example to clarify the difference.",
+        "Highlight how semantic search aligns with user intent for more accurate and meaningful results."
+      ]
+    },
+    // Slide 27
+    {
+      id: 'practical-applications',
+      type: 'split',
+      title: 'Real-World Use Cases',
+      note: 'APPLICATIONS',
+      content: `
+## Production Applications
+
+\`\`\`javascript
+// Product Recommendations
+const similar = await findSimilarProducts(
+  productId,
+  {
+    numCandidates: 100,
+    limit: 5,
+    minScore: 0.8
+  }
+);
+
+// Content Discovery
+const related = await findRelatedArticles(
+  articleVector,
+  {
+    categories: ['tech', 'ai'],
+    maxDistance: 0.3
+  }
+);
+\`\`\`
+      `,
+      image: '/applications.webp',
+      duration: 2,
+      speakerNotes: [
+        'Real production use cases',
+        'Implementation patterns',
+        'Performance considerations',
+        'Integration strategies'
+      ]
+    },
+
+    // Slide 28
+    {
+      id: 'quick-start', // Slide 11
+      type: 'split',
+      title: 'Start Building',
+      note: 'NEXT STEPS',
+      content: `
+## Quick Start Guide
+
+1. Create M10+ cluster
+2. Enable vector search
+3. Install dependencies
+4. Generate embeddings
+5. Create indexes
+6. Build awesome apps!
+
+Clone starter repo:
+github.com/mongodb-developer/vector-search-starter
+      `,
+      image: '/getting-started.png',
+      duration: 2,
+      speakerNotes: [
+        'Concrete next steps for implementation',
+        'Resource links and documentation',
+        'Community support channels',
+        'Call to action: Transform your apps with AI power'
+      ]
+    },
+    {
+      id: 'vector-search-wizard',
+      type: 'text-full',
+      title: '',
+      note: '',
+      component: VectorSearchWizard,
+      content: '',
+      duration: 2,
+    },
+    {
+      id: 'atlas-cluster-setup',
+      type: 'text-full',
+      title: '',
+      note: '',
+      component: AtlasClusterSetup,
+      content: '',
+      duration: 2,
+    }
+  ]
+};
+
+export default vectorSearchPresentation;

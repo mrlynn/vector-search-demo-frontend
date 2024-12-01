@@ -1,15 +1,18 @@
 // src/features/presentation/slides/index.ts
 import { lightningTalkSection } from './lightningTalkSlides';
+import { vectorSearchPresentation } from './vectorSearchPresentation';
+import { vectorEducationSlides } from './vectorEducationSlides';
 import { SlideSection } from '../types/slideTypes';
 import { introductionSection } from './introductionSlides';
 import { historicalContextSection } from './historicalContextSlides';
-
+import { ancientWisdomPresentation } from './ancientWisdomPresentation';
 // Original sections remain but are commented out for the lightning talk
 export const presentationSections: SlideSection[] = [
   // introductionSection,
-  lightningTalkSection
+  vectorSearchPresentation,
+  // lightningTalkSection,
+//  ancientWisdomPresentation,
   // Uncomment for full presentation
-  // introductionSection,
 // historicalContextSection,
   // technicalEvolutionSection,
   // implementationSection,
