@@ -7,7 +7,7 @@ import {
   Search, Image, FileText, MessagesSquare, Database,
   Radar, Brain, Hand, Code, X, Info, ChevronDown,
   ChevronUp, MonitorPlay, ChevronLeft, ChevronRight,
-  Maximize2, Layout
+  Maximize2, Layout, Menu
 } from 'lucide-react';
 
 // Core components
@@ -38,6 +38,7 @@ export default function App() {
   });
 
   // Search state - will move to features/search
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchType, setSearchType] = useState('basic');
   const [isSearching, setIsSearching] = useState(false);
@@ -62,6 +63,21 @@ export default function App() {
   const [allData, setAllData] = useState([]);
 
   const fileInputRef = useRef(null);
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  };
+
+  const getMobileMenuClasses = () => {
+    const baseClasses = "md:hidden bg-black border-t border-white/10 transition-all duration-300";
+    return isMobileMenuOpen 
+      ? `${baseClasses} opacity-100 translate-y-0` 
+      : `${baseClasses} opacity-0 -translate-y-2 pointer-events-none`;
+  };
 
   const handleRefreshData = async () => {
     setIsLoadingData(true);
@@ -146,11 +162,11 @@ export default function App() {
           options: searchOptions
         }),
       });
-  
+
       if (!response.ok) {
         throw new Error('Search failed');
       }
-  
+
       const data = await response.json();
       setResults(data.results);
       setSearchTime(data.searchTime);
@@ -167,50 +183,118 @@ export default function App() {
   };
 
   const renderMainContent = () => {
-    switch (viewMode) {
-      case VIEW_MODES.SEARCH:
-        return (
-          <EnhancedSearchInterface
-    searchTerm={searchTerm}
-    onSearchTermChange={(value) => setSearchTerm(value)}
-    onSearch={handleSearch}
-    isSearching={isSearching}
-    searchType={searchType}
-    onSearchTypeChange={(type) => {
-      console.log('Changing search type to:', type);  // Debug log
-      setSearchType(type);
-    }}
-    searchOptions={searchOptions}
-    onSearchOptionsChange={setSearchOptions}
-    results={results}
-    searchTime={searchTime}
-    error={error}
-  />
-        );
-      case VIEW_MODES.COMPARE:
-        return <SearchComparison />;
-      case VIEW_MODES.DATA:
-        return (
-          <DataTable
-            data={tableData}
-            onRefresh={handleRefreshData}
-            onExport={handleExportData}
-            isLoading={isLoadingData}
-            filterText={filterText}
-            onFilterChange={setFilterText}
-          />
-        );
-      case VIEW_MODES.PRESENTATION:
-        return (
+    // If in presentation mode, render without the header
+    if (viewMode === VIEW_MODES.PRESENTATION) {
+      return (
+        <div className="fixed inset-0 bg-black">
           <PresentationMode
             currentSlide={presentationState.currentSlide}
             slides={presentationSlides}
             onNavigate={setPresentationState}
+            onToggleFullscreen={toggleFullscreen}
           />
-        );
-      default:
-        return null;
+        </div>
+      );
     }
+
+    // For all other modes, render with the header
+    return (
+      <>
+        <header className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-sm border-b border-white/10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between h-16">
+              {/* Logo/Title with fullscreen toggle */}
+              <div className="flex items-center space-x-4">
+                <h1 className="text-white text-xl font-semibold">MongoDB Vector Search</h1>
+                <button
+                  onClick={toggleFullscreen}
+                  className="text-white/50 hover:text-white p-2 hidden sm:block"
+                  title="Toggle fullscreen"
+                >
+                  <Maximize2 size={20} />
+                </button>
+              </div>
+
+              {/* Desktop Mode Toggle */}
+              <div className="hidden md:block">
+                {renderModeToggle({
+                  currentMode: viewMode,
+                  onModeChange: handleModeChange
+                })}
+              </div>
+
+              {/* Mobile Menu Button */}
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="md:hidden text-white p-2 focus:outline-none focus:ring-2 focus:ring-white/20 rounded"
+                aria-label="Toggle mobile menu"
+              >
+                {isMobileMenuOpen ? (
+                  <X className="h-6 w-6" />
+                ) : (
+                  <Menu className="h-6 w-6" />
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Animated Mobile Menu */}
+          <div className={getMobileMenuClasses()}>
+            <div className="px-4 py-3 space-y-2">
+              {renderModeToggle({
+                currentMode: viewMode,
+                onModeChange: (mode) => {
+                  handleModeChange(mode);
+                  setIsMobileMenuOpen(false);
+                }
+              })}
+              <button
+                onClick={() => {
+                  toggleFullscreen();
+                  setIsMobileMenuOpen(false);
+                }}
+                className="w-full text-left text-white/70 hover:text-white px-3 py-2 rounded flex items-center space-x-2"
+              >
+                <Maximize2 size={20} />
+                <span>Toggle Fullscreen</span>
+              </button>
+            </div>
+          </div>
+        </header>
+
+        {/* Main Content Area with better height management */}
+        <main className="min-h-screen pt-16 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto h-full py-8">
+            {viewMode === VIEW_MODES.SEARCH && (
+              <EnhancedSearchInterface
+                searchTerm={searchTerm}
+                onSearchTermChange={setSearchTerm}
+                onSearch={handleSearch}
+                isSearching={isSearching}
+                searchType={searchType}
+                onSearchTypeChange={setSearchType}
+                searchOptions={searchOptions}
+                onSearchOptionsChange={setSearchOptions}
+                results={results}
+                searchTime={searchTime}
+                error={error}
+              />
+            )}
+            {viewMode === VIEW_MODES.COMPARE && <SearchComparison />}
+            {viewMode === VIEW_MODES.DATA && (
+              <DataTable
+                data={tableData}
+                onRefresh={handleRefreshData}
+                onExport={handleExportData}
+                isLoading={isLoadingData}
+                filterText={filterText}
+                onFilterChange={setFilterText}
+              />
+            )}
+          </div>
+        </main>
+      </>
+    );
   };
 
   useEffect(() => {
@@ -219,22 +303,8 @@ export default function App() {
 
   // Keep all your existing UI components
   return (
-    <div className="min-h-screen bg-black p-4">
-      {/* Mode Toggle - Always Visible */}
-      {/* <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-black/80 to-transparent p-4"> */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-black">
-        <div className="max-w-7xl mx-auto">
-          {renderModeToggle({
-            currentMode: viewMode,
-            onModeChange: handleModeChange
-          })}
-        </div>
-      </div>
-
-      {/* Main Content Area */}
-      <div className="max-w-7xl mx-auto mt-16">
-        {renderMainContent()}
-      </div>
+    <div className="min-h-screen bg-black">
+      {renderMainContent()}
     </div>
   );
 }
