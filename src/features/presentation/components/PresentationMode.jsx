@@ -23,7 +23,31 @@ export default function PresentationMode({ currentSlide, slides, onNavigate }) {
     }
   }
 
+  const handleTouchStart = (e) => {
+    setStartX(e.touches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+    if (startX === null) return;
+    const currentX = e.touches[0].clientX;
+    const diffX = startX - currentX;
+
+    if (diffX > 50) {
+      handleNext(); // Swipe left: Next slide
+      setStartX(null);
+    } else if (diffX < -50) {
+      handlePrevious(); // Swipe right: Previous slide
+      setStartX(null);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setStartX(null);
+  };
+
   const slide = slides[currentSlide];
+  const [startX, setStartX] = useState(null);
+
   const isTextOnlySlide = slide.type === 'text-full';
   const Component = slide.component;
   const [speakerWindow, setSpeakerWindow] = useState(null);
@@ -192,7 +216,11 @@ export default function PresentationMode({ currentSlide, slides, onNavigate }) {
   
   // src/features/presentation/components/PresentationMode.jsx
   return (
-    <div className="presentation-container min-h-screen bg-black">
+    <div className="presentation-container min-h-screen bg-black"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
       <div className="slide-content h-screen flex flex-col">
         {/* Navigation Controls */}
         <div className="absolute top-4 right-4 flex gap-4 z-20">
@@ -200,7 +228,7 @@ export default function PresentationMode({ currentSlide, slides, onNavigate }) {
             onClick={handlePrevious}
             className="text-white/50 hover:text-white"
           >
-            <ChevronLeft size={24} />
+            <ChevronLeft size={32} />
           </button>
           <span className="text-white/50">
             {currentSlide + 1} / {slides.length}
@@ -209,7 +237,7 @@ export default function PresentationMode({ currentSlide, slides, onNavigate }) {
             onClick={handleNext}
             className="text-white/50 hover:text-white"
           >
-            <ChevronRight size={24} />
+            <ChevronRight size={32} />
           </button>
         </div>
 

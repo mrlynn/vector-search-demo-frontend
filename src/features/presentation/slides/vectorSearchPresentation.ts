@@ -148,6 +148,34 @@ The world's first universal library:
         "Set up the transition to modern vector search solutions."
       ]
     },
+    {
+      id: 'can-you-relate?',
+      type: 'text-full',
+      title: 'Lets learn about spell 125...',
+      note: '',
+      component: '',
+      content: '',
+      duration: 2,
+    },
+    {
+      id: 'can-you-relate-2',
+      type: 'text-full',
+      title: 'Weighing of the Heart',
+      note: '',
+      component: '',
+      content: '',
+      duration: 2,
+    },
+    {
+      id: 'can-you-relate-3',
+      type: 'text-full',
+      title: 'Negative Confession',
+      note: '',
+      component: '',
+      content: `
+## The spell also includes a "Negative Confession", a list of 42 sins which the deceased claims not to have committed in their lifetime, addressed to a panel of 42 divine judges. This confession was intended to assert the purity and worthiness of the deceased to enter the afterlife.`,
+      duration: 2,
+    },
     // Slide 6
     {
       id: 'endless-scroll', // Slide 4
@@ -222,6 +250,15 @@ Imagine searching through endless scrolls...
       title: 'The Modern Sage',
       note: 'THE SOLUTION',
       component: SwimLaneFlow,
+      content: '',
+      duration: 2,
+    },
+    {
+      id: 'ancient-text-qa',
+      type: 'text-full',
+      title: '',
+      note: '',
+      component: AncientTextQA,
       content: '',
       duration: 2,
     },
