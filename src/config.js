@@ -4,7 +4,7 @@ const configs = {
     apiUrl: 'http://localhost:3003/api',
   },
   production: {
-    apiUrl: 'https://vector-search-demo-backend.vercel.app',
+    apiUrl: 'https://vector-search-demo-backend.vercel.app/api',
   }
 };
 

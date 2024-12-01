@@ -1,5 +1,5 @@
 // src/features/presentation/slides/index.ts
-import { lightningTalkSection } from './lightningTalkSlides';
+// import { lightningTalkSection } from './lightningTalkSlides';
 import { vectorSearchPresentation } from './vectorSearchPresentation';
 import { vectorEducationSlides } from './vectorEducationSlides';
 import { SlideSection } from '../types/slideTypes';
