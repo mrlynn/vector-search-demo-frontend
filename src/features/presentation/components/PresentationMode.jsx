@@ -7,8 +7,13 @@ import PresentationWrapper from '../v2/components/PresentationWrapper';
 import { PRESENTATION_FLAGS } from '../v2/config/flags';
 
 export default function PresentationMode({ currentSlide, slides, onNavigate, onSpeakerNotesRef }) {
+  console.log('PresentationMode mounting', { currentSlide, slides: !!slides });
+
+  const [showSpeakerNotes, setShowSpeakerNotes] = useState(false);
 
   if (PRESENTATION_FLAGS.ENABLE_V2) {
+      console.log('Attempting to use V2 component');
+
     const v2Component = (
       <PresentationWrapper
         currentSlide={currentSlide}
@@ -227,7 +232,7 @@ export default function PresentationMode({ currentSlide, slides, onNavigate, onS
 
   // src/features/presentation/components/PresentationMode.jsx
   return (
-    <>
+    <div className="relative">
       <div className="presentation-container min-h-screen bg-black"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
@@ -235,6 +240,7 @@ export default function PresentationMode({ currentSlide, slides, onNavigate, onS
       >
         <div className="slide-content h-screen flex flex-col">
           {/* Navigation Controls */}
+          
           <div className="absolute top-4 right-4 flex gap-4 z-20">
             <button
               onClick={handlePrevious}
@@ -310,22 +316,60 @@ export default function PresentationMode({ currentSlide, slides, onNavigate, onS
             )}
           </div>
         </div>
+      </div>
 
-        {/* Speaker Notes Button */}
-        <div className="fixed right-4 bottom-4" style={{ zIndex: 99999 }}>
+      {/* Slide-out Speaker Notes Panel */}
+      <div 
+        className={`fixed right-0 top-0 h-full w-96 bg-[#1a1a1a] transform transition-transform duration-300 shadow-xl ${
+          showSpeakerNotes ? 'translate-x-0' : 'translate-x-full'
+        }`}
+        style={{ zIndex: 9999 }}
+      >
+        <div className="p-6 text-white">
+          <div className="mb-6">
+            <h2 className="text-[#00ED64] text-xl font-bold mb-2">Current Slide</h2>
+            <div className="bg-[#2a2a2a] p-4 rounded">
+              <h3 className="font-medium mb-2">{slides[currentSlide].title}</h3>
+              <div className="text-sm text-gray-300">
+                {slides[currentSlide].speakerNotes?.map((note, index) => (
+                  <p key={index} className="mb-2">{note}</p>
+                )) || 'No notes available'}
+              </div>
+            </div>
+          </div>
 
-          <button
-            onClick={openSpeakerNotes}
-            data-speaker-notes="true"
-            className="fixed bottom-4 right-4 bg-[#00ED64] hover:bg-[#00C050] text-black px-4 py-2 rounded-md flex items-center shadow-lg z-[9999]"
-            style={{ position: 'fixed', bottom: '1rem', right: '1rem' }}
-          >
-            <Monitor className="mr-2 h-5 w-5" />
-            Speaker Notes
-          </button>
+          {currentSlide < slides.length - 1 && (
+            <div>
+              <h2 className="text-[#00ED64] text-xl font-bold mb-2">Next Slide</h2>
+              <div className="bg-[#2a2a2a] p-4 rounded">
+                <h3 className="font-medium mb-2">{slides[currentSlide + 1].title}</h3>
+                <div className="text-sm text-gray-300">
+                  {slides[currentSlide + 1].speakerNotes?.map((note, index) => (
+                    <p key={index} className="mb-2">{note}</p>
+                  )) || 'No notes available'}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Timer */}
+          <div className="fixed top-4 right-4">
+            <div className="bg-[#00ED64] text-black px-4 py-2 rounded font-mono">
+              {/* You can add a timer here if needed */}
+              00:00
+            </div>
+          </div>
         </div>
       </div>
 
-    </>
+      {/* Toggle Button */}
+      <button
+        onClick={() => setShowSpeakerNotes(!showSpeakerNotes)}
+        className="fixed bottom-4 right-4 bg-[#00ED64] hover:bg-[#00C050] text-black px-4 py-2 rounded-md flex items-center shadow-lg z-[9999]"
+      >
+        <Monitor className="mr-2 h-5 w-5" />
+        Speaker Notes
+      </button>
+    </div>
   );
 }

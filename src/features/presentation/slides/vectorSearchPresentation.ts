@@ -35,7 +35,8 @@ import {
   VectorSearchWizard,
   AtlasClusterSetup,
   FullImageWelcome,
-  FullImageSage
+  FullImageSage,
+  FullImageEmbeddings
 } from '../components';
 
 export const vectorSearchPresentation: SlideSection = {
@@ -181,6 +182,24 @@ Imagine searching through endless scrolls...
         'Set up need for better solution'
       ]
     },
+    {
+      id: 'did-you-find-it',
+      type: 'text-full',
+      title: '... did you find it?',
+      note: '',
+      component: '',
+      content: '',
+      duration: 2,
+    },
+    {
+      id: 'didnt think so',
+      type: 'text-full',
+      title: 'didn\'t think so',
+      note: '',
+      component: '',
+      content: '',
+      duration: 2,
+    },
     // Slide 7
     {
       id: 'enter-sage',
@@ -276,6 +295,15 @@ Imagine searching through endless scrolls...
       title: 'So then... what are vectors?',
       note: '',
       component: '',
+      content: '',
+      duration: 2,
+    },
+    {
+      id: 'embeddings-image',
+      type: 'image-full',
+      title: '',
+      note: '',
+      component: FullImageEmbeddings,
       content: '',
       duration: 2,
     },

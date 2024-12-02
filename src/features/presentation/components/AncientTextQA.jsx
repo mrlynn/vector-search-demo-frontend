@@ -237,7 +237,7 @@ export default function AncientTextQA() {
         </div>
         <div>
           <h2 className="font-bold text-amber-900">Ancient Egyptian Wisdom</h2>
-          <p className="text-sm text-amber-700">
+          <p className="text-lg text-amber-700">
             Seek knowledge from the ancient texts
           </p>
         </div>
@@ -255,7 +255,7 @@ export default function AncientTextQA() {
               />
             </div>
             <p className="font-serif text-lg">Greetings, seeker of wisdom.</p>
-            <p className="text-sm mt-2 text-amber-700">
+            <p className="text-xl mt-2 text-amber-700">
               Ask about the ancient teachings and sacred texts of Egypt.
             </p>
           </div>
@@ -267,7 +267,7 @@ export default function AncientTextQA() {
               {/* Avatar */}
               {message.type === 'user' ? (
                 <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-amber-600">
-                  <User className="w-5 h-5 text-amber-50" />
+                  <User className="w-5 h-5 text-amber-50 text-lg" />
                 </div>
               ) : (
                 <AssistantAvatar />
