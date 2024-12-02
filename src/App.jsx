@@ -31,7 +31,7 @@ import { VIEW_MODES, searchTypes } from './features/search/constants/SearchTypes
 
 export default function App() {
   // State management
-  const [viewMode, setViewMode] = useState(VIEW_MODES.SEARCH);
+  const [viewMode, setViewMode] = useState(VIEW_MODES.COMPARE);
   const [presentationState, setPresentationState] = useState({
     currentSlide: 0,
     isAutoPlaying: true,

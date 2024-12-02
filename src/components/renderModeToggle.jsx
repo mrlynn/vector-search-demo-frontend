@@ -6,8 +6,8 @@ import { VIEW_MODES, VIEW_MODE_LABELS } from '../constants/viewModes';
 const renderModeToggle = ({ currentMode, onModeChange }) => {
   const getIcon = (mode) => {
     switch (mode) {
-      case VIEW_MODES.SEARCH:
-        return <Search className="w-4 h-4" />;
+      // case VIEW_MODES.SEARCH:
+      //   return <Search className="w-4 h-4" />;
       case VIEW_MODES.COMPARE:
         return <Layout className="w-4 h-4" />;
       case VIEW_MODES.DATA:
