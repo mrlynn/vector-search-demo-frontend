@@ -15,6 +15,8 @@ const Atlas3DVisualizer = () => {
     const labelsContainerRef = useRef(null);
     const activeLines = useRef([]);
 
+    
+
     // State for Atlas connection
     const [connectionDetails, setConnectionDetails] = useState({
         connectionString: 'mongodb+srv://readonly:Password123%21@performance.zbcul.mongodb.net/vector-search-demo?retryWrites=true&w=majority&appName=performance',
@@ -229,27 +231,36 @@ const Atlas3DVisualizer = () => {
         controlsRef.current = controls;
     };
 
+    const drawEdge = (startPosition, endPosition) => {
+        const points = [startPosition, endPosition];
+        const geometry = new THREE.BufferGeometry().setFromPoints(points);
+        const material = new THREE.LineBasicMaterial({ color: 0xFFFFFF, opacity: 0.5 });
+        const line = new THREE.Line(geometry, material);
+        sceneRef.current.add(line);
+    };
+
+
     const createVectorVisualization = (documents) => {
         if (!sceneRef.current) {
             console.error('No scene reference available');
             return;
         }
 
-        // Clear existing points
+        // Clear existing points and edges
         Object.values(pointsRef.current).forEach(point => {
             sceneRef.current.remove(point.mesh);
             point.label?.remove();
         });
         pointsRef.current = {};
 
-        const SCALE_FACTOR = 100;
+        // Clear existing edges
+        const existingEdges = sceneRef.current.children.filter(child => child.type === 'Line');
+        existingEdges.forEach(edge => sceneRef.current.remove(edge));
 
-        const truncateText = (text, maxLength = 10) => {
-            if (!text) return 'Doc';
-            return text.length > maxLength ?
-                `${text.substring(0, maxLength)}...` :
-                text;
-        };
+        const SCALE_FACTOR = 100;
+        const proximityThreshold = 1.5; // Adjust this value to control edge connections
+
+        const positions = []; // Store positions for proximity checking
 
         documents.forEach((doc, index) => {
             const position = new THREE.Vector3(
@@ -258,8 +269,8 @@ const Atlas3DVisualizer = () => {
                 doc.embedding[2] * SCALE_FACTOR
             );
 
-            // Create sphere
-            const geometry = new THREE.SphereGeometry(0.5);
+            // Create sphere for each document
+            const geometry = new THREE.SphereGeometry(0.2); // Adjusted size
             const material = new THREE.MeshPhongMaterial({
                 color: 0x00ED64,
                 opacity: 0.8,
@@ -273,22 +284,24 @@ const Atlas3DVisualizer = () => {
             // Create label with hover functionality
             const label = document.createElement('div');
             label.className = 'absolute text-sm font-medium pointer-events-auto cursor-pointer bg-white/80 px-1.5 py-0.5 rounded';
-            label.textContent = truncateText(doc.title || `Doc ${index + 1}`);
+            label.textContent = doc.title || `Doc ${index + 1}`;
             label.style.color = '#001E2B';
 
-            // Simple hover handlers
+            // Hover effects
             const handleMouseEnter = () => {
                 setHoveredPoint(doc);
                 label.style.fontWeight = 'bold';
                 label.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
-                sphere.scale.setScalar(1.3);
+                sphere.scale.setScalar(1.5); // Scale up on hover
+                material.emissive.set(0x00FF00); // Change color to green on hover
             };
 
             const handleMouseLeave = () => {
                 setHoveredPoint(null);
                 label.style.fontWeight = 'normal';
                 label.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
-                sphere.scale.setScalar(1.0);
+                sphere.scale.setScalar(1.0); // Reset scale
+                material.emissive.set(0x00ED64); // Reset color
             };
 
             label.addEventListener('mouseenter', handleMouseEnter);
@@ -307,9 +320,21 @@ const Atlas3DVisualizer = () => {
             };
 
             sceneRef.current.add(sphere);
+            positions.push(position); // Store position for proximity checking
         });
 
-        // Return cleanup function
+        // Draw edges based on proximity
+        for (let i = 0; i < positions.length; i++) {
+            for (let j = i + 1; j < positions.length; j++) {
+                const distance = positions[i].distanceTo(positions[j]);
+                if (distance < proximityThreshold) {
+                    drawEdge(positions[i], positions[j]);
+                }
+            }
+        }
+
+        // Function to draw edges between points
+        
         return () => {
             Object.values(pointsRef.current).forEach(point => {
                 point.cleanup?.();
@@ -372,7 +397,7 @@ const Atlas3DVisualizer = () => {
 
                     <div className="space-y-8">
                         <input
-                            type="text"
+                            type="password"
                             defaultValue="mongodb+srv://readonly:Password123%21@performance.zbcul.mongodb.net/sample_mflix?retryWrites=true&w=majority&appName=performance"
                             placeholder="Connection String"
                             className="w-full p-2 border rounded text-black"

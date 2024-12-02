@@ -13,7 +13,7 @@ import 'reactflow/dist/style.css';
 const AncientLibraryFlowWrapper = () => {
   return (
     <ReactFlowProvider>
-      <div style={{ width: '100%', height: '700px' }}>
+      <div className="fixed inset-0 bg-[#1A0F0A]">
         <AncientLibraryFlow />
       </div>
     </ReactFlowProvider>
@@ -27,14 +27,20 @@ const AncientLibraryFlow = () => {
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const { fitView } = useReactFlow();
 
+  const lanes = [
+    { id: 'seeker-lane', label: 'Knowledge Seeker', x: 200 },
+    { id: 'sage-lane', label: 'Philosopher/Sage', x: 600 },
+    { id: 'library-lane', label: 'Great Library', x: 1000 }
+  ];
+
   const laneStyle = {
-    padding: 24,
+    padding: '24px 32px',
     borderRadius: 12,
     border: '2px solid #2A1810',
     backgroundColor: '#2A1810',
     color: '#E6D5AC',
-    width: 220,
-    fontSize: '16px',
+    width: 280,
+    fontSize: '18px',
     fontWeight: 'bold',
     boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.3)',
     transition: 'all 0.3s ease',
@@ -42,9 +48,9 @@ const AncientLibraryFlow = () => {
 
   const nodeStyle = {
     ...laneStyle,
-    width: 200,
-    padding: 16,
-    fontSize: '14px',
+    width: 240,
+    padding: 20,
+    fontSize: '16px',
     backgroundColor: '#3C2A20',
   };
 
@@ -65,18 +71,12 @@ const AncientLibraryFlow = () => {
     zIndex: 1000,
   };
 
-  const lanes = [
-    { id: 'seeker-lane', label: 'Knowledge Seeker', x: 150 },
-    { id: 'sage-lane', label: 'Philosopher/Sage', x: 450 },
-    { id: 'library-lane', label: 'Great Library', x: 750 }
-  ];
-
   const initialNodes = [
     // Lane Headers
     ...lanes.map(lane => ({
       id: lane.id,
       type: 'default',
-      position: { x: lane.x, y: 0 },
+      position: { x: lane.x, y: 50 },
       data: { label: lane.label },
       style: laneStyle,
     })),
@@ -84,55 +84,55 @@ const AncientLibraryFlow = () => {
     // Flow Nodes
     { 
       id: 'question', 
-      position: { x: lanes[0].x, y: 100 }, 
+      position: { x: lanes[0].x, y: 150 }, 
       data: { label: 'Deep Question About the Nature of Things' }, 
       style: nodeStyle 
     },
     { 
       id: 'interpret', 
-      position: { x: lanes[1].x, y: 100 }, 
+      position: { x: lanes[1].x, y: 150 }, 
       data: { label: 'Sage Contemplates the Question' }, 
       style: nodeStyle 
     },
     { 
       id: 'search', 
-      position: { x: lanes[1].x, y: 200 }, 
+      position: { x: lanes[1].x, y: 300 }, 
       data: { label: 'Recalls Relevant Ancient Texts' }, 
       style: nodeStyle 
     },
     { 
       id: 'scrolls', 
-      position: { x: lanes[2].x, y: 200 }, 
+      position: { x: lanes[2].x, y: 300 }, 
       data: { label: 'Ancient Scrolls and Manuscripts' }, 
       style: nodeStyle 
     },
     { 
       id: 'study', 
-      position: { x: lanes[2].x, y: 300 }, 
+      position: { x: lanes[2].x, y: 450 }, 
       data: { label: 'Deep Study of Texts' }, 
       style: nodeStyle 
     },
     { 
       id: 'synthesis', 
-      position: { x: lanes[1].x, y: 300 }, 
+      position: { x: lanes[1].x, y: 450 }, 
       data: { label: 'Synthesizes Ancient Wisdom' }, 
       style: nodeStyle 
     },
     { 
       id: 'wisdom', 
-      position: { x: lanes[1].x, y: 400 }, 
+      position: { x: lanes[1].x, y: 600 }, 
       data: { label: 'Combines with Personal Wisdom' }, 
       style: nodeStyle 
     },
     { 
       id: 'answer', 
-      position: { x: lanes[0].x, y: 400 }, 
+      position: { x: lanes[0].x, y: 600 }, 
       data: { label: 'Receives Illuminating Answer' }, 
       style: nodeStyle 
     },
     { 
       id: 'transcribe', 
-      position: { x: lanes[2].x, y: 400 }, 
+      position: { x: lanes[2].x, y: 600 }, 
       data: { label: 'New Knowledge Transcribed' }, 
       style: nodeStyle 
     },
@@ -329,47 +329,53 @@ const AncientLibraryFlow = () => {
   }, [fitView]);
 
   return (
-    <div className="w-full h-full bg-[#1A0F0A] rounded-lg relative">
+    <div className="w-full h-full bg-[#1A0F0A] relative">
       <ReactFlow
         nodes={nodes}
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         fitView
+        minZoom={0.5}
+        maxZoom={1.5}
         className="w-full h-full"
       >
-        <Background color="#2A1810" />
-        <Controls className="text-[#E6D5AC]" />
+        <Background color="#2A1810" gap={24} size={2} />
+        <Controls 
+          className="bg-[#2A1810] border border-[#E6D5AC]/20 text-[#E6D5AC]"
+          position="top-right"
+          showInteractive={false}
+        />
       </ReactFlow>
       
-      {/* Controls Overlay */}
-      <div className="absolute bottom-4 left-0 right-0 flex flex-col items-center gap-4">
+      {/* Updated Controls Overlay */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-6 z-10">
         {/* Step Description */}
-        <div className="bg-[#2A1810]/90 px-8 py-4 rounded-full border border-[#E6D5AC] text-[#E6D5AC] text-lg">
+        <div className="bg-[#2A1810]/95 backdrop-blur-sm px-10 py-5 rounded-full border border-[#E6D5AC] text-[#E6D5AC] text-xl font-medium shadow-lg">
           {animationSteps[step]?.description}
         </div>
 
         {/* Navigation Controls */}
-        <div className="flex gap-4 items-center">
+        <div className="flex gap-6 items-center">
           <button
             onClick={previousStep}
-            className="px-6 py-2 rounded-full bg-[#2A1810]/90 border border-[#E6D5AC] text-[#E6D5AC] hover:bg-[#3C2A20] transition-colors"
+            className="px-8 py-3 rounded-full bg-[#2A1810]/95 backdrop-blur-sm border border-[#E6D5AC] text-[#E6D5AC] hover:bg-[#3C2A20] transition-colors text-lg"
           >
             Previous
           </button>
           <button
             onClick={toggleAutoPlay}
-            className={`px-6 py-2 rounded-full border border-[#E6D5AC] transition-colors ${
+            className={`px-8 py-3 rounded-full border border-[#E6D5AC] transition-colors text-lg ${
               isAutoPlaying 
                 ? 'bg-[#E6D5AC] text-[#2A1810]' 
-                : 'bg-[#2A1810]/90 text-[#E6D5AC] hover:bg-[#3C2A20]'
+                : 'bg-[#2A1810]/95 backdrop-blur-sm text-[#E6D5AC] hover:bg-[#3C2A20]'
             }`}
           >
             {isAutoPlaying ? 'Pause' : 'Play'}
           </button>
           <button
             onClick={nextStep}
-            className="px-6 py-2 rounded-full bg-[#2A1810]/90 border border-[#E6D5AC] text-[#E6D5AC] hover:bg-[#3C2A20] transition-colors"
+            className="px-8 py-3 rounded-full bg-[#2A1810]/95 backdrop-blur-sm border border-[#E6D5AC] text-[#E6D5AC] hover:bg-[#3C2A20] transition-colors text-lg"
           >
             Next
           </button>

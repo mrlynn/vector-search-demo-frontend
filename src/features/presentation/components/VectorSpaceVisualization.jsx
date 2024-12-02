@@ -276,12 +276,12 @@ const handleZoomOut = () => {
   };
 
   const renderPoint = (point, i, j, center) => {
-    const x = point.x * 300;
-    const y = point.y * 300;
+    const x = point.x * 200;
+    const y = point.y * 200;
     const isHighlighted = hoveredPoint?.word === point.word;
     
-    // Calculate font size based on scale
-    const fontSize = (isHighlighted ? 0.9 : 0.7) * (300 / scale) * scale / 300; // Adjusted to scale with zoom
+    // Further reduce the radius of the sphere
+    const radius = (isHighlighted ? 2 : 1) * (200 / scale); // Further reduced size
 
     return (
       <g 
@@ -296,7 +296,7 @@ const handleZoomOut = () => {
         <circle
           cx={x}
           cy={y}
-          r={(isHighlighted ? 5 : 3) * (300 / scale)}
+          r={radius} // Updated to use the new radius
           fill={VECTOR_CLUSTERS[point.cluster].color}
           fillOpacity={isHighlighted ? 1 : 0.7}
         />
@@ -307,7 +307,7 @@ const handleZoomOut = () => {
           textAnchor="middle"
           fill={isHighlighted ? VECTOR_CLUSTERS[point.cluster].color : '#E6D5AC'}
           style={{
-            fontSize: `${fontSize}rem`, // Updated to use the calculated font size
+            fontSize: `${(isHighlighted ? 0.9 : 0.7) * (300 / scale)}rem`,
             fontWeight: isHighlighted ? 500 : 400,
             transition: 'all 0.2s ease',
             pointerEvents: 'none'

@@ -33,7 +33,9 @@ import {
   AtlasVectorVisualizer,
   Atlas3DVisualizer,
   VectorSearchWizard,
-  AtlasClusterSetup
+  AtlasClusterSetup,
+  FullImageWelcome,
+  FullImageSage
 } from '../components';
 
 export const vectorSearchPresentation: SlideSection = {
@@ -46,42 +48,26 @@ export const vectorSearchPresentation: SlideSection = {
     {
       id: 'hand', // Slide 1
       title: 'Welcome',
-      content: `Michael Lynn
-***Principal Developer Advocate, MongoDB***
-
-***My Passion:*** Helping developers leverage the power of MongoDB to build modern applications.
-
-***My Journey:*** 30 years as a developer, solutions architect, teacher, developer advocate and speaker.
-
-***My Experience:***
-- Traditional data storage and retrieval systems.
-Cutting-edge vector representations for advanced search.
-The transformative potential of Artificial Intelligence and LLMs.`,
+      content: 'Michael Lynn',
+      component: FullImageWelcome,
       note: 'Michael Lynn',
-      image: '',
+      image: '/slide2.png',
       speakerNotes: [
         'Introduce yourself',
         'Introduce the topic',
         'Introduce the audience'
       ],
       duration: 2,
-      type: 'text-full'
+      type: 'image-full'
     },
     // Slide 2
     {
       id: 'what-is-data',
       type: 'text-full',
-      title: 'What is Data?',
-      note: 'INTRODUCTION TO DATA',
+      title: 'WHAT IS DATA?',
+      note: '',
       component: '',
-      content: `
-
-### Data is the foundation of all human knowledge. It comes in many forms:
-- Text
-- Images
-- Audio
-- Video
-      `
+      content: ''
     },
     // Slide 3
     {
@@ -198,9 +184,10 @@ Imagine searching through endless scrolls...
     // Slide 7
     {
       id: 'enter-sage',
-      type: 'split',
+      type: 'image-full',
       title: 'Enter the Sage',
       note: 'THE SOLUTION',
+      component: FullImageSage,
       content: `
 ## The Ancient Librarian
 
@@ -350,6 +337,15 @@ Imagine searching through endless scrolls...
       title: '',
       note: '',
       component: AtlasVectorVisualizer,
+      content: '',
+      duration: 2,
+    },
+    {
+      id: 'atlas-3d-vector-visualizer',
+      type: 'text-full',
+      title: '',
+      note: '',
+      component: Atlas3DVisualizer,
       content: '',
       duration: 2,
     },

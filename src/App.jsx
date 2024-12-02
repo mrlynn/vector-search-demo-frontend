@@ -74,8 +74,8 @@ export default function App() {
 
   const getMobileMenuClasses = () => {
     const baseClasses = "md:hidden bg-black border-t border-white/10 transition-all duration-300";
-    return isMobileMenuOpen 
-      ? `${baseClasses} opacity-100 translate-y-0` 
+    return isMobileMenuOpen
+      ? `${baseClasses} opacity-100 translate-y-0`
       : `${baseClasses} opacity-0 -translate-y-2 pointer-events-none`;
   };
 
@@ -180,19 +180,37 @@ export default function App() {
 
   const handleModeChange = (newMode) => {
     setViewMode(newMode);
+    if (newMode === VIEW_MODES.PRESENTATION) {
+      // We need to wait a brief moment for the presentation component to mount
+      setTimeout(() => {
+        // Find and click the speaker notes button
+        const speakerNotesBtn = document.querySelector('[data-speaker-notes]');
+        if (speakerNotesBtn) {
+          speakerNotesBtn.click();
+        }
+      }, 100);
+    }
   };
 
   const renderMainContent = () => {
     // If in presentation mode, render without the header
     if (viewMode === VIEW_MODES.PRESENTATION) {
       return (
-        <div className="fixed inset-0 bg-black">
-          <PresentationMode
-            currentSlide={presentationState.currentSlide}
-            slides={presentationSlides}
-            onNavigate={setPresentationState}
-            onToggleFullscreen={toggleFullscreen}
-          />
+        <div className="fixed inset-0 bg-black overflow-hidden">
+          <div className="relative w-full h-full">  {/* Add relative container */}
+            <PresentationMode
+              currentSlide={presentationState.currentSlide}
+              slides={presentationSlides}
+              onNavigate={setPresentationState}
+              onToggleFullscreen={toggleFullscreen}
+              onSpeakerNotesRef={(openNotes) => {
+                // Store the function for later use
+                if (viewMode === VIEW_MODES.PRESENTATION) {
+                  openNotes();
+                }
+              }}
+            />
+          </div>
         </div>
       );
     }

@@ -263,7 +263,7 @@ const VectorSearchWizard = () => {
 
                             <div className="space-y-4">
                                 <input
-                                    type="text"
+                                    type="password"
                                     placeholder="MongoDB Connection String"
                                     className="w-full p-2 border rounded"
                                     value={connectionDetails.connectionString}

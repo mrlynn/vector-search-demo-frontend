@@ -6,7 +6,7 @@ import '../styles/presentation.css';
 import PresentationWrapper from '../v2/components/PresentationWrapper';
 import { PRESENTATION_FLAGS } from '../v2/config/flags';
 
-export default function PresentationMode({ currentSlide, slides, onNavigate }) {
+export default function PresentationMode({ currentSlide, slides, onNavigate, onSpeakerNotesRef }) {
 
   if (PRESENTATION_FLAGS.ENABLE_V2) {
     const v2Component = (
@@ -16,12 +16,18 @@ export default function PresentationMode({ currentSlide, slides, onNavigate }) {
         onNavigate={onNavigate}
       />
     );
-    
+
     // If V2 wrapper returned something, use it
     if (v2Component) {
       return v2Component;
     }
   }
+
+  useEffect(() => {
+    if (onSpeakerNotesRef) {
+      onSpeakerNotesRef(openSpeakerNotes);
+    }
+  }, []);
 
   const handleTouchStart = (e) => {
     setStartX(e.touches[0].clientX);
@@ -77,6 +83,7 @@ export default function PresentationMode({ currentSlide, slides, onNavigate }) {
   const openSpeakerNotes = () => {
     // First check if we already have a window open
     if (speakerWindow && !speakerWindow.closed) {
+      console.log('Speaker notes window already open, focusing on it');
       speakerWindow.focus();
       return;
     }
@@ -87,7 +94,7 @@ export default function PresentationMode({ currentSlide, slides, onNavigate }) {
       'speakerNotes',
       'width=800,height=600,menubar=no,toolbar=no,location=no,status=no'
     );
-    
+
     if (notesWindow) {
       // Simple HTML structure
       const html = `
@@ -151,25 +158,25 @@ export default function PresentationMode({ currentSlide, slides, onNavigate }) {
           </body>
         </html>
       `;
-      
+
       notesWindow.document.write(html);
       notesWindow.document.close();
-      
+
       // Set up timer
       const startTime = new Date();
       const timerElement = notesWindow.document.getElementById('timer');
-      
+
       const updateTimer = () => {
         const elapsed = Math.floor((new Date() - startTime) / 1000);
         const minutes = Math.floor(elapsed / 60);
         const seconds = elapsed % 60;
-        timerElement.textContent = 
+        timerElement.textContent =
           `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
       };
-      
+
       const timerInterval = setInterval(updateTimer, 1000);
       notesWindow.onbeforeunload = () => clearInterval(timerInterval);
-      
+
       setSpeakerWindow(notesWindow);
       setStartTime(startTime);
     }
@@ -179,7 +186,7 @@ export default function PresentationMode({ currentSlide, slides, onNavigate }) {
     if (speakerWindow && !speakerWindow.closed) {
       const currentNotesElement = speakerWindow.document.getElementById('current-notes');
       const nextNotesElement = speakerWindow.document.getElementById('next-notes');
-      
+
       if (currentNotesElement) {
         currentNotesElement.innerHTML = `
           <h3>${slides[currentSlide].title}</h3>
@@ -188,7 +195,7 @@ export default function PresentationMode({ currentSlide, slides, onNavigate }) {
           </div>
         `;
       }
-      
+
       if (nextNotesElement && currentSlide < slides.length - 1) {
         nextNotesElement.innerHTML = `
           <h3>${slides[currentSlide + 1].title}</h3>
@@ -201,6 +208,7 @@ export default function PresentationMode({ currentSlide, slides, onNavigate }) {
   }, [currentSlide, speakerWindow, slides]);
 
   const handlePrevious = () => {
+    console.log('Navigating to previous slide');
     onNavigate(prev => ({
       ...prev,
       currentSlide: (prev.currentSlide - 1 + slides.length) % slides.length
@@ -208,105 +216,116 @@ export default function PresentationMode({ currentSlide, slides, onNavigate }) {
   };
 
   const handleNext = () => {
+    console.log('Navigating to next slide');
     onNavigate(prev => ({
       ...prev,
       currentSlide: (prev.currentSlide + 1) % slides.length
     }));
   };
-  
+  console.log('Rendering PresentationMode, currentSlide:', currentSlide);
+  console.log('Should show speaker notes button:', true); // or whatever condition you want
+
   // src/features/presentation/components/PresentationMode.jsx
   return (
-    <div className="presentation-container min-h-screen bg-black"
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-    >
-      <div className="slide-content h-screen flex flex-col">
-        {/* Navigation Controls */}
-        <div className="absolute top-4 right-4 flex gap-4 z-20">
-          <button 
-            onClick={handlePrevious}
-            className="text-white/50 hover:text-white"
-          >
-            <ChevronLeft size={32} />
-          </button>
-          <span className="text-white/50">
-            {currentSlide + 1} / {slides.length}
-          </span>
-          <button 
-            onClick={handleNext}
-            className="text-white/50 hover:text-white"
-          >
-            <ChevronRight size={32} />
-          </button>
-        </div>
+    <>
+      <div className="presentation-container min-h-screen bg-black"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        <div className="slide-content h-screen flex flex-col">
+          {/* Navigation Controls */}
+          <div className="absolute top-4 right-4 flex gap-4 z-20">
+            <button
+              onClick={handlePrevious}
+              className="text-white/50 hover:text-white"
+            >
+              <ChevronLeft size={32} />
+            </button>
+            <span className="text-white/50">
+              {currentSlide + 1} / {slides.length}
+            </span>
+            <button
+              onClick={handleNext}
+              className="text-white/50 hover:text-white"
+            >
+              <ChevronRight size={32} />
+            </button>
+          </div>
 
-        {/* Main Content Area */}
-        <div className="flex-1 flex items-center justify-center p-8">
-          {isTextOnlySlide ? (
-            <div className="w-full h-full flex flex-col max-w-7xl mx-auto">
-              {/* Header */}
-              <div className="mb-8">
-                <h2 className="text-[#00ED64] text-xl tracking-wide uppercase text-center">
-                  {slide.note}
-                </h2>
-                <h1 className="text-5xl font-bold tracking-tight text-center text-white">
-                  {slide.title}
-                </h1>
-              </div>
-              
-              {/* Component or Content */}
-              <div className="flex-1 flex items-center justify-center">
-                {Component ? (
-                  getComponentWrapper(<Component slide={slide} />)
-                ) : (
-                  <div className="w-full max-w-4xl mx-auto">
-                    <MarkdownSlideContent content={slide.content} />
-                  </div>
-                )}
-              </div>
-            </div>
-          ) : (
-            // Split layout
-            <div className="w-full h-full max-w-7xl mx-auto grid grid-cols-2 gap-16 items-center">
-              {/* Text Content */}
-              <div className="space-y-8">
-                <div>
-                  <h2 className="text-[#00ED64] text-xl tracking-wide uppercase">
+          {/* Main Content Area */}
+          <div className="flex-1 flex items-center justify-center p-8">
+            {isTextOnlySlide ? (
+              <div className="w-full h-full flex flex-col max-w-7xl mx-auto">
+                {/* Header */}
+                <div className="mb-8">
+                  <h2 className="text-[#00ED64] text-xl tracking-wide uppercase text-center">
                     {slide.note}
                   </h2>
-                  <h1 className="text-5xl font-bold tracking-tight text-white">
+                  <h1 className="text-9xl font-bold tracking-tight text-center text-white">
                     {slide.title}
                   </h1>
                 </div>
-                <MarkdownSlideContent content={slide.content} />
-              </div>
 
-              {/* Visual Content */}
-              <div className="h-full flex items-center justify-center">
-                {Component ? (
-                  getComponentWrapper(<Component />)
-                ) : slide.image ? (
-                  <img
-                    src={slide.image}
-                    alt={slide.title}
-                    className="w-full h-full object-contain rounded-lg"
-                  />
-                ) : null}
+                {/* Component or Content */}
+                <div className="flex-1 flex items-center justify-center">
+                  {Component ? (
+                    getComponentWrapper(<Component slide={slide} />)
+                  ) : (
+                    <div className="w-full max-w-4xl mx-auto">
+                      <MarkdownSlideContent content={slide.content} />
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          )}
+            ) : (
+              // Split layout
+              <div className="w-full h-full max-w-7xl mx-auto grid grid-cols-2 gap-16 items-center">
+                {/* Text Content */}
+                <div className="space-y-8">
+                  <div>
+                    <h2 className="text-[#00ED64] text-xl tracking-wide uppercase">
+                      {slide.note}
+                    </h2>
+                    <h1 className="text-5xl font-bold tracking-tight text-white">
+                      {slide.title}
+                    </h1>
+                  </div>
+                  <MarkdownSlideContent content={slide.content} />
+                </div>
+
+                {/* Visual Content */}
+                <div className="h-full flex items-center justify-center">
+                  {Component ? (
+                    getComponentWrapper(<Component />)
+                  ) : slide.image ? (
+                    <img
+                      src={slide.image}
+                      alt={slide.title}
+                      className="w-full h-full object-contain rounded-lg"
+                    />
+                  ) : null}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Speaker Notes Button */}
+        <div className="fixed right-4 bottom-4" style={{ zIndex: 99999 }}>
+
+          <button
+            onClick={openSpeakerNotes}
+            data-speaker-notes="true"
+            className="fixed bottom-4 right-4 bg-[#00ED64] hover:bg-[#00C050] text-black px-4 py-2 rounded-md flex items-center shadow-lg z-[9999]"
+            style={{ position: 'fixed', bottom: '1rem', right: '1rem' }}
+          >
+            <Monitor className="mr-2 h-5 w-5" />
+            Speaker Notes
+          </button>
         </div>
       </div>
 
-      {/* Speaker Notes Button */}
-      <button
-        onClick={openSpeakerNotes}
-        className="fixed bottom-4 right-4 bg-[#00ED64] hover:bg-[#00C050] text-black px-4 py-2 rounded-md flex items-center shadow-lg z-50"
-      >
-        <Monitor className="mr-2 h-5 w-5" />
-        Speaker Notes
-      </button>
-    </div>
+    </>
   );
 }
