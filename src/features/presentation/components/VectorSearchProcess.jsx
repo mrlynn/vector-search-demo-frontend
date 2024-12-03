@@ -67,7 +67,7 @@ embed("Learn about MongoDB...")`,
                   <div className={`p-4 rounded-full ${index === activeStep ? 'bg-blue-500 text-black' : 'bg-gray-200'}`}>
                     <StepIcon size={24} />
                   </div>
-                  <span className="text-black text-sm mt-2 font-medium">{step.title}</span>
+                  <span className="text-black text-lg mt-2 font-medium">{step.title}</span>
                 </div>
                 {index < steps.length - 1 && (
                   <ArrowRight className="mx-4 text-gray-400" />
@@ -79,7 +79,7 @@ embed("Learn about MongoDB...")`,
 
         {/* Code visualization */}
         <div className="bg-gray-50 p-4 rounded-lg min-h-48">
-          <pre className="text-sm overflow-x-auto">
+          <pre className="text-2xl overflow-x-auto">
             <code className="text-black">
               {steps[activeStep].content}
             </code>

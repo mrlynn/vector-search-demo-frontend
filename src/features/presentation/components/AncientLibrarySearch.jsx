@@ -159,7 +159,7 @@ const AncientLibrarySearch = () => {
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             placeholder={`Search by ${searchField}... (exact match required)`}
-                            className="w-full px-4 py-3 pr-10 rounded-lg border-2 border-amber-300 text-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+                            className="w-full text-4xl px-4 py-3 pr-10 rounded-lg border-2 border-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-500"
                         />
                         {searchTerm && (
                             <button

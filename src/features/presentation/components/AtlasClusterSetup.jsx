@@ -79,13 +79,13 @@ const AtlasClusterSetup = () => {
                   <div className={`p-3 rounded-lg ${step.color}`}>
                     <Icon className="text-white" size={24} />
                   </div>
-                  <h3 className="text-lg font-bold text-gray-800">
+                  <h3 className="text-2xl font-bold text-gray-800">
                     {step.title}
                   </h3>
                 </div>
 
                 {/* Description */}
-                <p className="text-sm text-gray-600 mt-2">{step.description}</p>
+                <p className="text-2xl text-gray-600 mt-2">{step.description}</p>
 
                 {/* Screenshot */}
                 {step.image && (
@@ -102,11 +102,11 @@ const AtlasClusterSetup = () => {
 
         {/* Modal */}
         {isModalOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center min-w-100 justify-center z-50">
             <div className="bg-white rounded-lg shadow-lg p-6 max-w-2xl w-full">
               {/* Modal Header */}
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-xl font-bold text-gray-800">
+                <h3 className="text-3xl font-bold text-gray-800">
                   Step {activeStep + 1}: {steps[activeStep].title}
                 </h3>
                 <button
@@ -119,7 +119,7 @@ const AtlasClusterSetup = () => {
 
               {/* Modal Content */}
               <div className="space-y-4">
-                <p className="text-gray-600">{steps[activeStep].description}</p>
+                <p className="text-gray-600 text-lg">{steps[activeStep].description}</p>
                 {steps[activeStep].image && (
                   <img
                     src={steps[activeStep].image}
@@ -130,7 +130,7 @@ const AtlasClusterSetup = () => {
                 {steps[activeStep].action && (
                   <button
                     onClick={steps[activeStep].action}
-                    className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+                    className="mt-4 bg-green-500 text-white py-2 px-4 rounded hover:bg-blue-600"
                   >
                     Learn More
                   </button>

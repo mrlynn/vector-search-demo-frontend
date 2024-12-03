@@ -66,10 +66,10 @@ const VectorExplanationSlide = () => {
               <div className="space-y-2">
                 <h4 className="font-medium text-black">Text Vectors</h4>
                 <div className="p-4 bg-white rounded border border-gray-200">
-                  <p className="text-sm text-black mb-2">"MongoDB is a database"</p>
+                  <p className="text-2xl text-black mb-2">"MongoDB is a database"</p>
                   <p className="font-mono text-xs text-black">[0.2, 0.8, 0.3, ...]</p>
                 </div>
-                <p className="text-sm text-black">Captures semantic meaning and context</p>
+                <p className="text-2xl text-black">Captures semantic meaning and context</p>
               </div>
 
               <div className="space-y-2">
@@ -78,16 +78,16 @@ const VectorExplanationSlide = () => {
                   <div className="w-12 h-12 bg-gray-200 rounded mb-2"></div>
                   <p className="font-mono text-xs text-black">[0.7, 0.2, 0.9, ...]</p>
                 </div>
-                <p className="text-sm text-black">Represents visual features and patterns</p>
+                <p className="text-2xl text-black">Represents visual features and patterns</p>
               </div>
 
               <div className="space-y-2">
                 <h4 className="font-medium text-black">User Behavior Vectors</h4>
                 <div className="p-4 bg-white rounded border border-gray-200">
-                  <p className="text-sm text-black mb-2">Clicks, views, purchases</p>
+                  <p className="text-2xl text-black mb-2">Clicks, views, purchases</p>
                   <p className="font-mono text-xs text-black">[0.4, 0.6, 0.1, ...]</p>
                 </div>
-                <p className="text-sm text-black">Encodes user preferences and patterns</p>
+                <p className="text-2xl text-black">Encodes user preferences and patterns</p>
               </div>
             </div>
           </div>

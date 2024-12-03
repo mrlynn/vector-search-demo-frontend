@@ -46,7 +46,7 @@ const VectorSearchWizard = () => {
 
     // Form states
     const [connectionDetails, setConnectionDetails] = useState({
-        connectionString: '',
+        connectionString: 'mongodb+srv://readonly:Password123%21@performance.zbcul.mongodb.net/sample_mflix?retryWrites=true&w=majority&appName=performance',
         database: '',
         collection: ''
     });

@@ -30,7 +30,7 @@ const LookupTableModal = ({ isOpen, onClose }) => {
                     <table className="w-full border-collapse">
                         <thead>
                             <tr className="bg-gray-50">
-                                <th className="text-left p-4 text-2xl text-gray-700 border">Word</th>
+                                <th className="text-left p-4 text-xl text-gray-700 border">Word</th>
                                 {[0, 1, 2, 3, 4].map(i => (
                                     <th key={i} className="p-4 text-xl text-gray-700 border text-center w-[150px]">
                                         dim_{i}
@@ -48,7 +48,7 @@ const LookupTableModal = ({ isOpen, onClose }) => {
                                         ${selectedToken === word ? 'bg-purple-50' : 'hover:bg-gray-50'}
                                     `}
                                 >
-                                    <td className="p-4 border font-mono text-4xl text-gray-900">
+                                    <td className="p-4 border font-mono text-2xl text-gray-900">
                                         {word}
                                     </td>
                                     {vector.map((value, idx) => (
@@ -148,7 +148,7 @@ Layer 2 → [0.5, 0.3, 0.6]`,
             <CardHeader className="border-b">
                 <CardTitle className="text-xl">How LLMs Convert Words to Vectors</CardTitle>
             </CardHeader>
-            <CardContent className="p-6 h-full min-h-[500px]">
+            <CardContent className="p-6 h-full min-h-[300px]">
                 <div className="flex items-start space-x-4">
                     {steps.map((step, index) => (
                         <div key={index} className="flex-1 min-h-[400px]">
@@ -171,10 +171,10 @@ Layer 2 → [0.5, 0.3, 0.6]`,
                                 <div className="text-xl mb-2">
                                     [{step.title}]
                                 </div>
-                                <div className="font-mono text-3xl whitespace-pre">
+                                <div className="font-mono text-xl whitespace-pre">
                                     {step.content}
                                 </div>
-                                <div className={`text-4xl mt-2 ${activeStep === index ? 'text-black-500' : 'text-gray-500'}`}>
+                                <div className={`text-2xl mt-2 ${activeStep === index ? 'text-black-500' : 'text-gray-500'}`}>
                                     {step.description}
                                 </div>
                                 {activeStep === index && step.extraButton && (

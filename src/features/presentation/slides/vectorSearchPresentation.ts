@@ -42,7 +42,11 @@ import {
   TimeLine,
   VectorTransformation,
   LLMVectorFlow,
-  EmbeddingProcess
+  EmbeddingProcess,
+  DataGrowthCharts,
+  DataUnitsComparison,
+  DataScaleComparison,
+  GeoVectorVisualization
 } from '../components';
 
 export const vectorSearchPresentation: SlideSection = {
@@ -54,10 +58,10 @@ export const vectorSearchPresentation: SlideSection = {
     // Slide 1
     {
       id: 'hand', // Slide 1
-      title: '',
-      content: 'Michael Lynn',
+      title: 'Michael Lynn',
+      content: 'Principal Developer Advocate, MongoDB',
       component: FullImageWelcome,
-      note: 'Michael Lynn',
+      note: '',
       image: '/title.png',
       speakerNotes: [
         'Introduce yourself',
@@ -71,7 +75,7 @@ export const vectorSearchPresentation: SlideSection = {
     {
       id: 'timeline',
       type: 'text-full',
-      title: 'Timeline',
+      title: 'timeline',
       note: '',
       component: TimeLine,
       content: ''
@@ -79,12 +83,87 @@ export const vectorSearchPresentation: SlideSection = {
     {
       id: 'what-is-data',
       type: 'text-full',
-      title: 'what is data?',
+      title: `what is data?
+      🤷‍♂️`,
       note: '',
       component: '',
       content: ''
     },
+    {
+      id: 'data-facts',
+      type: 'text-full',
+      title: 'data facts',
+      note: '',
+      component: DataGrowthCharts,
+      content: `Volume Milestones:
+
+
+In 1992, global internet traffic was approximately 100 GB per day
+By 2022, global internet traffic reached about 150,700 GB per second
+By 2025, it's projected that 463 exabytes of data will be created each day globally
+
+
+## Historical Context:
+
+
+All words ever spoken by humans until 2003 were estimated to equal about 5 exabytes
+In 2023, we create that much data every few days
+90% of all data ever created was generated between 2020-2022
+
+
+## Social Media Impact:
+
+
+### Every minute in 2023:
+
+- Users send 16 million text messages
+- TikTok users watch 167 million videos
+- Instagram users share 65,000 photos
+YouTube users upload 500 hours of video
+
+
+## Business Data Growth:
+
+
+### Companies went from managing megabytes in the 1990s to petabytes today
+
+### The average company's data doubles every 12-18 months
+
+### By 2025, 75% of enterprise data will be created and processed outside a traditional centralized data center
+
+
+IoT Contribution:
+
+
+Connected IoT devices will generate 73.1 ZB (zettabytes) of data by 2025
+A single autonomous vehicle generates about 4 terabytes of data per day
+Smart factories create about 1 petabyte of data per day
+
+
+Healthcare Data:
+
+
+Medical data doubles every 73 days
+A single patient generates around 80 megabytes of imaging and EMR data annually
+Genomic sequencing of one person generates about 200 gigabytes of raw data`
+    },
     // Slide 3
+    {
+      id: 'data-units-comparison',
+      type: 'text-full',
+      title: 'data units comparison',
+      note: '',
+      component: DataUnitsComparison,
+      content: ''
+    },
+    {
+      id: 'data-scale-comparison',
+      type: 'text-full',
+      title: 'data scale comparison',
+      note: '',
+      component: DataScaleComparison,
+      content: ''
+    },
     {
       id: 'data-evolution', // Slide 2
       type: 'text-full',
@@ -104,7 +183,7 @@ export const vectorSearchPresentation: SlideSection = {
     {
       id: 'alexandria-parallel', // Slide 3
       type: 'split',
-      title: 'The Great Library',
+      title: 'the great library',
       note: 'HISTORICAL PARALLEL',
       content: `
 ## Lessons from Alexandria
@@ -151,7 +230,7 @@ The world's first universal library:
     {
       id: 'can-you-relate?',
       type: 'text-full',
-      title: 'Lets learn about spell 125...',
+      title: '✨ lets learn about spell 125...',
       note: '',
       component: '',
       content: '',
@@ -160,7 +239,7 @@ The world's first universal library:
     {
       id: 'can-you-relate-2',
       type: 'text-full',
-      title: 'Weighing of the Heart',
+      title: 'aka... weighing of the heart ❤️',
       note: '',
       component: '',
       content: '',
@@ -169,7 +248,7 @@ The world's first universal library:
     {
       id: 'can-you-relate-3',
       type: 'text-full',
-      title: 'Search through the library to find a text with more information...',
+      title: '👀 search through the library to find a text with more information...',
       note: '',
       component: '',
       content: '',
@@ -179,7 +258,7 @@ The world's first universal library:
     {
       id: 'endless-scroll', // Slide 4
       type: 'text-full',
-      title: 'Searching the Ancient Library',
+      title: '👀 Find the right text...',
       note: 'THE CHALLENGE',
       component: AncientLibraryScroll,
       content: `
@@ -197,7 +276,7 @@ Imagine searching through endless scrolls...
     {
       id: 'did-you-find-it',
       type: 'text-full',
-      title: '... did you find it?',
+      title: '... did you find it? 🤷',
       note: '',
       component: '',
       content: '',
@@ -206,7 +285,7 @@ Imagine searching through endless scrolls...
     {
       id: 'data-is-not-enough',
       type: 'text-full',
-      title: 'data is not enough...',
+      title: '☹️ data is not enough...',
       note: '',
       component: '',
       content: '',
@@ -215,7 +294,7 @@ Imagine searching through endless scrolls...
     {
       id: 'perhaps-we-need-search',
       type: 'text-full',
-      title: 'perhaps we need search...',
+      title: '🔎 perhaps we need search...',
       note: '',
       component: '',
       content: '',
@@ -233,7 +312,7 @@ Imagine searching through endless scrolls...
     {
       id: 'lets-try-again-2',
       type: 'text-full',
-      title: 'basic search still leaves us hanging...',
+      title: '😩 basic search still leaves us hanging...',
       note: '',
       component: '',
       content: '',
@@ -252,7 +331,7 @@ Imagine searching through endless scrolls...
     {
       id: 'enter-sage',
       type: 'image-full',
-      title: 'Enter the Sage',
+      title: 'enter the sage',
       note: 'THE SOLUTION',
       component: FullImageSage,
       content: `
@@ -275,8 +354,8 @@ Imagine searching through endless scrolls...
     {
       id: 'ancient-parallel',
       type: 'text-full',
-      title: 'How to get help...',
-      note: 'ACCESSING THE SAGE',
+      title: 'how to get help...',
+      note: 'accessing the sage',
       component: AncientLibraryFlowWrapper,
       content: ''
     },
@@ -293,8 +372,8 @@ Imagine searching through endless scrolls...
     {
       "id": "modern-sage-intro",
       "type": "image-full",
-      "title": "The Modern Sage: Vector Search & AI",
-      "note": "INTRODUCING MODERN INTELLIGENCE",
+      "title": "the modern sage: vector search & ai",
+      "note": "introducing modern intelligence",
       "content": '',
       "component": FullImageSlide,
       "image": "/modern-sage.webp",
@@ -310,8 +389,8 @@ Imagine searching through endless scrolls...
     {
       id: 'swim-lane-flow',
       type: 'text-full',
-      title: 'The Modern Sage',
-      note: 'THE SOLUTION',
+      title: 'the modern sage',
+      note: 'the solution',
       component: SwimLaneFlow,
       content: '',
       duration: 2,
@@ -338,8 +417,8 @@ Imagine searching through endless scrolls...
     {
       id: 'ai-explanation',
       type: 'text-full',
-      title: 'AI Explained',
-      note: 'AI EXPLANATION',
+      title: 'ai explained',
+      note: 'ai explanation',
       component: AIExplanationSlide,
       content: '',
       duration: 2,
@@ -358,7 +437,7 @@ Imagine searching through endless scrolls...
     {
       id: 'vectors',
       type: 'text-full',
-      title: 'So then... what are vectors?',
+      title: 'so then... what are vectors?',
       note: '',
       component: '',
       content: '',
@@ -367,10 +446,10 @@ Imagine searching through endless scrolls...
     {
       id: 'embeddings-image',
       type: 'image-full',
-      title: '',
+      title: 'Array (1536)',
       note: '',
       component: FullImageEmbeddings,
-      content: '',
+      content: '[0.008, 0.009, 0.010, ...]',
       duration: 2,
     },
     // Slide 14
@@ -395,7 +474,7 @@ Imagine searching through endless scrolls...
     {
       id: 'lets-take-a-look',
       type: 'text-full',
-      title: 'lets take a look at vectors in 2 demensions...',
+      title: 'where have we seen this before?',
       note: '',
       component: '',
       content: '',
@@ -412,22 +491,45 @@ Imagine searching through endless scrolls...
     //     duration: 2
     // },
     // Slide 16
+    // {
+    //   id: 'vector-space',
+    //   type: 'text-full',
+    //   title: '',
+    //   note: '',
+    //   component: VectorSpaceVisualization,
+    //   content: '',
+    //   duration: 2,
+    //   speakerNotes: [
+    //     'Opening Line: Lets step into the world of intelligence—starting with data. Here, I’m introducing you to the concept of vector space. Imagine a world where every concept, idea, or entity is represented as a point in a multi-dimensional space.',
+    //     'Explanation: What youre seeing here is a visualization of how an LLM (Large Language Model) organizes related concepts into a vector space. Each dot represents a concept, like Java, Nike, or Mint, while the proximity between them shows how closely related they are.',
+    //     'Engage Audience: Notice how the clusters naturally form based on context. For instance, \'Technology\' concepts like \'Python\' and Java group together, while Places & Geography, like Phoenix and China, form their own distinct neighborhood. This is the power of vectorization—it reveals hidden relationships in your data.',
+    //     'This is a 2D representation of a much higher-dimensional space'
+    //   ]
+    // },
+    // Slide 17
     {
-      id: 'vector-space',
+      id: 'geo-vector-visualization',
       type: 'text-full',
-      title: '',
+      title: '2d vector visualization',
       note: '',
-      component: VectorSpaceVisualization,
+      component: GeoVectorVisualization,
       content: '',
       duration: 2,
-      speakerNotes: [
-        'Opening Line: Lets step into the world of intelligence—starting with data. Here, I’m introducing you to the concept of vector space. Imagine a world where every concept, idea, or entity is represented as a point in a multi-dimensional space.',
-        'Explanation: What youre seeing here is a visualization of how an LLM (Large Language Model) organizes related concepts into a vector space. Each dot represents a concept, like Java, Nike, or Mint, while the proximity between them shows how closely related they are.',
-        'Engage Audience: Notice how the clusters naturally form based on context. For instance, \'Technology\' concepts like \'Python\' and Java group together, while Places & Geography, like Phoenix and China, form their own distinct neighborhood. This is the power of vectorization—it reveals hidden relationships in your data.',
-        'This is a 2D representation of a much higher-dimensional space'
-      ]
     },
-    // Slide 17
+    {
+      id: 'add-vectors-challenge',
+      type: 'text-full',
+      title: 'the difference...',
+      note: '',
+      component: '',
+      content: `
+# Geo Vectors have 2 (or 3) dimensions
+- latitude & longitude, altitude
+# Text Vectors have 1536, sometimes more dimensions
+- each vector is a dimension in the LLM embedding space
+      `,
+      duration: 2,
+    },
     {
       id: 'vector-space-intro',
       type: 'text-full',
@@ -616,45 +718,6 @@ Imagine searching through endless scrolls...
         "Highlight how semantic search aligns with user intent for more accurate and meaningful results."
       ]
     },
-    // Slide 27
-    {
-      id: 'practical-applications',
-      type: 'split',
-      title: 'Real-World Use Cases',
-      note: 'APPLICATIONS',
-      content: `
-## Production Applications
-
-\`\`\`javascript
-// Product Recommendations
-const similar = await findSimilarProducts(
-  productId,
-  {
-    numCandidates: 100,
-    limit: 5,
-    minScore: 0.8
-  }
-);
-
-// Content Discovery
-const related = await findRelatedArticles(
-  articleVector,
-  {
-    categories: ['tech', 'ai'],
-    maxDistance: 0.3
-  }
-);
-\`\`\`
-      `,
-      image: '/applications.webp',
-      duration: 2,
-      speakerNotes: [
-        'Real production use cases',
-        'Implementation patterns',
-        'Performance considerations',
-        'Integration strategies'
-      ]
-    },
 
     // Slide 28
     {
@@ -699,6 +762,16 @@ github.com/mongodb-developer/vector-search-starter
       title: '',
       note: '',
       component: AtlasClusterSetup,
+      content: '',
+      duration: 2,
+    },
+    {
+      id: 'atlas-cluster-setup-qr',
+      type: 'image-full',
+      image: '/qr.png',
+      title: 'Get Started with MongoDB Atlas',
+      note: '',
+      component: '',
       content: '',
       duration: 2,
     }

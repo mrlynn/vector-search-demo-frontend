@@ -141,7 +141,7 @@ const AtlasVectorVisualizer = () => {
                             <label className="block text-sm font-medium text-gray-700">
                                 Connection String
                                 <input
-                                    type="text"
+                                    type="password"
                                     placeholder="mongodb+srv://..."
                                     className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-black"
                                     value={connectionDetails.connectionString}
