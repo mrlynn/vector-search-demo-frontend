@@ -106,7 +106,7 @@ const AIVectorsSlide = () => {
           <div className="flex items-center justify-between w-full max-w-4xl">
             {/* Human Content */}
             <div className="flex flex-col items-center space-y-2">
-              <div className="p-4 bg-blue-100 rounded-lg">
+              <div className="p-4 bg-green-100 rounded-lg">
                 <FileText size={40} className="text-blue-600" />
               </div>
               <span className="text-black font-medium">Human Content</span>
@@ -121,7 +121,7 @@ const AIVectorsSlide = () => {
             {/* AI Processing */}
             <div className="flex flex-col items-center">
               <ArrowRight size={24} className={`text-gray-400 transition-opacity duration-300 ${showProcessing ? 'opacity-100' : 'opacity-0'}`} />
-              <div className="p-2 bg-blue-500 rounded-lg mt-2">
+              <div className="p-2 bg-green-500 rounded-lg mt-2">
                 <Brain size={24} className={`text-white ${showProcessing ? 'animate-pulse' : 'opacity-0'}`} />
               </div>
               <span className="text-sm text-black mt-1">AI Processing</span>
@@ -129,7 +129,7 @@ const AIVectorsSlide = () => {
 
             {/* Vector Embedding */}
             <div className="flex flex-col items-center space-y-2">
-              <div className="p-4 bg-blue-100 rounded-lg">
+              <div className="p-4 bg-green-100 rounded-lg">
                 <Binary size={40} className="text-blue-600" />
               </div>
               <span className="text-black font-medium">Vector Embedding</span>
@@ -144,7 +144,7 @@ const AIVectorsSlide = () => {
             {/* Similarity Search */}
             <div className="flex flex-col items-center">
               <ArrowRight size={24} className={`text-gray-400 transition-opacity duration-300 ${showSearch ? 'opacity-100' : 'opacity-0'}`} />
-              <div className="p-2 bg-blue-500 rounded-lg mt-2">
+              <div className="p-2 bg-green-500 rounded-lg mt-2">
                 <Search size={24} className={`text-white ${showSearch ? 'animate-pulse' : 'opacity-0'}`} />
               </div>
               <span className="text-sm text-black mt-1">Similarity Search</span>
@@ -152,7 +152,7 @@ const AIVectorsSlide = () => {
 
             {/* Similar Content */}
             <div className="flex flex-col items-center space-y-2">
-              <div className="p-4 bg-blue-100 rounded-lg">
+              <div className="p-4 bg-green-100 rounded-lg">
                 <FileText size={40} className="text-blue-600" />
               </div>
               <span className="text-black font-medium">Similar Content</span>

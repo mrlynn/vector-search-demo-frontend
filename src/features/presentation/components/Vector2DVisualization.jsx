@@ -112,10 +112,10 @@ const Vector2DVisualization = () => {
     Object.entries(vectors).forEach(([word, vector]) => {
       const [x, y] = toCanvasCoords(vector);
       
-      // Draw point
+      // Draw point with increased size
       ctx.beginPath();
       ctx.fillStyle = hoveredWord === word ? '#2563eb' : '#666';
-      ctx.arc(x, y, 5 * scale, 0, 2 * Math.PI);
+      ctx.arc(x, y, 10 * scale, 0, 2 * Math.PI);
       ctx.fill();
       
       // Draw label

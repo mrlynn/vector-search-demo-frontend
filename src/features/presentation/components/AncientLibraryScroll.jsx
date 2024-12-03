@@ -1,13 +1,74 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Scroll, BookOpen } from 'lucide-react';
+import { Scroll, BookOpen, X, User, Calendar } from 'lucide-react';
+
+const BookModal = ({ book, onClose }) => {
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="bg-amber-50 rounded-lg max-w-2xl w-full relative border border-amber-200 shadow-xl">
+        <button 
+          onClick={onClose}
+          className="absolute top-4 right-4 text-amber-700 hover:text-amber-900"
+        >
+          <X className="w-6 h-6" />
+        </button>
+        
+        <div className="p-6">
+          <div className="flex items-start gap-4">
+            <div className="p-3 bg-amber-100 rounded-lg border border-amber-200">
+              <Scroll className="w-8 h-8 text-amber-700" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-xl font-serif font-bold text-amber-900">{book.title}</h3>
+              <div className="flex items-center gap-4 mt-2">
+                <div className="flex items-center gap-2 text-amber-700">
+                  <User className="w-4 h-4" />
+                  <span className="text-sm font-medium">{book.author}</span>
+                </div>
+                <div className="flex items-center gap-2 text-amber-700">
+                  <Calendar className="w-4 h-4" />
+                  <span className="text-sm font-medium">{book.year}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6 space-y-4">
+            <div className="bg-white bg-opacity-50 rounded-lg p-4 border border-amber-200">
+              <h4 className="font-serif text-lg font-semibold text-amber-900 mb-2">Description</h4>
+              <p className="text-amber-800 leading-relaxed">
+                {book.description}
+              </p>
+            </div>
+
+            <div className="bg-white bg-opacity-50 rounded-lg p-4 border border-amber-200">
+              <h4 className="font-serif text-lg font-semibold text-amber-900 mb-2">Contents</h4>
+              <p className="text-amber-800 leading-relaxed">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="bg-amber-100/50 px-6 py-4 rounded-b-lg border-t border-amber-200">
+          <button
+            onClick={onClose}
+            className="w-full p-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors font-medium"
+          >
+            Close Scroll
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const AncientLibraryScroll = () => {
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedBook, setSelectedBook] = useState(null);
   const loaderRef = useRef(null);
   const [page, setPage] = useState(1);
-  const [totalItems, setTotalItems] = useState(0); // Track total items for unique IDs
-
+  const itemCountRef = useRef(0); // Use ref to track total items
   // Ancient Egyptian inspired titles
   const titlePrefixes = [
     "Book of the Dead",
@@ -48,6 +109,8 @@ const AncientLibraryScroll = () => {
     "Khufu"
   ];
 
+  
+
   const generateDescription = (length) => {
     const words = [
       "lorem", "ipsum", "dolor", "sit", "amet", "consectetur", 
@@ -79,11 +142,11 @@ const AncientLibraryScroll = () => {
   const generateItems = (pageNumber) => {
     const newItems = [];
     const itemsPerPage = 15;
-    const startIndex = totalItems; // Use the current total as the starting index
     
     for (let i = 0; i < itemsPerPage; i++) {
+      const currentCount = itemCountRef.current;
       newItems.push({
-        id: `${startIndex + i}-${Date.now()}`, // Create truly unique IDs
+        id: `scroll-${currentCount + i}`, // Create truly unique IDs
         title: generateTitle(),
         author: generateAuthor(),
         description: generateDescription(8),
@@ -91,7 +154,7 @@ const AncientLibraryScroll = () => {
       });
     }
     
-    setTotalItems(totalItems + itemsPerPage); // Update total items
+    itemCountRef.current += itemsPerPage; // Update the counter
     return newItems;
   };
 
@@ -154,7 +217,8 @@ const AncientLibraryScroll = () => {
                     {items.map((item) => (
                         <tr 
                             key={item.id}
-                            className="hover:bg-amber-50 transition-colors text-base group"
+                            className="hover:bg-amber-50 transition-colors text-base group cursor-pointer"
+                            onClick={() => setSelectedBook(item)}
                         >
                             <td className="p-4 font-medium text-amber-900">{item.title}</td>
                             <td className="p-4 text-amber-800">{item.author}</td>
@@ -180,6 +244,14 @@ const AncientLibraryScroll = () => {
                 </div>
             )}
         </div>
+
+        {/* Book Modal */}
+        {selectedBook && (
+          <BookModal 
+            book={selectedBook} 
+            onClose={() => setSelectedBook(null)} 
+          />
+        )}
     </div>
   );
 };

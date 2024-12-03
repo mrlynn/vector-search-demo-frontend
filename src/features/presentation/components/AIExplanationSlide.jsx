@@ -43,7 +43,7 @@ const AIExplanationSlide = () => {
             return (
               <div key={index} className="p-6 bg-gray-50 rounded-lg">
                 <div className="flex items-start space-x-4">
-                  <div className="p-3 bg-blue-100 rounded-full">
+                  <div className="p-3 bg-green-100 rounded-full">
                     <IconComponent className="w-6 h-6 text-blue-600" />
                   </div>
                   <div className="space-y-2">

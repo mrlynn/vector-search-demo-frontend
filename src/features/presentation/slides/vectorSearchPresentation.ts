@@ -36,7 +36,13 @@ import {
   AtlasClusterSetup,
   FullImageWelcome,
   FullImageSage,
-  FullImageEmbeddings
+  FullImageEmbeddings,
+  AncientLibrarySearch,
+  TextSearchDemo2,
+  TimeLine,
+  VectorTransformation,
+  LLMVectorFlow,
+  EmbeddingProcess
 } from '../components';
 
 export const vectorSearchPresentation: SlideSection = {
@@ -48,11 +54,11 @@ export const vectorSearchPresentation: SlideSection = {
     // Slide 1
     {
       id: 'hand', // Slide 1
-      title: 'Welcome',
+      title: '',
       content: 'Michael Lynn',
       component: FullImageWelcome,
       note: 'Michael Lynn',
-      image: '/slide2.png',
+      image: '/title.png',
       speakerNotes: [
         'Introduce yourself',
         'Introduce the topic',
@@ -63,9 +69,17 @@ export const vectorSearchPresentation: SlideSection = {
     },
     // Slide 2
     {
+      id: 'timeline',
+      type: 'text-full',
+      title: 'Timeline',
+      note: '',
+      component: TimeLine,
+      content: ''
+    },
+    {
       id: 'what-is-data',
       type: 'text-full',
-      title: 'WHAT IS DATA?',
+      title: 'what is data?',
       note: '',
       component: '',
       content: ''
@@ -96,12 +110,11 @@ export const vectorSearchPresentation: SlideSection = {
 ## Lessons from Alexandria
 
 The world's first universal library:
+* Built 283 BCE
 * 700,000+ scrolls and books
 * Complex organization system
 * Expert librarians and scholars
 * Knowledge synthesis and creation
-
-> "Ancient wisdom meets modern technology"
       `,
       image: '/library.png',
       duration: 2,
@@ -127,7 +140,7 @@ The world's first universal library:
 
 > Imagine manually sifting through scrolls to discover connections.
 `,
-      "image": "/ancient-library-visualization.webp",
+      "image": "/wall-of-scrolls.webp",
       "duration": 2,
       "speakerNotes": [
         "Explain how knowledge was managed in the Library of Alexandria.",
@@ -156,11 +169,10 @@ The world's first universal library:
     {
       id: 'can-you-relate-3',
       type: 'text-full',
-      title: 'Negative Confession',
+      title: 'Search through the library to find a text with more information...',
       note: '',
       component: '',
-      content: `
-## The spell also includes a "Negative Confession", a list of 42 sins which the deceased claims not to have committed in their lifetime, addressed to a panel of 42 divine judges. This confession was intended to assert the purity and worthiness of the deceased to enter the afterlife.`,
+      content: '',
       duration: 2,
     },
     // Slide 6
@@ -192,9 +204,45 @@ Imagine searching through endless scrolls...
       duration: 2,
     },
     {
-      id: 'didnt think so',
+      id: 'data-is-not-enough',
       type: 'text-full',
-      title: 'didn\'t think so',
+      title: 'data is not enough...',
+      note: '',
+      component: '',
+      content: '',
+      duration: 2,
+    },
+    {
+      id: 'perhaps-we-need-search',
+      type: 'text-full',
+      title: 'perhaps we need search...',
+      note: '',
+      component: '',
+      content: '',
+      duration: 2,
+    },
+    {
+      id: 'ancient-library-search',
+      type: 'text-full',
+      title: '',
+      note: '',
+      component: AncientLibrarySearch,
+      content: '',
+      duration: 2,
+    },
+    {
+      id: 'lets-try-again-2',
+      type: 'text-full',
+      title: 'basic search still leaves us hanging...',
+      note: '',
+      component: '',
+      content: '',
+      duration: 2,
+    },
+    {
+      id: 'perhaps-we-need-better-search',
+      type: 'text-full',
+      title: 'perhaps we need better search...',
       note: '',
       component: '',
       content: '',
@@ -227,12 +275,21 @@ Imagine searching through endless scrolls...
     {
       id: 'ancient-parallel',
       type: 'text-full',
-      title: 'Ancient Wisdom, Modern Solutions',
-      note: 'PARALLEL SYSTEMS',
+      title: 'How to get help...',
+      note: 'ACCESSING THE SAGE',
       component: AncientLibraryFlowWrapper,
       content: ''
     },
     // Slide 9
+    {
+      id: 'so-it-was',
+      type: 'text-full',
+      title: 'so it was... so it shall be.',
+      note: '',
+      component: '',
+      content: '',
+      duration: 2,
+    },
     {
       "id": "modern-sage-intro",
       "type": "image-full",
@@ -269,6 +326,15 @@ Imagine searching through endless scrolls...
       duration: 2,
     },
     // Slide 11
+    {
+      id: 'missing-peices',
+      title: 'the missing link: context, semantic search',
+      content: '',
+      note: '',
+      component: '',
+      type: 'text-full',
+      duration: 2
+    },
     {
       id: 'ai-explanation',
       type: 'text-full',
@@ -314,6 +380,24 @@ Imagine searching through endless scrolls...
       title: '',
       note: '',
       component: VectorExplanationSlide,
+      content: '',
+      duration: 2,
+    },
+    {
+      id: 'vector-transformation',
+      type: 'text-full',
+      title: '',
+      note: '',
+      component: EmbeddingProcess,
+      content: '',
+      duration: 2,
+    },
+    {
+      id: 'lets-take-a-look',
+      type: 'text-full',
+      title: 'lets take a look at vectors in 2 demensions...',
+      note: '',
+      component: '',
       content: '',
       duration: 2,
     },

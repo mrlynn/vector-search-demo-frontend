@@ -4,7 +4,7 @@ const FullImageWelcome = () => {
   return (
     <div className="w-full h-full bg-black">
       <img 
-        src="/slide2.png"
+        src="/title.png"
         alt="Data to Intelligence" 
         className="w-full h-full object-cover"
       />

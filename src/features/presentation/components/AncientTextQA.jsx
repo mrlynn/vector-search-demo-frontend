@@ -282,7 +282,7 @@ export default function AncientTextQA() {
                     ? 'bg-red-50 text-red-600 border border-red-200'
                     : 'bg-amber-50 text-amber-900 border border-amber-200'
                 }`}>
-                  <p className="whitespace-pre-wrap">{message.content}</p>
+                  <p className="text-2xl whitespace-pre-wrap">{message.content}</p>
                 </div>
                 
                 {/* Book recommendations */}
@@ -348,7 +348,7 @@ export default function AncientTextQA() {
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             placeholder="Ask your question, seeker of wisdom..."
-            className="flex-1 p-3 rounded-full border border-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white text-amber-900 placeholder-amber-300"
+            className="flex-1 p-3 rounded-full text-4xl border border-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white text-amber-900 placeholder-amber-300"
             disabled={loading}
           />
           <button
