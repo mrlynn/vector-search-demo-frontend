@@ -41,7 +41,7 @@ const TypewriterText = ({ text, isActive, onComplete }) => {
 
 // Vector animation component
 const VectorAnimation = ({ numbers, isAnimating }) => (
-  <div className={`font-mono transition-opacity duration-500 ${isAnimating ? 'opacity-100' : 'opacity-0'}`}>
+  <div className={`font-mono text-2xl transition-opacity duration-500 ${isAnimating ? 'opacity-100' : 'opacity-0'}`}>
     [{numbers.map((n, i) => (
       <span 
         key={i} 
@@ -90,12 +90,12 @@ const AIVectorsSlide = () => {
 
 
   return (
-    <div className="p-8 bg-white rounded-lg shadow-lg">
+    <div className="p-8 bg-white rounded-lg shadow-lg min-w-[1000px] min-h-[1000px]">
       <div className="space-y-8">
         {/* Header */}
         <div className="text-center space-y-4">
           <h2 className="text-3xl font-bold text-black">AI & Vectors: The Connection</h2>
-          <p className="text-lg text-black">
+          <p className="text-4xl text-black">
             How AI transforms human content into mathematical representations
           </p>
         </div>
@@ -103,14 +103,14 @@ const AIVectorsSlide = () => {
         {/* Main Visualization */}
         <div className="flex flex-col items-center space-y-12">
           {/* Transformation Process */}
-          <div className="flex items-center justify-between w-full max-w-4xl">
+          <div className="flex items-center justify-between w-full max-w-9xl">
             {/* Human Content */}
             <div className="flex flex-col items-center space-y-2">
               <div className="p-4 bg-green-100 rounded-lg">
-                <FileText size={40} className="text-blue-600" />
+                <FileText size={40} className="text-blue-600 text-4xl" />
               </div>
               <span className="text-black font-medium">Human Content</span>
-              <div className="text-sm text-black h-6">
+              <div className="text-xl text-black h-6">
   <TypewriterText 
     text="How to use MongoDB"
     isActive={showTyping} 
@@ -124,7 +124,7 @@ const AIVectorsSlide = () => {
               <div className="p-2 bg-green-500 rounded-lg mt-2">
                 <Brain size={24} className={`text-white ${showProcessing ? 'animate-pulse' : 'opacity-0'}`} />
               </div>
-              <span className="text-sm text-black mt-1">AI Processing</span>
+              <span className="text-lg text-black mt-1">AI Processing</span>
             </div>
 
             {/* Vector Embedding */}
@@ -155,7 +155,7 @@ const AIVectorsSlide = () => {
               <div className="p-4 bg-green-100 rounded-lg">
                 <FileText size={40} className="text-blue-600" />
               </div>
-              <span className="text-black font-medium">Similar Content</span>
+              <span className="text-black text-lg font-medium">Similar Content</span>
               <div className="text-sm text-black h-6">
                 <span className={`transition-opacity duration-500 ${showSimilar ? 'opacity-100' : 'opacity-0'}`}>
                   "MongoDB Tutorial"

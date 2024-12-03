@@ -46,7 +46,8 @@ import {
   DataGrowthCharts,
   DataUnitsComparison,
   DataScaleComparison,
-  GeoVectorVisualization
+  GeoVectorVisualization,
+  JsonDisplay
 } from '../components';
 
 export const vectorSearchPresentation: SlideSection = {
@@ -276,7 +277,7 @@ Imagine searching through endless scrolls...
     {
       id: 'did-you-find-it',
       type: 'text-full',
-      title: '... did you find it? 🤷',
+      title: '🤷',
       note: '',
       component: '',
       content: '',
@@ -285,7 +286,7 @@ Imagine searching through endless scrolls...
     {
       id: 'data-is-not-enough',
       type: 'text-full',
-      title: '☹️ data is not enough...',
+      title: '☹️',
       note: '',
       component: '',
       content: '',
@@ -293,10 +294,20 @@ Imagine searching through endless scrolls...
     },
     {
       id: 'perhaps-we-need-search',
-      type: 'text-full',
-      title: '🔎 perhaps we need search...',
+      type: 'split',
+      title: 'perhaps we need search 🤔',
       note: '',
       component: '',
+      image: '/rich-indexing.gif',
+      content: '',
+      duration: 2,
+    },
+    {
+      id: 'text-index',
+      type: 'text-full',
+      title: 'text index',
+      note: '',
+      component: JsonDisplay,
       content: '',
       duration: 2,
     },
@@ -417,7 +428,7 @@ Imagine searching through endless scrolls...
     {
       id: 'ai-explanation',
       type: 'text-full',
-      title: 'ai explained',
+      title: 'a bit about ai...',
       note: 'ai explanation',
       component: AIExplanationSlide,
       content: '',
@@ -449,7 +460,11 @@ Imagine searching through endless scrolls...
       title: 'Array (1536)',
       note: '',
       component: FullImageEmbeddings,
-      content: '[0.008, 0.009, 0.010, ...]',
+      content: `
+- add a field...
+- name it what you like...
+- store the vectors...
+- [0.008, 0.009, 0.010, ...]`,
       duration: 2,
     },
     // Slide 14

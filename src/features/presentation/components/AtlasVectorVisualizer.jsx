@@ -138,7 +138,7 @@ const AtlasVectorVisualizer = () => {
                     {/* Connection Form */}
                     <div className="space-y-4">
                         <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-700">
+                            <label className="block text-lg font-medium text-gray-700">
                                 Connection String
                                 <input
                                     type="password"
@@ -154,7 +154,7 @@ const AtlasVectorVisualizer = () => {
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
-                            <label className="block text-sm font-medium text-gray-700">
+                            <label className="block text-lg font-medium text-gray-700">
                                 Database
                                 <input
                                     type="text"
@@ -166,7 +166,7 @@ const AtlasVectorVisualizer = () => {
                                     }))}
                                 />
                             </label>
-                            <label className="block text-sm font-medium text-gray-700">
+                            <label className="block text-lg font-medium text-gray-700">
                                 Collection
                                 <input
                                     type="text"
@@ -203,7 +203,7 @@ const AtlasVectorVisualizer = () => {
                     {/* Field Selection */}
                     {isConnected && fields.length > 0 && (
                         <div className="space-y-4">
-                            <label className="block text-sm font-medium text-gray-700">
+                            <label className="block text-lg font-medium text-gray-700">
                                 Vector Field
                                 <select
                                     value={selectedField}
@@ -229,7 +229,7 @@ const AtlasVectorVisualizer = () => {
                                 ) : (
                                     <Calculator className="w-4 h-4" />
                                 )}
-                                Analyze Vectors
+                                <span className="text-lg">Analyze Vectors</span>
                             </button>
                         </div>
                     )}
@@ -253,7 +253,7 @@ const AtlasVectorVisualizer = () => {
                                             return (
                                                 <div className="bg-white p-2 border text-black rounded shadow">
                                                     <p className="font-medium">{data.name}</p>
-                                                    <p className="text-sm mt-1">{data.content}</p>
+                                                    <p className="text-lg mt-1">{data.content}</p>
                                                 </div>
                                             );
                                         }
@@ -288,7 +288,7 @@ const AtlasVectorVisualizer = () => {
                                 <Database className="w-4 h-4" />
                                 Dataset Statistics
                             </h4>
-                            <div className="space-y-1 text-sm text-black">
+                            <div className="space-y-1 text-lg text-black">
                                 <p>Number of Documents: {vectorStats.documentCount}</p>
                                 <p>Vector Dimensions: {vectorStats.dimensions}</p>
                                 <p>Average Distance: {vectorStats.avgDistance.toFixed(4)}</p>
@@ -304,10 +304,10 @@ const AtlasVectorVisualizer = () => {
                                 <Calculator className="w-4 h-4" />
                                 Selected Document
                             </h4>
-                            <div className="space-y-1 text-sm">
+                            <div className="space-y-1 text-lg">
                                 <p className="font-medium">{selectedDoc.name}</p>
                                 <p className="text-xs mt-2">Content:</p>
-                                <p className="text-sm">{selectedDoc.content}</p>
+                                <p className="text-lg">{selectedDoc.content}</p>
                                 <div className="mt-2">
                                     <p className="font-medium">Vector Components:</p>
                                     <div className="max-h-32 overflow-y-auto">
