@@ -482,7 +482,7 @@ function App() {
     // Input validation
     const isValidSearch = searchType === 'image' ? selectedImage : searchTerm.trim();
     if (!isValidSearch) {
-      console.debug('Search validation failed:', { searchType, hasImage: !!selectedImage });
+      console.log('Search validation failed:', { searchType, hasImage: !!selectedImage });
       return;
     }
 
@@ -506,7 +506,7 @@ function App() {
         formData.append('type', 'image');
         config.body = formData;
         delete config.headers['Content-Type']; // Let browser set correct content-type for FormData
-        console.debug('Preparing image search:', { imageSize: selectedImage.size });
+        console.log('Preparing image search:', { imageSize: selectedImage.size });
       } else {
         config.headers['Content-Type'] = 'application/json';
         config.body = JSON.stringify({
@@ -516,7 +516,7 @@ function App() {
         });
       }
 
-      console.debug('Search configuration:', {
+      console.log('Search configuration:', {
         url: `${API_URL}/search`,
         method: config.method,
         headers: config.headers,
@@ -610,6 +610,7 @@ function App() {
       const data = await handleResponse(response);
       updateSearchResults(data);
     } catch (error) {
+      console.error('Search error:', error);
       handleSearchError(error);
     } finally {
       setIsSearching(false);
