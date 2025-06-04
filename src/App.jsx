@@ -131,7 +131,7 @@ function App() {
   Join me on a journey from simple data storage to true machine intelligence.
       `,
       note: 'INTRODUCTION',
-      image: '/slide1.png'
+      image: '/slide2.png'
     },
     {
       id: 'data-definition',
@@ -140,17 +140,6 @@ function App() {
   ## The Foundation of Intelligence
   
   Raw, unprocessed facts and figures that form the basis of understanding.
-  
-  ### Characteristics
-  - Building blocks of knowledge and intelligence
-  - Raw numbers, text, measurements, observations
-  - Context-free information
-  - Requires processing to be meaningful
-  
-  ### Challenge
-  - Vast amounts of unstructured data
-  - Limited utility without organization
-  - Needs context for value
   
   > "Data is the new oil - but like oil, it needs refining to be valuable"
       `,
@@ -164,18 +153,6 @@ function App() {
   ## Beyond Raw Data
   
   Information that has been processed, organized, and contextualized.
-  
-  ### The Transformation
-  - Data gains structure and meaning
-  - Patterns emerge from chaos
-  - Relationships become visible
-  - Context provides understanding
-  
-  ### Value Creation
-  - Supports decision making
-  - Enables pattern recognition
-  - Forms basis for automation
-  - Drives business insights
   
   > "Knowledge is not just processed data - it's data with purpose"
       `,
@@ -219,12 +196,9 @@ function App() {
   ### Historical Parallel
   - 700,000+ scrolls and books
   - Complex organization system
-  - Expert librarians and scholars
-  - Knowledge synthesis and creation
   
   ### Enduring Challenges
   - Information discovery
-  - Context preservation
   - Knowledge organization
   - Wisdom transfer
   
@@ -242,11 +216,41 @@ function App() {
       component: AncientLibraryScroll
     },
     {
+      id: 'enter-sage',
+      title: 'Enter the Sage',
+      content: 'The library is a place of learning, where the wise can share their knowledge and the curious can seek answers. You enter the library, and the doors close behind you.',
+      note: 'Enter the Sage',
+      image: '/sage.webp',
+    },
+    {
       id: 'ancient-parallel',
       type: 'text-full',
       title: 'Ancient Wisdom, Modern Solutions',
       note: 'PARALLEL SYSTEMS',
       component: AncientLibraryFlowWrapper,
+      content: ''
+    },
+    {
+      id: 'ask-the-sage',
+      type: 'text-full',
+      title: 'Ancient Intelligence - AI',
+
+      note: 'AI INTEGRATION',
+      component: AncientTextQA
+    },
+    {
+      id: 'fast-foward',
+      title: 'Enter the Store',
+      content: 'Today, we have similar challenges, but we have the tools to solve them.',
+      note: '',
+      image: '/infinite-products.png',
+    },
+    {
+      id: 'today-library',
+      type: 'text-full',
+      title: 'In the modern world, we have the same challenges',
+      note: '',
+      component: DataExplorer,
       content: ''
     },
     // Modern Challenge Section
@@ -268,7 +272,7 @@ function App() {
   We need a system that combines the wisdom of the ancient library with the power of modern technology.
       `,
       note: 'THE CHALLENGE',
-      component: DataExplorer
+      component: SearchComparison
     },
     {
       id: 'journey',

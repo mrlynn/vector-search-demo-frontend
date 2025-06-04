@@ -127,7 +127,7 @@ const AncientLibraryScroll = () => {
         {/* Header */}
         <div className="flex items-center justify-between p-6 bg-amber-100 border-b border-amber-200">
             <div className="flex items-center gap-3">
-                <BookOpen className="text-amber-800" size={24} />
+                <BookOpen className="text-amber-800" size={22} />
                 <h2 className="text-2xl font-serif text-amber-900">Ancient Library Catalog</h2>
             </div>
             <div className="text-amber-800 text-base">
